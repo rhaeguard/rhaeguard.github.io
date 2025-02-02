@@ -863,12 +863,12 @@ Cheers!
 
 ## References
 
-- https://en.wikipedia.org/wiki/Thompson%27s_construction
-- https://en.wikipedia.org/wiki/Regular_expression
-- https://deniskyashif.com/2019/02/17/implementing-a-regular-expression-engine/
-- https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expressions
-- https://regex101.com/
-- https://github.com/python/cpython/blob/main/Lib/test/re_tests.py
-- https://blog.cernera.me/converting-regular-expressions-to-postfix-notation-with-the-shunting-yard-algorithm/
-- https://en.wikipedia.org/wiki/Shunting_yard_algorithm
-- https://gobyexample.com/
+- [Thompson's construction - Wikipedia](https://en.wikipedia.org/wiki/Thompson%27s_construction)
+- [Regular expression - Wikipedia](https://en.wikipedia.org/wiki/Regular_expression)
+- [Shunting yard algorithm - Wikipedia](https://en.wikipedia.org/wiki/Shunting_yard_algorithm)
+- [https://deniskyashif.com/2019/02/17/implementing-a-regular-expression-engine/](https://deniskyashif.com/2019/02/17/implementing-a-regular-expression-engine/)
+- [https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expressions](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expressions)
+- [regex101.com](https://regex101.com/)
+- [https://github.com/python/cpython/blob/main/Lib/test/re_tests.py](https://github.com/python/cpython/blob/main/Lib/test/re_tests.py)
+- [https://blog.cernera.me/converting-regular-expressions-to-postfix-notation-with-the-shunting-yard-algorithm/](https://blog.cernera.me/converting-regular-expressions-to-postfix-notation-with-the-shunting-yard-algorithm/)
+- [gobyexample.com](https://gobyexample.com/)

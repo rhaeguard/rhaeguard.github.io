@@ -1152,13 +1152,13 @@ Cheers!
 # References
 
 - My code is mostly based on these videos from Shawn Lupoli:
-  - https://www.youtube.com/watch?v=3XLT1AI1f0g
-  - https://www.youtube.com/watch?v=RGGVlzO4vD0
+	- [https://www.youtube.com/watch?v=m28GWwZzD38](https://www.youtube.com/watch?v=m28GWwZzD38)
+	- [https://www.youtube.com/watch?v=0Oveh9ClUBE](https://www.youtube.com/watch?v=0Oveh9ClUBE)
 - To learn more about parse trees:
-  - https://cons.mit.edu/sp13/slides/S13-lecture-03.pdf
-  - https://www.youtube.com/watch?v=8Cq3EIgXOec
+	- [https://cons.mit.edu/sp13/slides/S13-lecture-03.pdf](https://cons.mit.edu/sp13/slides/S13-lecture-03.pdf)
+	- [https://www.youtube.com/watch?v=8Cq3EIgXOec](https://www.youtube.com/watch?v=8Cq3EIgXOec)
 - General useful information:
-  - https://www.cs.binghamton.edu/~zdu/parsdemo/srintro.html
-  - https://en.wikipedia.org/wiki/Shift-reduce_parser
-  - https://www.youtube.com/watch?v=1_qjmZXFaNw
-  - https://github.com/aberamseyer/LR1/blob/master/README.md
+	- [https://www.cs.binghamton.edu/~zdu/parsdemo/srintro.html](https://www.cs.binghamton.edu/~zdu/parsdemo/srintro.html)
+	- [https://en.wikipedia.org/wiki/Shift-reduce_parser](https://en.wikipedia.org/wiki/Shift-reduce_parser)
+	- [https://www.youtube.com/watch?v=1_qjmZXFaNw](https://www.youtube.com/watch?v=1_qjmZXFaNw)
+	- [https://github.com/aberamseyer/LR1/blob/master/README.md](https://github.com/aberamseyer/LR1/blob/master/README.md)

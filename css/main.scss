@@ -178,7 +178,6 @@ hr {
 }
 
 pre {
-  // background: black;
   padding: 1em;
   overflow-x: auto; /* Fix pre content overflowing parent without scroll bar */
 }
@@ -194,21 +193,6 @@ table, th, td {
 code:not(pre > code) {
   padding: 0.1em 0.2em;
   font-size: 90%;
-}
-
-code.has-jax {
-  -webkit-font-smoothing: antialiased;
-  background: inherit !important;
-  border: none !important;
-  font-size: 100%;
-}
-
-blockquote {
-  font-style: italic;
-  border: thin solid black;
-  padding: 1rem;
-
-  p { margin: 0; }
 }
 
 img {
