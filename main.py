@@ -10,6 +10,7 @@ from pygments.lexers import get_lexer_by_name
 from pygments.formatters import HtmlFormatter
 from pygments.token import STANDARD_TYPES
 from PIL import Image
+import shutil
 
 class NewEngineFormatter(HtmlFormatter):
     name = 'NEF'
@@ -158,6 +159,9 @@ for file in glob.glob("./static/*"):
         img = img.convert("RGB")
         new_filename = filename.replace(".png", ".jpeg")
         img.save(f"./build/{new_filename}", optimize=True)
+    else:
+        # copy everything else as-is
+        shutil.copy2(file, f"./build/{filename}")
 
 
 def build_posts(all_posts: list):
