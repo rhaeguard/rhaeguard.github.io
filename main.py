@@ -220,6 +220,7 @@ ALL_PROJECTS = [
 
 # construct index.html
 with open("./build/index.html", "w+", encoding="utf-8") as o:
+    print("generation started...")
     posts = build_posts(posts_metadata)
     projects = build_projects(ALL_PROJECTS)
     index_html = INDEX_PAGE_TEMPLATE.replace("{{POSTS}}", posts).replace(
@@ -230,3 +231,4 @@ with open("./build/index.html", "w+", encoding="utf-8") as o:
     )
     o.write(out_html)
     o.flush()
+    print("generation done")
