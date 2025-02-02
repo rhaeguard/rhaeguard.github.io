@@ -156,7 +156,9 @@ for file in glob.glob("./static/*"):
     # shutil.copy2(file, f"./build/{filename}")
 
 
-def build_posts(all_posts):
+def build_posts(all_posts: list):
+    all_posts.sort(key=lambda p: datetime.strptime(p["date"], "%Y-%m-%dT%H:%M:%S%z"), reverse=True)
+
     output = "<ul>"
     for post in all_posts:
         filename = f'/posts/{post["filename"]}'
