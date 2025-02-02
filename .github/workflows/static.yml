@@ -1,7 +1,6 @@
-name: Deploy static content to Pages
+name: Build the blog and deploy it to Github Pages
 
 on:
-  # Runs on pushes targeting the default branch
   push:
     branches: ["new-engine"]
 
@@ -52,7 +51,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
           path: './build'
 
       - name: Deploy to GitHub Pages
