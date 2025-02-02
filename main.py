@@ -2,14 +2,38 @@ import markdown
 import pathlib
 import os
 import glob
-import shutil
 from datetime import datetime
 import sass
 import re
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import HtmlFormatter
+from pygments.token import STANDARD_TYPES
 from PIL import Image
+
+class NewEngineFormatter(HtmlFormatter):
+    name = 'NEF'
+    
+    def __init__(self, **options):
+        HtmlFormatter.__init__(self, **options)
+
+    def format(self, tokensource, outfile):
+        outfile.write('<div class="highlight"><pre>')
+        for token_type, value in tokensource:
+            tag_name = STANDARD_TYPES[token_type]
+            if tag_name == "w" and value == " ":
+                outfile.write("&nbsp;")
+                continue
+            tag_name = f"x{tag_name}"
+
+            value = value.replace("&", "&amp;")
+            value = value.replace("<", "&lt;")
+            value = value.replace(">", "&gt;")
+            value = value.replace('"', "&quot;")
+            
+            line = f"<{tag_name}>{value}</{tag_name}>"
+            outfile.write(line)
+        outfile.write('</pre></div>')
 
 MARKDOWN = markdown.Markdown(extensions=["fenced_code", "sane_lists"])
 PYGMENTS_HTML_FORMATTER = HtmlFormatter(style="monokai")
@@ -49,13 +73,18 @@ def hilite_code(match):
     code = code.replace("&quot;", '"')
 
     lexer = get_lexer_by_name(lang, stripall=True)
-    return highlight(code, lexer, PYGMENTS_HTML_FORMATTER)
+    return highlight(code, lexer, NewEngineFormatter(style="monokai"))
 
 
 with open("./main.scss") as scss_file, open("./build/main.css", "w+") as main_css:
     raw_scss = scss_file.read().strip()
 
-    syntax_highligher_styling = PYGMENTS_HTML_FORMATTER.get_style_defs()
+    syntax_highligher_styling: str = PYGMENTS_HTML_FORMATTER.get_style_defs()
+
+    for tag_name in STANDARD_TYPES.values():
+        find = f".{tag_name} {{"
+        replace = f"x{tag_name} {{"
+        syntax_highligher_styling = syntax_highligher_styling.replace(find, replace)
 
     syntax_highligher_styling = f"""
     .highlight {{

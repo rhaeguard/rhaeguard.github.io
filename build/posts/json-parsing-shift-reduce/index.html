@@ -25,7 +25,7 @@
             <div class="link-preview">
                 <div class="header">Github Repository</div>
                 <div class="body">
-                    <a href="https://github.com/rhaeguard" target="_blank">rhaeguard</a>
+                    <a href="https://github.com/rhaeguard/gojson" target="_blank">rhaeguard/gojson</a>
                 </div>
             </div>
             
@@ -35,39 +35,36 @@
 <p>Parsing JSON is something that the majority of programmers have done. Almost all languages have means to deserialize (unmarshall) JSON from text into some data structure. In this article, we are going to try doing exactly that.</p>
 <h3>Grammar</h3>
 <p>Just like in natural languages, the programming languages and various data formats have a grammar. The grammar consists of rules that show how the text input needs to be structured. For JSON the following is a simplified version of a part of the grammar:</p>
-<div class="highlight"><pre><span></span>1. json ::= value
+<div class="highlight"><pre><x>1. json ::= value
 2. value ::= object | array | string
-3. object ::= &#39;{&#39; members &#39;}&#39;
-4. members ::= member | member &#39;,&#39; members
-5. member ::= string &#39;:&#39; value
-6. string ::= &#39;&quot;&#39; characters &#39;&quot;&#39;
-</pre></div>
-
+3. object ::= '{' members '}'
+4. members ::= member | member ',' members
+5. member ::= string ':' value
+6. string ::= '&quot;' characters '&quot;'
+</x></pre></div>
 <p>Check out the full grammar <a href="https://www.crockford.com/mckeeman.html">here</a>, but we will also go over the grammar later. The format shown above is called the BNF or <a href="https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form">Backus-Naur form</a>. Most programming languages have a BNF grammar. Each line in the grammar above is called a <em>production rule</em>. Anything that's in single quotes above is called a <em>terminal</em> symbol. Terminal means that we can no longer expand that part of the rule to something else. For example, if we take a look at the "object" rule above, the opening and closing braces are terminals which mean those exact characters need to be present for any piece of text to be even considered as JSON object. The remaining ones are called <em>non-terminals</em>. Non-terminals get expanded into their constituent parts. The following is just a simplified example of an expansion to match <code>{"name": "jane"}</code>:</p>
-<div class="highlight"><pre><span></span><span class="nx">value</span><span class="w"> </span><span class="p">:</span><span class="o">:=</span><span class="w"> </span><span class="nx">object</span>
-<span class="w"> </span><span class="c1">// object -&gt; &#39;{&#39; members &#39;}&#39;</span>
-<span class="nx">value</span><span class="w"> </span><span class="p">:</span><span class="o">:=</span><span class="w"> </span><span class="sc">&#39;{&#39;</span><span class="w"> </span><span class="nx">members</span><span class="w"> </span><span class="sc">&#39;}&#39;</span>
-<span class="c1">// members -&gt; member</span>
-<span class="nx">value</span><span class="w"> </span><span class="p">:</span><span class="o">:=</span><span class="w"> </span><span class="sc">&#39;{&#39;</span><span class="w"> </span><span class="nx">member</span><span class="w"> </span><span class="sc">&#39;}&#39;</span><span class="w"> </span>
-<span class="c1">// member -&gt; string &#39;:&#39; value</span>
-<span class="nx">value</span><span class="w"> </span><span class="p">:</span><span class="o">:=</span><span class="w"> </span><span class="sc">&#39;{&#39;</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="sc">&#39;:&#39;</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="sc">&#39;}&#39;</span><span class="w"> </span>
-<span class="c1">// value -&gt; string</span>
-<span class="nx">value</span><span class="w"> </span><span class="p">:</span><span class="o">:=</span><span class="w"> </span><span class="sc">&#39;{&#39;</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="sc">&#39;:&#39;</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="sc">&#39;}&#39;</span><span class="w"> </span>
-<span class="c1">// string -&gt; &#39;&quot;&#39; characters &#39;&quot;&#39;</span>
-<span class="nx">value</span><span class="w"> </span><span class="p">:</span><span class="o">:=</span><span class="w"> </span><span class="sc">&#39;{&#39;</span><span class="w"> </span><span class="sc">&#39;&quot;&#39;</span><span class="w"> </span><span class="nx">characters</span><span class="w"> </span><span class="sc">&#39;&quot;&#39;</span><span class="w"> </span><span class="sc">&#39;:&#39;</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="sc">&#39;}&#39;</span><span class="w"> </span>
-<span class="c1">// characters -&gt; &quot;name&quot;</span>
-<span class="nx">value</span><span class="w"> </span><span class="p">:</span><span class="o">:=</span><span class="w"> </span><span class="sc">&#39;{&#39;</span><span class="w"> </span><span class="sc">&#39;&quot;&#39;</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="sc">&#39;&quot;&#39;</span><span class="w"> </span><span class="sc">&#39;:&#39;</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="sc">&#39;}&#39;</span><span class="w"> </span>
-<span class="c1">// string -&gt; &#39;&quot;&#39; characters &#39;&quot;&#39;</span>
-<span class="nx">value</span><span class="w"> </span><span class="p">:</span><span class="o">:=</span><span class="w"> </span><span class="sc">&#39;{&#39;</span><span class="w"> </span><span class="sc">&#39;&quot;&#39;</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="sc">&#39;&quot;&#39;</span><span class="w"> </span><span class="sc">&#39;:&#39;</span><span class="w"> </span><span class="sc">&#39;&quot;&#39;</span><span class="w"> </span><span class="nx">characters</span><span class="w"> </span><span class="sc">&#39;&quot;&#39;</span><span class="w"> </span><span class="sc">&#39;}&#39;</span>
-<span class="c1">// characters -&gt; &quot;jane&quot; </span>
-<span class="nx">value</span><span class="w"> </span><span class="p">:</span><span class="o">:=</span><span class="w"> </span><span class="sc">&#39;{&#39;</span><span class="w"> </span><span class="sc">&#39;&quot;&#39;</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="sc">&#39;&quot;&#39;</span><span class="w"> </span><span class="sc">&#39;:&#39;</span><span class="w"> </span><span class="sc">&#39;&quot;&#39;</span><span class="w"> </span><span class="nx">jane</span><span class="w"> </span><span class="sc">&#39;&quot;&#39;</span><span class="w"> </span><span class="sc">&#39;}&#39;</span>
-</pre></div>
-
+<div class="highlight"><pre><xnx>value</xnx>&nbsp;<xp>:</xp><xo>:=</xo>&nbsp;<xnx>object</xnx><xw>
+</xw>&nbsp;<xc1>// object -&gt; '{' members '}'</xc1><xw>
+</xw><xnx>value</xnx>&nbsp;<xp>:</xp><xo>:=</xo>&nbsp;<xsc>'{'</xsc>&nbsp;<xnx>members</xnx>&nbsp;<xsc>'}'</xsc><xw>
+</xw><xc1>// members -&gt; member</xc1><xw>
+</xw><xnx>value</xnx>&nbsp;<xp>:</xp><xo>:=</xo>&nbsp;<xsc>'{'</xsc>&nbsp;<xnx>member</xnx>&nbsp;<xsc>'}'</xsc><xw> 
+</xw><xc1>// member -&gt; string ':' value</xc1><xw>
+</xw><xnx>value</xnx>&nbsp;<xp>:</xp><xo>:=</xo>&nbsp;<xsc>'{'</xsc>&nbsp;<xkt>string</xkt>&nbsp;<xsc>':'</xsc>&nbsp;<xnx>value</xnx>&nbsp;<xsc>'}'</xsc><xw> 
+</xw><xc1>// value -&gt; string</xc1><xw>
+</xw><xnx>value</xnx>&nbsp;<xp>:</xp><xo>:=</xo>&nbsp;<xsc>'{'</xsc>&nbsp;<xkt>string</xkt>&nbsp;<xsc>':'</xsc>&nbsp;<xkt>string</xkt>&nbsp;<xsc>'}'</xsc><xw> 
+</xw><xc1>// string -&gt; '&quot;' characters '&quot;'</xc1><xw>
+</xw><xnx>value</xnx>&nbsp;<xp>:</xp><xo>:=</xo>&nbsp;<xsc>'{'</xsc>&nbsp;<xsc>'&quot;'</xsc>&nbsp;<xnx>characters</xnx>&nbsp;<xsc>'&quot;'</xsc>&nbsp;<xsc>':'</xsc>&nbsp;<xkt>string</xkt>&nbsp;<xsc>'}'</xsc><xw> 
+</xw><xc1>// characters -&gt; &quot;name&quot;</xc1><xw>
+</xw><xnx>value</xnx>&nbsp;<xp>:</xp><xo>:=</xo>&nbsp;<xsc>'{'</xsc>&nbsp;<xsc>'&quot;'</xsc>&nbsp;<xnx>name</xnx>&nbsp;<xsc>'&quot;'</xsc>&nbsp;<xsc>':'</xsc>&nbsp;<xkt>string</xkt>&nbsp;<xsc>'}'</xsc><xw> 
+</xw><xc1>// string -&gt; '&quot;' characters '&quot;'</xc1><xw>
+</xw><xnx>value</xnx>&nbsp;<xp>:</xp><xo>:=</xo>&nbsp;<xsc>'{'</xsc>&nbsp;<xsc>'&quot;'</xsc>&nbsp;<xnx>name</xnx>&nbsp;<xsc>'&quot;'</xsc>&nbsp;<xsc>':'</xsc>&nbsp;<xsc>'&quot;'</xsc>&nbsp;<xnx>characters</xnx>&nbsp;<xsc>'&quot;'</xsc>&nbsp;<xsc>'}'</xsc><xw>
+</xw><xc1>// characters -&gt; &quot;jane&quot; </xc1><xw>
+</xw><xnx>value</xnx>&nbsp;<xp>:</xp><xo>:=</xo>&nbsp;<xsc>'{'</xsc>&nbsp;<xsc>'&quot;'</xsc>&nbsp;<xnx>name</xnx>&nbsp;<xsc>'&quot;'</xsc>&nbsp;<xsc>':'</xsc>&nbsp;<xsc>'&quot;'</xsc>&nbsp;<xnx>jane</xnx>&nbsp;<xsc>'&quot;'</xsc>&nbsp;<xsc>'}'</xsc><xw>
+</xw></pre></div>
 <p>Parsing is the process of taking a text input and producing some sort of a data structure (oftentimes a tree). There are different ways of parsing. One of which is called <em>recursive descent</em> or <em>top-down parsing</em>. In this type of parsing, we start from the first character of the input and recursively apply different production rules (like we did above) to create a tree structure. So, let's take a look at a simple example.</p>
 <p>Assume this is our input:</p>
-<div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;age&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">37</span><span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xp>{</xp><xs2>&quot;age&quot;</xs2><xo>:</xo>&nbsp;<xmf>37</xmf><xp>}</xp><xw>
+</xw></pre></div>
 <p>In recursive descent parsing, we'll start from the first character and try to apply production rules to create the tree. The process will unfold roughly this way:</p>
 <ol start="0">
 <li>we need to parse <em>value</em>, proceed with any rule that matches</li>
@@ -92,7 +89,7 @@
 <p>In this tutorial, we will use a bottom-up approach, namely shift-reduce, to parse JSON. We will use Golang, but the concepts can be coded in any language.</p>
 <h1>Shift-Reduce Parsing</h1>
 <p>The shift-reduce parsing approach is a table-driven parsing approach that consists of 2 operations - shift and reduce. Here's the simplified version of the algorithm:</p>
-<div class="highlight"><pre><span></span>init:
+<div class="highlight"><pre><x>init:
     0. the input to be parsed
     1. the parse table (PT)
     2. the parse stack (PS)
@@ -105,12 +102,11 @@ process:
             5.2 reduce - replace the combination with
                         the production rule specified
                         in the PT
-        6. no, that&#39;s a parsing error, goto failure
+        6. no, that's a parsing error, goto failure
     7. if the input is fully consumed and the PS is empty
        then goto return
     8. goto step 3
-</pre></div>
-
+</x></pre></div>
 <p>There are more nuances, of course, but the above algorithm captures the main idea of the concept. The biggest challenge of implementing this algorithm is to create the parse table. Below is a very simple grammar and its parse tree taken from <a href="https://en.wikipedia.org/wiki/LR_parser">Wikipedia</a>.</p>
 <p><strong>Grammar:</strong></p>
 <ol>
@@ -251,107 +247,104 @@ process:
 <h2>Grammar</h2>
 <p>We have already seen a glimpse of the JSON grammar. In this section, we will provide the complete grammar. </p>
 <p>Let's start with some basic building blocks.</p>
-<div class="highlight"><pre><span></span><span class="kd">type</span><span class="w"> </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kt">string</span>
-
-<span class="kd">const</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="nx">number</span><span class="w">   </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;&lt;number&gt;&quot;</span>
-<span class="w">    </span><span class="nx">integer</span><span class="w">  </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;&lt;integer&gt;&quot;</span>
-<span class="w">    </span><span class="nx">value</span><span class="w">    </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;&lt;value&gt;&quot;</span>
-<span class="w">    </span><span class="nx">array</span><span class="w">    </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;&lt;array&gt;&quot;</span>
-<span class="w">    </span><span class="nx">members</span><span class="w">  </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;&lt;object fields&gt;&quot;</span>
-<span class="w">    </span><span class="nx">member</span><span class="w">   </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;&lt;object field&gt;&quot;</span>
-<span class="w">    </span><span class="nx">element</span><span class="w">  </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;&lt;array element&gt;&quot;</span>
-<span class="w">    </span><span class="nx">elements</span><span class="w"> </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;&lt;array elements&gt;&quot;</span>
-<span class="w">    </span><span class="nx">object</span><span class="w">   </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;&lt;object&gt;&quot;</span>
-<span class="w">    </span><span class="nx">boolean</span><span class="w">  </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;&lt;boolean&gt;&quot;</span>
-<span class="w">    </span><span class="nx">exponent</span><span class="w"> </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;&lt;exponent&gt;&quot;</span>
-<span class="w">    </span><span class="nx">fraction</span><span class="w"> </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;&lt;fraction&gt;&quot;</span>
-<span class="w">    </span><span class="cm">/* the rest represents literal tokens */</span>
-<span class="w">    </span><span class="nx">ltObjectStart</span><span class="w">    </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;{&quot;</span>
-<span class="w">    </span><span class="nx">ltObjectEnd</span><span class="w">      </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;}&quot;</span>
-<span class="w">    </span><span class="nx">ltArrayStart</span><span class="w">     </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;[&quot;</span>
-<span class="w">    </span><span class="nx">ltArrayEnd</span><span class="w">       </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;]&quot;</span>
-<span class="w">    </span><span class="nx">ltComma</span><span class="w">          </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;,&quot;</span>
-<span class="w">    </span><span class="nx">ltColon</span><span class="w">          </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;:&quot;</span>
-<span class="w">    </span><span class="nx">ltFractionSymbol</span><span class="w"> </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;.&quot;</span>
-<span class="w">    </span><span class="nx">ltBoolean</span><span class="w">        </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;&lt;bool_literal&gt;&quot;</span>
-<span class="w">    </span><span class="nx">ltExponent</span><span class="w">       </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;e/E&quot;</span>
-<span class="w">    </span><span class="nx">ltDigits</span><span class="w">         </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;[0-9] (digits)&quot;</span>
-<span class="w">    </span><span class="nx">ltNull</span><span class="w">           </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;&lt;null&gt;&quot;</span>
-<span class="w">    </span><span class="nx">ltSign</span><span class="w">           </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;+/-&quot;</span>
-<span class="w">    </span><span class="nx">ltString</span><span class="w">         </span><span class="nx">elementType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;&lt;string_literal&gt;&quot;</span>
-<span class="p">)</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>type</xkd>&nbsp;<xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xkt>string</xkt><xw>
+</xw><xw>
+</xw><xkd>const</xkd>&nbsp;<xp>(</xp><xw>
+</xw><xw>    </xw><xnx>number</xnx><xw>   </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;&lt;number&gt;&quot;</xs><xw>
+</xw><xw>    </xw><xnx>integer</xnx><xw>  </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;&lt;integer&gt;&quot;</xs><xw>
+</xw><xw>    </xw><xnx>value</xnx><xw>    </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;&lt;value&gt;&quot;</xs><xw>
+</xw><xw>    </xw><xnx>array</xnx><xw>    </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;&lt;array&gt;&quot;</xs><xw>
+</xw><xw>    </xw><xnx>members</xnx><xw>  </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;&lt;object fields&gt;&quot;</xs><xw>
+</xw><xw>    </xw><xnx>member</xnx><xw>   </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;&lt;object field&gt;&quot;</xs><xw>
+</xw><xw>    </xw><xnx>element</xnx><xw>  </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;&lt;array element&gt;&quot;</xs><xw>
+</xw><xw>    </xw><xnx>elements</xnx>&nbsp;<xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;&lt;array elements&gt;&quot;</xs><xw>
+</xw><xw>    </xw><xnx>object</xnx><xw>   </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;&lt;object&gt;&quot;</xs><xw>
+</xw><xw>    </xw><xnx>boolean</xnx><xw>  </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;&lt;boolean&gt;&quot;</xs><xw>
+</xw><xw>    </xw><xnx>exponent</xnx>&nbsp;<xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;&lt;exponent&gt;&quot;</xs><xw>
+</xw><xw>    </xw><xnx>fraction</xnx>&nbsp;<xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;&lt;fraction&gt;&quot;</xs><xw>
+</xw><xw>    </xw><xcm>/* the rest represents literal tokens */</xcm><xw>
+</xw><xw>    </xw><xnx>ltObjectStart</xnx><xw>    </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;{&quot;</xs><xw>
+</xw><xw>    </xw><xnx>ltObjectEnd</xnx><xw>      </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;}&quot;</xs><xw>
+</xw><xw>    </xw><xnx>ltArrayStart</xnx><xw>     </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;[&quot;</xs><xw>
+</xw><xw>    </xw><xnx>ltArrayEnd</xnx><xw>       </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;]&quot;</xs><xw>
+</xw><xw>    </xw><xnx>ltComma</xnx><xw>          </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;,&quot;</xs><xw>
+</xw><xw>    </xw><xnx>ltColon</xnx><xw>          </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;:&quot;</xs><xw>
+</xw><xw>    </xw><xnx>ltFractionSymbol</xnx>&nbsp;<xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;.&quot;</xs><xw>
+</xw><xw>    </xw><xnx>ltBoolean</xnx><xw>        </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;&lt;bool_literal&gt;&quot;</xs><xw>
+</xw><xw>    </xw><xnx>ltExponent</xnx><xw>       </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;e/E&quot;</xs><xw>
+</xw><xw>    </xw><xnx>ltDigits</xnx><xw>         </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;[0-9] (digits)&quot;</xs><xw>
+</xw><xw>    </xw><xnx>ltNull</xnx><xw>           </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;&lt;null&gt;&quot;</xs><xw>
+</xw><xw>    </xw><xnx>ltSign</xnx><xw>           </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;+/-&quot;</xs><xw>
+</xw><xw>    </xw><xnx>ltString</xnx><xw>         </xw><xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;&lt;string_literal&gt;&quot;</xs><xw>
+</xw><xp>)</xp><xw>
+</xw></pre></div>
 <ul>
 <li>The following are the types of elements we will encounter while parsing the input JSON</li>
 <li>If you recall the Backus-Naur form we introduced earlier, there were the concepts of terminal and non-terminal tokens.</li>
 <li>In above code snippet, constants prefixed with <code>lt</code> (meaning literal) are terminal tokens, while the rest are non-terminals.</li>
 </ul>
 <p>Next is the structure that represents a grammar rule:</p>
-<div class="highlight"><pre><span></span><span class="kd">type</span><span class="w"> </span><span class="nx">grammarRule</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">lhs</span><span class="w">    </span><span class="kt">string</span>
-<span class="w">    </span><span class="nx">rhs</span><span class="w">    </span><span class="p">[][]</span><span class="nx">elementType</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>type</xkd>&nbsp;<xnx>grammarRule</xnx>&nbsp;<xkd>struct</xkd>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>lhs</xnx><xw>    </xw><xkt>string</xkt><xw>
+</xw><xw>    </xw><xnx>rhs</xnx><xw>    </xw><xp>[</xp><xp>]</xp><xp>[</xp><xp>]</xp><xnx>elementType</xnx><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ul>
 <li>It's pretty simple, a rule consists of a left-hand side (lhs) and the right-hand side (rhs).</li>
 </ul>
 <p>And the following is the grammar:</p>
-<div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">grammar</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[]</span><span class="nx">grammarRule</span><span class="p">{</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">value</span><span class="p">,</span><span class="w"> </span><span class="p">[][]</span><span class="nx">elementType</span><span class="p">{</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">object</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">array</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">number</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">boolean</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">ltString</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">ltNull</span><span class="p">},</span>
-<span class="w">    </span><span class="p">}},</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">boolean</span><span class="p">,</span><span class="w"> </span><span class="p">[][]</span><span class="nx">elementType</span><span class="p">{</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">ltBoolean</span><span class="p">},</span>
-<span class="w">    </span><span class="p">}},</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">object</span><span class="p">,</span><span class="w"> </span><span class="p">[][]</span><span class="nx">elementType</span><span class="p">{</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">ltObjectStart</span><span class="p">,</span><span class="w"> </span><span class="nx">ltObjectEnd</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">ltObjectStart</span><span class="p">,</span><span class="w"> </span><span class="nx">members</span><span class="p">,</span><span class="w"> </span><span class="nx">ltObjectEnd</span><span class="p">},</span>
-<span class="w">    </span><span class="p">}},</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">members</span><span class="p">,</span><span class="w"> </span><span class="p">[][]</span><span class="nx">elementType</span><span class="p">{</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">member</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">members</span><span class="p">,</span><span class="w"> </span><span class="nx">ltComma</span><span class="p">,</span><span class="w"> </span><span class="nx">member</span><span class="p">},</span>
-<span class="w">    </span><span class="p">}},</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">member</span><span class="p">,</span><span class="w"> </span><span class="p">[][]</span><span class="nx">elementType</span><span class="p">{</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">ltString</span><span class="p">,</span><span class="w"> </span><span class="nx">ltColon</span><span class="p">,</span><span class="w"> </span><span class="nx">value</span><span class="p">},</span>
-<span class="w">    </span><span class="p">}},</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">array</span><span class="p">,</span><span class="w"> </span><span class="p">[][]</span><span class="nx">elementType</span><span class="p">{</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">ltArrayStart</span><span class="p">,</span><span class="w"> </span><span class="nx">ltArrayEnd</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">ltArrayStart</span><span class="p">,</span><span class="w"> </span><span class="nx">elements</span><span class="p">,</span><span class="w"> </span><span class="nx">ltArrayEnd</span><span class="p">},</span>
-<span class="w">    </span><span class="p">}},</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">elements</span><span class="p">,</span><span class="w"> </span><span class="p">[][]</span><span class="nx">elementType</span><span class="p">{</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">element</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">elements</span><span class="p">,</span><span class="w"> </span><span class="nx">ltComma</span><span class="p">,</span><span class="w"> </span><span class="nx">element</span><span class="p">},</span>
-<span class="w">    </span><span class="p">}},</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">element</span><span class="p">,</span><span class="w"> </span><span class="p">[][]</span><span class="nx">elementType</span><span class="p">{</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">value</span><span class="p">},</span>
-<span class="w">    </span><span class="p">}},</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">number</span><span class="p">,</span><span class="w"> </span><span class="p">[][]</span><span class="nx">elementType</span><span class="p">{</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">integer</span><span class="p">,</span><span class="w"> </span><span class="nx">fraction</span><span class="p">,</span><span class="w"> </span><span class="nx">exponent</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">integer</span><span class="p">,</span><span class="w"> </span><span class="nx">fraction</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">integer</span><span class="p">,</span><span class="w"> </span><span class="nx">exponent</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">integer</span><span class="p">},</span>
-<span class="w">    </span><span class="p">}},</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">integer</span><span class="p">,</span><span class="w"> </span><span class="p">[][]</span><span class="nx">elementType</span><span class="p">{</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">ltDigits</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">ltSign</span><span class="p">,</span><span class="w"> </span><span class="nx">ltDigits</span><span class="p">},</span>
-<span class="w">    </span><span class="p">}},</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">fraction</span><span class="p">,</span><span class="w"> </span><span class="p">[][]</span><span class="nx">elementType</span><span class="p">{</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">ltFractionSymbol</span><span class="p">,</span><span class="w"> </span><span class="nx">ltDigits</span><span class="p">},</span>
-<span class="w">    </span><span class="p">}},</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">exponent</span><span class="p">,</span><span class="w"> </span><span class="p">[][]</span><span class="nx">elementType</span><span class="p">{</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">ltExponent</span><span class="p">,</span><span class="w"> </span><span class="nx">integer</span><span class="p">},</span>
-<span class="w">    </span><span class="p">}},</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>var</xkd>&nbsp;<xnx>grammar</xnx>&nbsp;<xp>=</xp>&nbsp;<xp>[</xp><xp>]</xp><xnx>grammarRule</xnx><xp>{</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>value</xnx><xp>,</xp>&nbsp;<xp>[</xp><xp>]</xp><xp>[</xp><xp>]</xp><xnx>elementType</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>object</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>array</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>number</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>boolean</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>ltString</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>ltNull</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>boolean</xnx><xp>,</xp>&nbsp;<xp>[</xp><xp>]</xp><xp>[</xp><xp>]</xp><xnx>elementType</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>ltBoolean</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>object</xnx><xp>,</xp>&nbsp;<xp>[</xp><xp>]</xp><xp>[</xp><xp>]</xp><xnx>elementType</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>ltObjectStart</xnx><xp>,</xp>&nbsp;<xnx>ltObjectEnd</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>ltObjectStart</xnx><xp>,</xp>&nbsp;<xnx>members</xnx><xp>,</xp>&nbsp;<xnx>ltObjectEnd</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>members</xnx><xp>,</xp>&nbsp;<xp>[</xp><xp>]</xp><xp>[</xp><xp>]</xp><xnx>elementType</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>member</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>members</xnx><xp>,</xp>&nbsp;<xnx>ltComma</xnx><xp>,</xp>&nbsp;<xnx>member</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>member</xnx><xp>,</xp>&nbsp;<xp>[</xp><xp>]</xp><xp>[</xp><xp>]</xp><xnx>elementType</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>ltString</xnx><xp>,</xp>&nbsp;<xnx>ltColon</xnx><xp>,</xp>&nbsp;<xnx>value</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>array</xnx><xp>,</xp>&nbsp;<xp>[</xp><xp>]</xp><xp>[</xp><xp>]</xp><xnx>elementType</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>ltArrayStart</xnx><xp>,</xp>&nbsp;<xnx>ltArrayEnd</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>ltArrayStart</xnx><xp>,</xp>&nbsp;<xnx>elements</xnx><xp>,</xp>&nbsp;<xnx>ltArrayEnd</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>elements</xnx><xp>,</xp>&nbsp;<xp>[</xp><xp>]</xp><xp>[</xp><xp>]</xp><xnx>elementType</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>element</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>elements</xnx><xp>,</xp>&nbsp;<xnx>ltComma</xnx><xp>,</xp>&nbsp;<xnx>element</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>element</xnx><xp>,</xp>&nbsp;<xp>[</xp><xp>]</xp><xp>[</xp><xp>]</xp><xnx>elementType</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>value</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>number</xnx><xp>,</xp>&nbsp;<xp>[</xp><xp>]</xp><xp>[</xp><xp>]</xp><xnx>elementType</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>integer</xnx><xp>,</xp>&nbsp;<xnx>fraction</xnx><xp>,</xp>&nbsp;<xnx>exponent</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>integer</xnx><xp>,</xp>&nbsp;<xnx>fraction</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>integer</xnx><xp>,</xp>&nbsp;<xnx>exponent</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>integer</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>integer</xnx><xp>,</xp>&nbsp;<xp>[</xp><xp>]</xp><xp>[</xp><xp>]</xp><xnx>elementType</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>ltDigits</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>ltSign</xnx><xp>,</xp>&nbsp;<xnx>ltDigits</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>fraction</xnx><xp>,</xp>&nbsp;<xp>[</xp><xp>]</xp><xp>[</xp><xp>]</xp><xnx>elementType</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>ltFractionSymbol</xnx><xp>,</xp>&nbsp;<xnx>ltDigits</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>exponent</xnx><xp>,</xp>&nbsp;<xp>[</xp><xp>]</xp><xp>[</xp><xp>]</xp><xnx>elementType</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>ltExponent</xnx><xp>,</xp>&nbsp;<xnx>integer</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ul>
 <li>Let's take the rule <code>integer</code>. It means that it's either a string of digits or a string of digits prefixed with a sign.</li>
 <li><code>number</code> is simply a combination of an integer, a fraction and an exponent where the fraction and the exponent could be omitted.</li>
@@ -375,89 +368,87 @@ process:
 </ul>
 <p>When parsing JSON with the recursive descent, we do not need to tokenize the input, but tokenization makes things a bit easier for us when it comes to shift-reduce parsing.</p>
 <p>Let's take a look at how lexing is done. This is the token structure that will hold the each lexed value.</p>
-<div class="highlight"><pre><span></span><span class="kd">type</span><span class="w"> </span><span class="nx">token</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">value</span><span class="w">     </span><span class="kt">any</span>
-<span class="w">    </span><span class="nx">tokenType</span><span class="w"> </span><span class="nx">elementType</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>type</xkd>&nbsp;<xnx>token</xnx>&nbsp;<xkd>struct</xkd>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>value</xnx><xw>     </xw><xkt>any</xkt><xw>
+</xw><xw>    </xw><xnx>tokenType</xnx>&nbsp;<xnx>elementType</xnx><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ul>
 <li><code>value</code> is the value of the token. For example, <code>{value:"1234", tokenType:ltDigits}</code></li>
 <li><code>tokenType</code> is any of the token types shown above</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="kd">func</span><span class="w"> </span><span class="nx">lex</span><span class="p">(</span><span class="nx">input</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">([]</span><span class="nx">token</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="nx">Error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">tokens</span><span class="w"> </span><span class="p">[]</span><span class="nx">token</span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">input</span><span class="p">);</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">ch</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">input</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="w"> </span><span class="c1">// 1</span>
-
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">ok</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">specialSymbols</span><span class="p">[</span><span class="nx">ch</span><span class="p">];</span><span class="w"> </span><span class="nx">ok</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 2</span>
-<span class="w">            </span><span class="nx">tokens</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">tokens</span><span class="p">,</span><span class="w"> </span><span class="nx">token</span><span class="p">{</span>
-<span class="w">                </span><span class="nx">tokenType</span><span class="p">:</span><span class="w"> </span><span class="nx">specialSymbols</span><span class="p">[</span><span class="nx">ch</span><span class="p">],</span>
-<span class="w">            </span><span class="p">})</span>
-<span class="w">            </span><span class="nx">i</span><span class="o">++</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">ch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;&quot;&#39;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 3</span>
-<span class="w">            </span><span class="nx">token</span><span class="p">,</span><span class="w"> </span><span class="nx">offset</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">lexString</span><span class="p">(</span><span class="nx">input</span><span class="p">,</span><span class="w"> </span><span class="nx">i</span><span class="p">)</span>
-<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span>
-<span class="w">            </span><span class="p">}</span>
-<span class="w">            </span><span class="nx">tokens</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">tokens</span><span class="p">,</span><span class="w"> </span><span class="nx">token</span><span class="p">)</span>
-<span class="w">            </span><span class="nx">i</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nx">offset</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">ch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;t&#39;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 4</span>
-<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="s">&quot;true&quot;</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">input</span><span class="p">[</span><span class="nx">i</span><span class="p">:</span><span class="nx">i</span><span class="o">+</span><span class="mi">4</span><span class="p">]</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="nx">tokens</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">tokens</span><span class="p">,</span><span class="w"> </span><span class="nx">token</span><span class="p">{</span>
-<span class="w">                    </span><span class="nx">value</span><span class="p">:</span><span class="w">     </span><span class="s">&quot;true&quot;</span><span class="p">,</span>
-<span class="w">                    </span><span class="nx">tokenType</span><span class="p">:</span><span class="w"> </span><span class="nx">ltBoolean</span><span class="p">,</span>
-<span class="w">                </span><span class="p">})</span>
-<span class="w">                </span><span class="nx">i</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">4</span>
-<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">newError</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;unrecognized token&quot;</span><span class="p">)</span>
-<span class="w">            </span><span class="p">}</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">ch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;f&#39;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 5</span>
-<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="s">&quot;false&quot;</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">input</span><span class="p">[</span><span class="nx">i</span><span class="p">:</span><span class="nx">i</span><span class="o">+</span><span class="mi">5</span><span class="p">]</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="nx">tokens</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">tokens</span><span class="p">,</span><span class="w"> </span><span class="nx">token</span><span class="p">{</span>
-<span class="w">                    </span><span class="nx">value</span><span class="p">:</span><span class="w">     </span><span class="s">&quot;false&quot;</span><span class="p">,</span>
-<span class="w">                    </span><span class="nx">tokenType</span><span class="p">:</span><span class="w"> </span><span class="nx">ltBoolean</span><span class="p">,</span>
-<span class="w">                </span><span class="p">})</span>
-<span class="w">                </span><span class="nx">i</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">5</span>
-<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">newError</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;unrecognized token&quot;</span><span class="p">)</span>
-<span class="w">            </span><span class="p">}</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">ch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;n&#39;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 6</span>
-<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="s">&quot;null&quot;</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">input</span><span class="p">[</span><span class="nx">i</span><span class="p">:</span><span class="nx">i</span><span class="o">+</span><span class="mi">4</span><span class="p">]</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="nx">tokens</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">tokens</span><span class="p">,</span><span class="w"> </span><span class="nx">token</span><span class="p">{</span>
-<span class="w">                    </span><span class="nx">tokenType</span><span class="p">:</span><span class="w"> </span><span class="nx">ltNull</span><span class="p">,</span>
-<span class="w">                </span><span class="p">})</span>
-<span class="w">                </span><span class="nx">i</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">4</span>
-<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">newError</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;unrecognized token&quot;</span><span class="p">)</span>
-<span class="w">            </span><span class="p">}</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">isWhitespace</span><span class="p">(</span><span class="nx">ch</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">input</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">isWhitespace</span><span class="p">(</span><span class="nx">input</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="nx">i</span><span class="o">++</span>
-<span class="w">            </span><span class="p">}</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">ch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;e&#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">ch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;E&#39;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">tokens</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">tokens</span><span class="p">,</span><span class="w"> </span><span class="nx">token</span><span class="p">{</span>
-<span class="w">                </span><span class="nx">tokenType</span><span class="p">:</span><span class="w"> </span><span class="nx">ltExponent</span><span class="p">,</span>
-<span class="w">            </span><span class="p">})</span>
-<span class="w">            </span><span class="nx">i</span><span class="o">++</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">ch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;+&#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">ch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;-&#39;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">tokens</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">tokens</span><span class="p">,</span><span class="w"> </span><span class="nx">token</span><span class="p">{</span>
-<span class="w">                </span><span class="nx">value</span><span class="p">:</span><span class="w">     </span><span class="nx">ch</span><span class="p">,</span>
-<span class="w">                </span><span class="nx">tokenType</span><span class="p">:</span><span class="w"> </span><span class="nx">ltSign</span><span class="p">,</span>
-<span class="w">            </span><span class="p">})</span>
-<span class="w">            </span><span class="nx">i</span><span class="o">++</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">isDigit</span><span class="p">(</span><span class="nx">ch</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">token</span><span class="p">,</span><span class="w"> </span><span class="nx">offset</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">lexDigits</span><span class="p">(</span><span class="nx">input</span><span class="p">,</span><span class="w"> </span><span class="nx">i</span><span class="p">)</span>
-<span class="w">            </span><span class="nx">tokens</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">tokens</span><span class="p">,</span><span class="w"> </span><span class="nx">token</span><span class="p">)</span>
-<span class="w">            </span><span class="nx">i</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nx">offset</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">newError</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;unrecognized token&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">tokens</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>func</xkd>&nbsp;<xnx>lex</xnx><xp>(</xp><xnx>input</xnx>&nbsp;<xkt>string</xkt><xp>)</xp>&nbsp;<xp>(</xp><xp>[</xp><xp>]</xp><xnx>token</xnx><xp>,</xp>&nbsp;<xo>*</xo><xnx>Error</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xkd>var</xkd>&nbsp;<xnx>tokens</xnx>&nbsp;<xp>[</xp><xp>]</xp><xnx>token</xnx><xw>
+</xw><xw>    </xw><xk>for</xk>&nbsp;<xnx>i</xnx>&nbsp;<xo>:=</xo>&nbsp;<xmi>0</xmi><xp>;</xp>&nbsp;<xnx>i</xnx>&nbsp;<xp>&lt;</xp>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>input</xnx><xp>)</xp><xp>;</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xnx>ch</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>input</xnx><xp>[</xp><xnx>i</xnx><xp>]</xp>&nbsp;<xc1>// 1</xc1><xw>
+</xw><xw>
+</xw><xw>        </xw><xk>if</xk>&nbsp;<xnx>_</xnx><xp>,</xp>&nbsp;<xnx>ok</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>specialSymbols</xnx><xp>[</xp><xnx>ch</xnx><xp>]</xp><xp>;</xp>&nbsp;<xnx>ok</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// 2</xc1><xw>
+</xw><xw>            </xw><xnx>tokens</xnx>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xnx>tokens</xnx><xp>,</xp>&nbsp;<xnx>token</xnx><xp>{</xp><xw>
+</xw><xw>                </xw><xnx>tokenType</xnx><xp>:</xp>&nbsp;<xnx>specialSymbols</xnx><xp>[</xp><xnx>ch</xnx><xp>]</xp><xp>,</xp><xw>
+</xw><xw>            </xw><xp>}</xp><xp>)</xp><xw>
+</xw><xw>            </xw><xnx>i</xnx><xo>++</xo><xw>
+</xw><xw>        </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnx>ch</xnx>&nbsp;<xo>==</xo>&nbsp;<xsc>'&quot;'</xsc>&nbsp;<xp>{</xp>&nbsp;<xc1>// 3</xc1><xw>
+</xw><xw>            </xw><xnx>token</xnx><xp>,</xp>&nbsp;<xnx>offset</xnx><xp>,</xp>&nbsp;<xnx>err</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>lexString</xnx><xp>(</xp><xnx>input</xnx><xp>,</xp>&nbsp;<xnx>i</xnx><xp>)</xp><xw>
+</xw><xw>            </xw><xk>if</xk>&nbsp;<xnx>err</xnx>&nbsp;<xo>!=</xo>&nbsp;<xkc>nil</xkc>&nbsp;<xp>{</xp><xw>
+</xw><xw>                </xw><xk>return</xk>&nbsp;<xkc>nil</xkc><xp>,</xp>&nbsp;<xnx>err</xnx><xw>
+</xw><xw>            </xw><xp>}</xp><xw>
+</xw><xw>            </xw><xnx>tokens</xnx>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xnx>tokens</xnx><xp>,</xp>&nbsp;<xnx>token</xnx><xp>)</xp><xw>
+</xw><xw>            </xw><xnx>i</xnx>&nbsp;<xo>+=</xo>&nbsp;<xnx>offset</xnx><xw>
+</xw><xw>        </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnx>ch</xnx>&nbsp;<xo>==</xo>&nbsp;<xsc>'t'</xsc>&nbsp;<xp>{</xp>&nbsp;<xc1>// 4</xc1><xw>
+</xw><xw>            </xw><xk>if</xk>&nbsp;<xs>&quot;true&quot;</xs>&nbsp;<xo>==</xo>&nbsp;<xnx>input</xnx><xp>[</xp><xnx>i</xnx><xp>:</xp><xnx>i</xnx><xo>+</xo><xmi>4</xmi><xp>]</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>                </xw><xnx>tokens</xnx>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xnx>tokens</xnx><xp>,</xp>&nbsp;<xnx>token</xnx><xp>{</xp><xw>
+</xw><xw>                    </xw><xnx>value</xnx><xp>:</xp><xw>     </xw><xs>&quot;true&quot;</xs><xp>,</xp><xw>
+</xw><xw>                    </xw><xnx>tokenType</xnx><xp>:</xp>&nbsp;<xnx>ltBoolean</xnx><xp>,</xp><xw>
+</xw><xw>                </xw><xp>}</xp><xp>)</xp><xw>
+</xw><xw>                </xw><xnx>i</xnx>&nbsp;<xo>+=</xo>&nbsp;<xmi>4</xmi><xw>
+</xw><xw>            </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xp>{</xp><xw>
+</xw><xw>                </xw><xk>return</xk>&nbsp;<xkc>nil</xkc><xp>,</xp>&nbsp;<xnx>newError</xnx><xp>(</xp><xnx>i</xnx><xp>,</xp>&nbsp;<xs>&quot;unrecognized token&quot;</xs><xp>)</xp><xw>
+</xw><xw>            </xw><xp>}</xp><xw>
+</xw><xw>        </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnx>ch</xnx>&nbsp;<xo>==</xo>&nbsp;<xsc>'f'</xsc>&nbsp;<xp>{</xp>&nbsp;<xc1>// 5</xc1><xw>
+</xw><xw>            </xw><xk>if</xk>&nbsp;<xs>&quot;false&quot;</xs>&nbsp;<xo>==</xo>&nbsp;<xnx>input</xnx><xp>[</xp><xnx>i</xnx><xp>:</xp><xnx>i</xnx><xo>+</xo><xmi>5</xmi><xp>]</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>                </xw><xnx>tokens</xnx>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xnx>tokens</xnx><xp>,</xp>&nbsp;<xnx>token</xnx><xp>{</xp><xw>
+</xw><xw>                    </xw><xnx>value</xnx><xp>:</xp><xw>     </xw><xs>&quot;false&quot;</xs><xp>,</xp><xw>
+</xw><xw>                    </xw><xnx>tokenType</xnx><xp>:</xp>&nbsp;<xnx>ltBoolean</xnx><xp>,</xp><xw>
+</xw><xw>                </xw><xp>}</xp><xp>)</xp><xw>
+</xw><xw>                </xw><xnx>i</xnx>&nbsp;<xo>+=</xo>&nbsp;<xmi>5</xmi><xw>
+</xw><xw>            </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xp>{</xp><xw>
+</xw><xw>                </xw><xk>return</xk>&nbsp;<xkc>nil</xkc><xp>,</xp>&nbsp;<xnx>newError</xnx><xp>(</xp><xnx>i</xnx><xp>,</xp>&nbsp;<xs>&quot;unrecognized token&quot;</xs><xp>)</xp><xw>
+</xw><xw>            </xw><xp>}</xp><xw>
+</xw><xw>        </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnx>ch</xnx>&nbsp;<xo>==</xo>&nbsp;<xsc>'n'</xsc>&nbsp;<xp>{</xp>&nbsp;<xc1>// 6</xc1><xw>
+</xw><xw>            </xw><xk>if</xk>&nbsp;<xs>&quot;null&quot;</xs>&nbsp;<xo>==</xo>&nbsp;<xnx>input</xnx><xp>[</xp><xnx>i</xnx><xp>:</xp><xnx>i</xnx><xo>+</xo><xmi>4</xmi><xp>]</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>                </xw><xnx>tokens</xnx>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xnx>tokens</xnx><xp>,</xp>&nbsp;<xnx>token</xnx><xp>{</xp><xw>
+</xw><xw>                    </xw><xnx>tokenType</xnx><xp>:</xp>&nbsp;<xnx>ltNull</xnx><xp>,</xp><xw>
+</xw><xw>                </xw><xp>}</xp><xp>)</xp><xw>
+</xw><xw>                </xw><xnx>i</xnx>&nbsp;<xo>+=</xo>&nbsp;<xmi>4</xmi><xw>
+</xw><xw>            </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xp>{</xp><xw>
+</xw><xw>                </xw><xk>return</xk>&nbsp;<xkc>nil</xkc><xp>,</xp>&nbsp;<xnx>newError</xnx><xp>(</xp><xnx>i</xnx><xp>,</xp>&nbsp;<xs>&quot;unrecognized token&quot;</xs><xp>)</xp><xw>
+</xw><xw>            </xw><xp>}</xp><xw>
+</xw><xw>        </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnx>isWhitespace</xnx><xp>(</xp><xnx>ch</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xk>for</xk>&nbsp;<xnx>i</xnx>&nbsp;<xp>&lt;</xp>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>input</xnx><xp>)</xp>&nbsp;<xo>&amp;&amp;</xo>&nbsp;<xnx>isWhitespace</xnx><xp>(</xp><xnx>input</xnx><xp>[</xp><xnx>i</xnx><xp>]</xp><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>                </xw><xnx>i</xnx><xo>++</xo><xw>
+</xw><xw>            </xw><xp>}</xp><xw>
+</xw><xw>        </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnx>ch</xnx>&nbsp;<xo>==</xo>&nbsp;<xsc>'e'</xsc>&nbsp;<xo>||</xo>&nbsp;<xnx>ch</xnx>&nbsp;<xo>==</xo>&nbsp;<xsc>'E'</xsc>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnx>tokens</xnx>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xnx>tokens</xnx><xp>,</xp>&nbsp;<xnx>token</xnx><xp>{</xp><xw>
+</xw><xw>                </xw><xnx>tokenType</xnx><xp>:</xp>&nbsp;<xnx>ltExponent</xnx><xp>,</xp><xw>
+</xw><xw>            </xw><xp>}</xp><xp>)</xp><xw>
+</xw><xw>            </xw><xnx>i</xnx><xo>++</xo><xw>
+</xw><xw>        </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnx>ch</xnx>&nbsp;<xo>==</xo>&nbsp;<xsc>'+'</xsc>&nbsp;<xo>||</xo>&nbsp;<xnx>ch</xnx>&nbsp;<xo>==</xo>&nbsp;<xsc>'-'</xsc>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnx>tokens</xnx>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xnx>tokens</xnx><xp>,</xp>&nbsp;<xnx>token</xnx><xp>{</xp><xw>
+</xw><xw>                </xw><xnx>value</xnx><xp>:</xp><xw>     </xw><xnx>ch</xnx><xp>,</xp><xw>
+</xw><xw>                </xw><xnx>tokenType</xnx><xp>:</xp>&nbsp;<xnx>ltSign</xnx><xp>,</xp><xw>
+</xw><xw>            </xw><xp>}</xp><xp>)</xp><xw>
+</xw><xw>            </xw><xnx>i</xnx><xo>++</xo><xw>
+</xw><xw>        </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnx>isDigit</xnx><xp>(</xp><xnx>ch</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnx>token</xnx><xp>,</xp>&nbsp;<xnx>offset</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>lexDigits</xnx><xp>(</xp><xnx>input</xnx><xp>,</xp>&nbsp;<xnx>i</xnx><xp>)</xp><xw>
+</xw><xw>            </xw><xnx>tokens</xnx>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xnx>tokens</xnx><xp>,</xp>&nbsp;<xnx>token</xnx><xp>)</xp><xw>
+</xw><xw>            </xw><xnx>i</xnx>&nbsp;<xo>+=</xo>&nbsp;<xnx>offset</xnx><xw>
+</xw><xw>        </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xk>return</xk>&nbsp;<xkc>nil</xkc><xp>,</xp>&nbsp;<xnx>newError</xnx><xp>(</xp><xnx>i</xnx><xp>,</xp>&nbsp;<xs>&quot;unrecognized token&quot;</xs><xp>)</xp><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xk>return</xk>&nbsp;<xnx>tokens</xnx><xp>,</xp>&nbsp;<xkc>nil</xkc><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ol>
 <li>Take each character of the input string, try to match it to a condition and lex accordingly</li>
 <li><code>specialSymbols</code> is just a map of the symbols <code>{}[],:.</code> where the symbol maps to the token type.</li>
@@ -468,15 +459,14 @@ process:
 <li>The rest of it is following the same logic. If we cannot find any match, that's an error.</li>
 </ol>
 <p>This is an example of what the lexer produces for the string: <code>{"hello": 12345}</code></p>
-<div class="highlight"><pre><span></span><span class="p">[</span>
-<span class="w">    </span><span class="p">{&lt;</span><span class="kc">nil</span><span class="p">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="c1">// object start</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">hello</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">string_literal</span><span class="p">&gt;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="c1">// hello string</span>
-<span class="w">    </span><span class="p">{&lt;</span><span class="kc">nil</span><span class="p">&gt;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="c1">// colon</span>
-<span class="w">    </span><span class="p">{</span><span class="mi">12345</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="o">-</span><span class="mi">9</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="nx">digits</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="c1">// the digits </span>
-<span class="w">    </span><span class="p">{&lt;</span><span class="kc">nil</span><span class="p">&gt;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="c1">// object end</span>
-<span class="p">]</span>
-</pre></div>
-
+<div class="highlight"><pre><xp>[</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xp>&lt;</xp><xkc>nil</xkc><xp>&gt;</xp>&nbsp;<xp>{</xp>&nbsp;<xp>}</xp>&nbsp;<xc1>// object start</xc1><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>hello</xnx>&nbsp;<xp>&lt;</xp><xnx>string_literal</xnx><xp>&gt;</xp>&nbsp;<xp>}</xp>&nbsp;<xc1>// hello string</xc1><xw>
+</xw><xw>    </xw><xp>{</xp><xp>&lt;</xp><xkc>nil</xkc><xp>&gt;</xp>&nbsp;<xp>:</xp>&nbsp;<xp>}</xp>&nbsp;<xc1>// colon</xc1><xw>
+</xw><xw>    </xw><xp>{</xp><xmi>12345</xmi>&nbsp;<xp>[</xp><xmi>0</xmi><xo>-</xo><xmi>9</xmi><xp>]</xp>&nbsp;<xp>(</xp><xnx>digits</xnx><xp>)</xp>&nbsp;<xp>}</xp>&nbsp;<xc1>// the digits </xc1><xw>
+</xw><xw>    </xw><xp>{</xp><xp>&lt;</xp><xkc>nil</xkc><xp>&gt;</xp>&nbsp;<xp>}</xp>&nbsp;<xp>}</xp>&nbsp;<xc1>// object end</xc1><xw>
+</xw><xp>]</xp><xw>
+</xw></pre></div>
 <h2>Parsing</h2>
 <p>As we already know the shift-reduce parsing approach has (at least) two operations: shift and reduce. </p>
 <p>Shifting a token simply means pushing that token to the top of the parse stack. In our tableless approach, we will only shift in the following cases:
@@ -566,31 +556,30 @@ process:
 </table>
 
 <p>Now that we've seen an example of how shift-reduce works, let's take a look at the code. But before that, we have a couple of useful structs and constants:</p>
-<div class="highlight"><pre><span></span><span class="kd">type</span><span class="w"> </span><span class="nx">stackElement</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">value</span><span class="w"> </span><span class="nx">token</span>
-<span class="w">    </span><span class="nx">rule</span><span class="w">  </span><span class="o">*</span><span class="nx">jsonElement</span>
-<span class="p">}</span>
-
-<span class="kd">type</span><span class="w"> </span><span class="nx">jsonElement</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">value</span><span class="w">           </span><span class="kd">interface</span><span class="p">{}</span>
-<span class="w">    </span><span class="nx">jsonElementType</span><span class="w"> </span><span class="nx">elementType</span>
-<span class="p">}</span>
-
-<span class="kd">const</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="nx">STRING</span><span class="w"> </span><span class="nx">JsonValueType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;STRING&quot;</span>
-<span class="w">    </span><span class="nx">NUMBER</span><span class="w"> </span><span class="nx">JsonValueType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;NUMBER&quot;</span>
-<span class="w">    </span><span class="nx">BOOL</span><span class="w">   </span><span class="nx">JsonValueType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;BOOLEAN&quot;</span>
-<span class="w">    </span><span class="nx">NULL</span><span class="w">   </span><span class="nx">JsonValueType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;NULL&quot;</span>
-<span class="w">    </span><span class="nx">OBJECT</span><span class="w"> </span><span class="nx">JsonValueType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;OBJECT&quot;</span>
-<span class="w">    </span><span class="nx">ARRAY</span><span class="w">  </span><span class="nx">JsonValueType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;ARRAY&quot;</span>
-<span class="p">)</span>
-
-<span class="kd">type</span><span class="w"> </span><span class="nx">JsonValue</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">Value</span><span class="w">     </span><span class="kd">interface</span><span class="p">{}</span>
-<span class="w">    </span><span class="nx">ValueType</span><span class="w"> </span><span class="nx">JsonValueType</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>type</xkd>&nbsp;<xnx>stackElement</xnx>&nbsp;<xkd>struct</xkd>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>value</xnx>&nbsp;<xnx>token</xnx><xw>
+</xw><xw>    </xw><xnx>rule</xnx><xw>  </xw><xo>*</xo><xnx>jsonElement</xnx><xw>
+</xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xkd>type</xkd>&nbsp;<xnx>jsonElement</xnx>&nbsp;<xkd>struct</xkd>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>value</xnx><xw>           </xw><xkd>interface</xkd><xp>{</xp><xp>}</xp><xw>
+</xw><xw>    </xw><xnx>jsonElementType</xnx>&nbsp;<xnx>elementType</xnx><xw>
+</xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xkd>const</xkd>&nbsp;<xp>(</xp><xw>
+</xw><xw>    </xw><xnx>STRING</xnx>&nbsp;<xnx>JsonValueType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;STRING&quot;</xs><xw>
+</xw><xw>    </xw><xnx>NUMBER</xnx>&nbsp;<xnx>JsonValueType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;NUMBER&quot;</xs><xw>
+</xw><xw>    </xw><xnx>BOOL</xnx><xw>   </xw><xnx>JsonValueType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;BOOLEAN&quot;</xs><xw>
+</xw><xw>    </xw><xnx>NULL</xnx><xw>   </xw><xnx>JsonValueType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;NULL&quot;</xs><xw>
+</xw><xw>    </xw><xnx>OBJECT</xnx>&nbsp;<xnx>JsonValueType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;OBJECT&quot;</xs><xw>
+</xw><xw>    </xw><xnx>ARRAY</xnx><xw>  </xw><xnx>JsonValueType</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;ARRAY&quot;</xs><xw>
+</xw><xp>)</xp><xw>
+</xw><xw>
+</xw><xkd>type</xkd>&nbsp;<xnx>JsonValue</xnx>&nbsp;<xkd>struct</xkd>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>Value</xnx><xw>     </xw><xkd>interface</xkd><xp>{</xp><xp>}</xp><xw>
+</xw><xw>    </xw><xnx>ValueType</xnx>&nbsp;<xnx>JsonValueType</xnx><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ul>
 <li><code>stackElement</code> holds the elements of the parse stack, it can hold either a literal token (<em>terminal</em>), or the left-hand side of the rule (<em>non-terminal</em>)</li>
 <li><code>jsonElement</code> represents a non-terminal. It can be an integer, for example, and its value would be the digits of an integer.</li>
@@ -598,73 +587,72 @@ process:
 <li><code>JsonValue</code> is a struct that simply holds a particular JSON value. It can be a number, it can be a boolean, or it can be another <code>JsonValue</code> that holds a number or an object. You get the idea.</li>
 </ul>
 <p>Now, finally the code (<em>some currently irrelevant parts have been omitted for clarity</em>):</p>
-<div class="highlight"><pre><span></span><span class="kd">func</span><span class="w"> </span><span class="nx">Parse</span><span class="p">(</span><span class="nx">input</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nx">JsonValue</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="nx">Error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">tokens</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">lex</span><span class="p">(</span><span class="nx">input</span><span class="p">)</span><span class="w"> </span><span class="c1">// 1</span>
-
-<span class="w">    </span><span class="c1">// err check (omitted)</span>
-
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">stack</span><span class="w"> </span><span class="p">[]</span><span class="o">*</span><span class="nx">stackElement</span><span class="w"> </span><span class="c1">// 2</span>
-
-<span class="w">    </span><span class="nx">size</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">tokens</span><span class="p">)</span>
-<span class="w">    </span><span class="nx">reducePerformed</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c1">// 3</span>
-
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">size</span><span class="p">;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">lookahead</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">tokens</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="w"> </span><span class="c1">// 4</span>
-
-<span class="w">        </span><span class="c1">// 5</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">matchType</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">checkIfAnyPrefixExists</span><span class="p">(</span><span class="nx">stack</span><span class="p">,</span><span class="w"> </span><span class="nx">lookahead</span><span class="p">);</span><span class="w"> </span><span class="nx">matchType</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">noMatch</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">i</span><span class="o">++</span>
-<span class="w">            </span><span class="c1">// 5-1</span>
-<span class="w">            </span><span class="nx">stack</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">stack</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">stackElement</span><span class="p">{</span><span class="nx">value</span><span class="p">:</span><span class="w"> </span><span class="nx">lookahead</span><span class="p">})</span>
-
-<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="nx">matchType</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">partialMatch</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 5-2</span>
-<span class="w">                </span><span class="k">continue</span>
-<span class="w">            </span><span class="p">}</span>
-<span class="w">            </span><span class="c1">// 5-3</span>
-<span class="w">            </span><span class="c1">// full match means that there&#39;s something we can reduce now</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">reducePerformed</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 6</span>
-<span class="w">            </span><span class="c1">// return err (omitted)</span>
-<span class="w">        </span><span class="p">}</span>
-
-<span class="w">        </span><span class="c1">// 7</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">jsonElement</span><span class="p">,</span><span class="w"> </span><span class="nx">offset</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">action</span><span class="p">(</span><span class="nx">stack</span><span class="p">);</span><span class="w"> </span><span class="nx">offset</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">stack</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">stack</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="nx">stack</span><span class="p">)</span><span class="o">-</span><span class="nx">offset</span><span class="p">]</span><span class="w"> </span><span class="c1">// 7-1</span>
-<span class="w">            </span><span class="nx">stack</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">stack</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">stackElement</span><span class="p">{</span><span class="w"> </span><span class="c1">// 7-2</span>
-<span class="w">                </span><span class="nx">rule</span><span class="p">:</span><span class="w"> </span><span class="nx">jsonElement</span><span class="p">,</span>
-<span class="w">            </span><span class="p">})</span>
-<span class="w">            </span><span class="nx">reducePerformed</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c1">// 7-3</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">reducePerformed</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">false</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="c1">// 8</span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">jsonElement</span><span class="p">,</span><span class="w"> </span><span class="nx">offset</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">action</span><span class="p">(</span><span class="nx">stack</span><span class="p">);</span><span class="w"> </span><span class="nx">offset</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">stack</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">stack</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="nx">stack</span><span class="p">)</span><span class="o">-</span><span class="nx">offset</span><span class="p">]</span><span class="w"> </span>
-<span class="w">            </span><span class="nx">stack</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">stack</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">stackElement</span><span class="p">{</span>
-<span class="w">                </span><span class="nx">rule</span><span class="p">:</span><span class="w"> </span><span class="nx">jsonElement</span><span class="p">,</span>
-<span class="w">            </span><span class="p">})</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">break</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="c1">// 9-1</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">stack</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">JsonValue</span><span class="p">{},</span><span class="w"> </span><span class="nx">newError</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;parsing failed...&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="c1">// 9-2</span>
-<span class="w">    </span><span class="nx">values</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">stack</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">rule</span><span class="p">.</span><span class="nx">value</span><span class="p">.(</span><span class="nx">JsonValue</span><span class="p">).</span><span class="nx">Value</span><span class="p">.([]</span><span class="nx">JsonValue</span><span class="p">)</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">values</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">JsonValue</span><span class="p">{},</span><span class="w"> </span><span class="nx">newError</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;parsing failed...&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="kc">nil</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>func</xkd>&nbsp;<xnx>Parse</xnx><xp>(</xp><xnx>input</xnx>&nbsp;<xkt>string</xkt><xp>)</xp>&nbsp;<xp>(</xp><xnx>JsonValue</xnx><xp>,</xp>&nbsp;<xo>*</xo><xnx>Error</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>tokens</xnx><xp>,</xp>&nbsp;<xnx>err</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>lex</xnx><xp>(</xp><xnx>input</xnx><xp>)</xp>&nbsp;<xc1>// 1</xc1><xw>
+</xw><xw>
+</xw><xw>    </xw><xc1>// err check (omitted)</xc1><xw>
+</xw><xw>
+</xw><xw>    </xw><xkd>var</xkd>&nbsp;<xnx>stack</xnx>&nbsp;<xp>[</xp><xp>]</xp><xo>*</xo><xnx>stackElement</xnx>&nbsp;<xc1>// 2</xc1><xw>
+</xw><xw>
+</xw><xw>    </xw><xnx>size</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>tokens</xnx><xp>)</xp><xw>
+</xw><xw>    </xw><xnx>reducePerformed</xnx>&nbsp;<xo>:=</xo>&nbsp;<xkc>true</xkc>&nbsp;<xc1>// 3</xc1><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>for</xk>&nbsp;<xnx>i</xnx>&nbsp;<xo>:=</xo>&nbsp;<xmi>0</xmi><xp>;</xp>&nbsp;<xnx>i</xnx>&nbsp;<xp>&lt;</xp>&nbsp;<xnx>size</xnx><xp>;</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xnx>lookahead</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>tokens</xnx><xp>[</xp><xnx>i</xnx><xp>]</xp>&nbsp;<xc1>// 4</xc1><xw>
+</xw><xw>
+</xw><xw>        </xw><xc1>// 5</xc1><xw>
+</xw><xw>        </xw><xk>if</xk>&nbsp;<xnx>matchType</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>checkIfAnyPrefixExists</xnx><xp>(</xp><xnx>stack</xnx><xp>,</xp>&nbsp;<xnx>lookahead</xnx><xp>)</xp><xp>;</xp>&nbsp;<xnx>matchType</xnx>&nbsp;<xo>!=</xo>&nbsp;<xnx>noMatch</xnx>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnx>i</xnx><xo>++</xo><xw>
+</xw><xw>            </xw><xc1>// 5-1</xc1><xw>
+</xw><xw>            </xw><xnx>stack</xnx>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xnx>stack</xnx><xp>,</xp>&nbsp;<xo>&amp;</xo><xnx>stackElement</xnx><xp>{</xp><xnx>value</xnx><xp>:</xp>&nbsp;<xnx>lookahead</xnx><xp>}</xp><xp>)</xp><xw>
+</xw><xw>
+</xw><xw>            </xw><xk>if</xk>&nbsp;<xnx>matchType</xnx>&nbsp;<xo>==</xo>&nbsp;<xnx>partialMatch</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// 5-2</xc1><xw>
+</xw><xw>                </xw><xk>continue</xk><xw>
+</xw><xw>            </xw><xp>}</xp><xw>
+</xw><xw>            </xw><xc1>// 5-3</xc1><xw>
+</xw><xw>            </xw><xc1>// full match means that there's something we can reduce now</xc1><xw>
+</xw><xw>        </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xp>!</xp><xnx>reducePerformed</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// 6</xc1><xw>
+</xw><xw>            </xw><xc1>// return err (omitted)</xc1><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>        </xw><xc1>// 7</xc1><xw>
+</xw><xw>        </xw><xk>if</xk>&nbsp;<xnx>jsonElement</xnx><xp>,</xp>&nbsp;<xnx>offset</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>action</xnx><xp>(</xp><xnx>stack</xnx><xp>)</xp><xp>;</xp>&nbsp;<xnx>offset</xnx>&nbsp;<xo>!=</xo>&nbsp;<xmi>0</xmi>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnx>stack</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>stack</xnx><xp>[</xp><xp>:</xp><xnb>len</xnb><xp>(</xp><xnx>stack</xnx><xp>)</xp><xo>-</xo><xnx>offset</xnx><xp>]</xp>&nbsp;<xc1>// 7-1</xc1><xw>
+</xw><xw>            </xw><xnx>stack</xnx>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xnx>stack</xnx><xp>,</xp>&nbsp;<xo>&amp;</xo><xnx>stackElement</xnx><xp>{</xp>&nbsp;<xc1>// 7-2</xc1><xw>
+</xw><xw>                </xw><xnx>rule</xnx><xp>:</xp>&nbsp;<xnx>jsonElement</xnx><xp>,</xp><xw>
+</xw><xw>            </xw><xp>}</xp><xp>)</xp><xw>
+</xw><xw>            </xw><xnx>reducePerformed</xnx>&nbsp;<xp>=</xp>&nbsp;<xkc>true</xkc>&nbsp;<xc1>// 7-3</xc1><xw>
+</xw><xw>        </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnx>reducePerformed</xnx>&nbsp;<xp>=</xp>&nbsp;<xkc>false</xkc><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xc1>// 8</xc1><xw>
+</xw><xw>    </xw><xk>for</xk>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xk>if</xk>&nbsp;<xnx>jsonElement</xnx><xp>,</xp>&nbsp;<xnx>offset</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>action</xnx><xp>(</xp><xnx>stack</xnx><xp>)</xp><xp>;</xp>&nbsp;<xnx>offset</xnx>&nbsp;<xo>!=</xo>&nbsp;<xmi>0</xmi>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnx>stack</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>stack</xnx><xp>[</xp><xp>:</xp><xnb>len</xnb><xp>(</xp><xnx>stack</xnx><xp>)</xp><xo>-</xo><xnx>offset</xnx><xp>]</xp><xw> 
+            </xw><xnx>stack</xnx>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xnx>stack</xnx><xp>,</xp>&nbsp;<xo>&amp;</xo><xnx>stackElement</xnx><xp>{</xp><xw>
+</xw><xw>                </xw><xnx>rule</xnx><xp>:</xp>&nbsp;<xnx>jsonElement</xnx><xp>,</xp><xw>
+</xw><xw>            </xw><xp>}</xp><xp>)</xp><xw>
+</xw><xw>        </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xk>break</xk><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xc1>// 9-1</xc1><xw>
+</xw><xw>    </xw><xk>if</xk>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>stack</xnx><xp>)</xp>&nbsp;<xo>!=</xo>&nbsp;<xmi>1</xmi>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xk>return</xk>&nbsp;<xnx>JsonValue</xnx><xp>{</xp><xp>}</xp><xp>,</xp>&nbsp;<xnx>newError</xnx><xp>(</xp><xo>-</xo><xmi>1</xmi><xp>,</xp>&nbsp;<xs>&quot;parsing failed...&quot;</xs><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xc1>// 9-2</xc1><xw>
+</xw><xw>    </xw><xnx>values</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>stack</xnx><xp>[</xp><xmi>0</xmi><xp>]</xp><xp>.</xp><xnx>rule</xnx><xp>.</xp><xnx>value</xnx><xp>.</xp><xp>(</xp><xnx>JsonValue</xnx><xp>)</xp><xp>.</xp><xnx>Value</xnx><xp>.</xp><xp>(</xp><xp>[</xp><xp>]</xp><xnx>JsonValue</xnx><xp>)</xp><xw>
+</xw><xw>    </xw><xk>if</xk>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>values</xnx><xp>)</xp>&nbsp;<xo>!=</xo>&nbsp;<xmi>1</xmi>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xk>return</xk>&nbsp;<xnx>JsonValue</xnx><xp>{</xp><xp>}</xp><xp>,</xp>&nbsp;<xnx>newError</xnx><xp>(</xp><xo>-</xo><xmi>1</xmi><xp>,</xp>&nbsp;<xs>&quot;parsing failed...&quot;</xs><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>return</xk>&nbsp;<xnx>values</xnx><xp>[</xp><xmi>0</xmi><xp>]</xp><xp>,</xp>&nbsp;<xkc>nil</xkc><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ol>
 <li>Lexing gives us the tokens to parse. <code>tokens</code> is simply an array of tokens</li>
 <li><code>stack</code> is the parse stack</li>
@@ -698,30 +686,29 @@ process:
 </li>
 </ol>
 <p>Let's start talking about the functions we glossed over first, namely, <code>checkIfAnyPrefixExists</code> and <code>action</code>.</p>
-<div class="highlight"><pre><span></span><span class="kd">func</span><span class="w"> </span><span class="nx">checkIfAnyPrefixExists</span><span class="p">(</span><span class="nx">stack</span><span class="w"> </span><span class="p">[]</span><span class="o">*</span><span class="nx">stackElement</span><span class="p">,</span><span class="w"> </span><span class="nx">lookahead</span><span class="w"> </span><span class="nx">token</span><span class="p">)</span><span class="w"> </span><span class="nx">prefixMatch</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">elems</span><span class="w"> </span><span class="p">[]</span><span class="nx">elementType</span><span class="w"> </span><span class="c1">// 1</span>
-
-<span class="w">    </span><span class="nx">stackSize</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">stack</span><span class="p">)</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">stackSize</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 2</span>
-<span class="w">        </span><span class="nx">elems</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">elems</span><span class="p">,</span><span class="w"> </span><span class="nx">stackToToken</span><span class="p">(</span><span class="nx">stack</span><span class="p">[</span><span class="nx">stackSize</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span><span class="o">...</span><span class="p">)</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">stackSize</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 3</span>
-<span class="w">        </span><span class="nx">elems</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">elems</span><span class="p">,</span><span class="w"> </span><span class="nx">stackToToken</span><span class="p">(</span><span class="nx">stack</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">])</span><span class="o">...</span><span class="p">)</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="nx">elems</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">elems</span><span class="p">,</span><span class="w"> </span><span class="nx">lookahead</span><span class="p">.</span><span class="nx">tokenType</span><span class="p">)</span><span class="w"> </span><span class="c1">// 4</span>
-
-<span class="w">    </span><span class="nx">size</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">elems</span><span class="p">)</span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">size</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">--</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 5</span>
-<span class="w">        </span><span class="c1">// 6</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">matchType</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">checkPrefix</span><span class="p">(</span><span class="nx">elems</span><span class="p">[</span><span class="nx">i</span><span class="p">:</span><span class="nx">size</span><span class="p">]</span><span class="o">...</span><span class="p">);</span><span class="w"> </span><span class="nx">matchType</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">noMatch</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nx">matchType</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">noMatch</span><span class="w"> </span><span class="c1">// 7</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>func</xkd>&nbsp;<xnx>checkIfAnyPrefixExists</xnx><xp>(</xp><xnx>stack</xnx>&nbsp;<xp>[</xp><xp>]</xp><xo>*</xo><xnx>stackElement</xnx><xp>,</xp>&nbsp;<xnx>lookahead</xnx>&nbsp;<xnx>token</xnx><xp>)</xp>&nbsp;<xnx>prefixMatch</xnx>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xkd>var</xkd>&nbsp;<xnx>elems</xnx>&nbsp;<xp>[</xp><xp>]</xp><xnx>elementType</xnx>&nbsp;<xc1>// 1</xc1><xw>
+</xw><xw>
+</xw><xw>    </xw><xnx>stackSize</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>stack</xnx><xp>)</xp><xw>
+</xw><xw>    </xw><xk>if</xk>&nbsp;<xnx>stackSize</xnx>&nbsp;<xo>&gt;=</xo>&nbsp;<xmi>2</xmi>&nbsp;<xp>{</xp>&nbsp;<xc1>// 2</xc1><xw>
+</xw><xw>        </xw><xnx>elems</xnx>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xnx>elems</xnx><xp>,</xp>&nbsp;<xnx>stackToToken</xnx><xp>(</xp><xnx>stack</xnx><xp>[</xp><xnx>stackSize</xnx><xo>-</xo><xmi>2</xmi><xp>:</xp><xp>]</xp><xp>)</xp><xo>...</xo><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnx>stackSize</xnx>&nbsp;<xo>==</xo>&nbsp;<xmi>1</xmi>&nbsp;<xp>{</xp>&nbsp;<xc1>// 3</xc1><xw>
+</xw><xw>        </xw><xnx>elems</xnx>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xnx>elems</xnx><xp>,</xp>&nbsp;<xnx>stackToToken</xnx><xp>(</xp><xnx>stack</xnx><xp>[</xp><xmi>0</xmi><xp>:</xp><xmi>1</xmi><xp>]</xp><xp>)</xp><xo>...</xo><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xnx>elems</xnx>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xnx>elems</xnx><xp>,</xp>&nbsp;<xnx>lookahead</xnx><xp>.</xp><xnx>tokenType</xnx><xp>)</xp>&nbsp;<xc1>// 4</xc1><xw>
+</xw><xw>
+</xw><xw>    </xw><xnx>size</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>elems</xnx><xp>)</xp><xw>
+</xw><xw>    </xw><xk>for</xk>&nbsp;<xnx>i</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>size</xnx>&nbsp;<xo>-</xo>&nbsp;<xmi>1</xmi><xp>;</xp>&nbsp;<xnx>i</xnx>&nbsp;<xo>&gt;=</xo>&nbsp;<xmi>0</xmi><xp>;</xp>&nbsp;<xnx>i</xnx><xo>--</xo>&nbsp;<xp>{</xp>&nbsp;<xc1>// 5</xc1><xw>
+</xw><xw>        </xw><xc1>// 6</xc1><xw>
+</xw><xw>        </xw><xk>if</xk>&nbsp;<xnx>matchType</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>checkPrefix</xnx><xp>(</xp><xnx>elems</xnx><xp>[</xp><xnx>i</xnx><xp>:</xp><xnx>size</xnx><xp>]</xp><xo>...</xo><xp>)</xp><xp>;</xp>&nbsp;<xnx>matchType</xnx>&nbsp;<xo>!=</xo>&nbsp;<xnx>noMatch</xnx>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xk>return</xk>&nbsp;<xnx>matchType</xnx><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>return</xk>&nbsp;<xnx>noMatch</xnx>&nbsp;<xc1>// 7</xc1><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ol start="0">
 <li>The basic idea is that we want to try out different combinations of the top 2 stack elements and the lookahead to see if they match with any rule. The reason why the max combination length is 3 (2 stack elements + 1 lookahead) is because that's the max length of the right hand side expansion of any rule in our JSON grammar.</li>
 <li><code>elems</code> holds all the elements from the stack</li>
@@ -740,37 +727,36 @@ process:
 </ol>
 <p>We will skip over <code>stackToToken</code> and <code>checkPrefix</code> functions, but you're welcome to check them out on the Github repository.</p>
 <p>Let's move on to the <code>action</code> function.</p>
-<div class="highlight"><pre><span></span><span class="kd">func</span><span class="w"> </span><span class="nx">action</span><span class="p">(</span><span class="nx">stack</span><span class="w"> </span><span class="p">[]</span><span class="o">*</span><span class="nx">stackElement</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="nx">jsonElement</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">stackSize</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">stack</span><span class="p">)</span>
-
-<span class="w">    </span><span class="c1">// 1</span>
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">je</span><span class="w"> </span><span class="o">*</span><span class="nx">jsonElement</span>
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">offset</span><span class="w"> </span><span class="kt">int</span>
-
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">rule</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">grammar</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 2</span>
-<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">production</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">rule</span><span class="p">.</span><span class="nx">rhs</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 3</span>
-<span class="w">            </span><span class="nx">size</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">production</span><span class="p">)</span>
-<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="nx">size</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="nx">stackSize</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 4</span>
-<span class="w">                </span><span class="k">continue</span>
-<span class="w">            </span><span class="p">}</span>
-<span class="w">            </span><span class="nx">actual</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">topNOfStack</span><span class="p">(</span><span class="nx">stack</span><span class="p">,</span><span class="w"> </span><span class="nx">size</span><span class="p">)</span><span class="w"> </span><span class="c1">// 5</span>
-<span class="w">            </span><span class="nx">matches</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">compare</span><span class="p">(</span><span class="nx">production</span><span class="p">,</span><span class="w"> </span><span class="nx">actual</span><span class="p">)</span><span class="w"> </span><span class="c1">// 6</span>
-<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="nx">matches</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">size</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="nx">offset</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 7</span>
-<span class="w">                </span><span class="nx">je</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">jsonElement</span><span class="p">{</span>
-<span class="w">                    </span><span class="c1">// 8</span>
-<span class="w">                    </span><span class="nx">value</span><span class="p">:</span><span class="w">           </span><span class="nx">rule</span><span class="p">.</span><span class="nx">toJson</span><span class="p">(</span><span class="nx">stack</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="nx">stack</span><span class="p">)</span><span class="o">-</span><span class="nx">size</span><span class="p">:]</span><span class="o">...</span><span class="p">),</span>
-<span class="w">                    </span><span class="c1">// 9</span>
-<span class="w">                    </span><span class="nx">jsonElementType</span><span class="p">:</span><span class="w"> </span><span class="nx">rule</span><span class="p">.</span><span class="nx">lhs</span><span class="p">,</span>
-<span class="w">                </span><span class="p">}</span>
-<span class="w">                </span><span class="nx">offset</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">size</span><span class="w"> </span><span class="c1">// 10</span>
-<span class="w">            </span><span class="p">}</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">je</span><span class="p">,</span><span class="w"> </span><span class="nx">offset</span><span class="w"> </span><span class="c1">// 11</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>func</xkd>&nbsp;<xnx>action</xnx><xp>(</xp><xnx>stack</xnx>&nbsp;<xp>[</xp><xp>]</xp><xo>*</xo><xnx>stackElement</xnx><xp>)</xp>&nbsp;<xp>(</xp><xo>*</xo><xnx>jsonElement</xnx><xp>,</xp>&nbsp;<xkt>int</xkt><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>stackSize</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>stack</xnx><xp>)</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xc1>// 1</xc1><xw>
+</xw><xw>    </xw><xkd>var</xkd>&nbsp;<xnx>je</xnx>&nbsp;<xo>*</xo><xnx>jsonElement</xnx><xw>
+</xw><xw>    </xw><xkd>var</xkd>&nbsp;<xnx>offset</xnx>&nbsp;<xkt>int</xkt><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>for</xk>&nbsp;<xnx>_</xnx><xp>,</xp>&nbsp;<xnx>rule</xnx>&nbsp;<xo>:=</xo>&nbsp;<xk>range</xk>&nbsp;<xnx>grammar</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// 2</xc1><xw>
+</xw><xw>        </xw><xk>for</xk>&nbsp;<xnx>_</xnx><xp>,</xp>&nbsp;<xnx>production</xnx>&nbsp;<xo>:=</xo>&nbsp;<xk>range</xk>&nbsp;<xnx>rule</xnx><xp>.</xp><xnx>rhs</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// 3</xc1><xw>
+</xw><xw>            </xw><xnx>size</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>production</xnx><xp>)</xp><xw>
+</xw><xw>            </xw><xk>if</xk>&nbsp;<xnx>size</xnx>&nbsp;<xp>&gt;</xp>&nbsp;<xnx>stackSize</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// 4</xc1><xw>
+</xw><xw>                </xw><xk>continue</xk><xw>
+</xw><xw>            </xw><xp>}</xp><xw>
+</xw><xw>            </xw><xnx>actual</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>topNOfStack</xnx><xp>(</xp><xnx>stack</xnx><xp>,</xp>&nbsp;<xnx>size</xnx><xp>)</xp>&nbsp;<xc1>// 5</xc1><xw>
+</xw><xw>            </xw><xnx>matches</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>compare</xnx><xp>(</xp><xnx>production</xnx><xp>,</xp>&nbsp;<xnx>actual</xnx><xp>)</xp>&nbsp;<xc1>// 6</xc1><xw>
+</xw><xw>            </xw><xk>if</xk>&nbsp;<xnx>matches</xnx>&nbsp;<xo>&amp;&amp;</xo>&nbsp;<xnx>size</xnx>&nbsp;<xp>&gt;</xp>&nbsp;<xnx>offset</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// 7</xc1><xw>
+</xw><xw>                </xw><xnx>je</xnx>&nbsp;<xp>=</xp>&nbsp;<xo>&amp;</xo><xnx>jsonElement</xnx><xp>{</xp><xw>
+</xw><xw>                    </xw><xc1>// 8</xc1><xw>
+</xw><xw>                    </xw><xnx>value</xnx><xp>:</xp><xw>           </xw><xnx>rule</xnx><xp>.</xp><xnx>toJson</xnx><xp>(</xp><xnx>stack</xnx><xp>[</xp><xnb>len</xnb><xp>(</xp><xnx>stack</xnx><xp>)</xp><xo>-</xo><xnx>size</xnx><xp>:</xp><xp>]</xp><xo>...</xo><xp>)</xp><xp>,</xp><xw>
+</xw><xw>                    </xw><xc1>// 9</xc1><xw>
+</xw><xw>                    </xw><xnx>jsonElementType</xnx><xp>:</xp>&nbsp;<xnx>rule</xnx><xp>.</xp><xnx>lhs</xnx><xp>,</xp><xw>
+</xw><xw>                </xw><xp>}</xp><xw>
+</xw><xw>                </xw><xnx>offset</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>size</xnx>&nbsp;<xc1>// 10</xc1><xw>
+</xw><xw>            </xw><xp>}</xp><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>return</xk>&nbsp;<xnx>je</xnx><xp>,</xp>&nbsp;<xnx>offset</xnx>&nbsp;<xc1>// 11</xc1><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ol>
 <li>These are the values we will set and return</li>
 <li>Go over each rule in the grammar</li>
@@ -785,38 +771,36 @@ process:
 <li>Return the values.</li>
 </ol>
 <p>After putting together all the functions we've described, we are going to be able to create a parse tree, but we will not be able to preserve the actual values of the JSON. We need to keep track of the actual values while building up the tree. That's where <code>toJson</code> function comes in. Let's start by checking the signature:</p>
-<div class="highlight"><pre><span></span><span class="kd">type</span><span class="w"> </span><span class="nx">grammarRule</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">lhs</span><span class="w">    </span><span class="kt">string</span>
-<span class="w">    </span><span class="nx">rhs</span><span class="w">    </span><span class="p">[][]</span><span class="nx">elementType</span>
-<span class="w">    </span><span class="nx">toJson</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">values</span><span class="w"> </span><span class="o">...*</span><span class="nx">stackElement</span><span class="p">)</span><span class="w"> </span><span class="nx">JsonValue</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>type</xkd>&nbsp;<xnx>grammarRule</xnx>&nbsp;<xkd>struct</xkd>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>lhs</xnx><xw>    </xw><xkt>string</xkt><xw>
+</xw><xw>    </xw><xnx>rhs</xnx><xw>    </xw><xp>[</xp><xp>]</xp><xp>[</xp><xp>]</xp><xnx>elementType</xnx><xw>
+</xw><xw>    </xw><xnx>toJson</xnx>&nbsp;<xkd>func</xkd><xp>(</xp><xnx>values</xnx>&nbsp;<xo>...</xo><xo>*</xo><xnx>stackElement</xnx><xp>)</xp>&nbsp;<xnx>JsonValue</xnx><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ul>
 <li>It will take some stack elements. These elements will be the ones that have matched in the <code>action</code> step (refer to #8 in <code>action</code> function above).</li>
 <li>Given those matched elements, it will try constructing the appropriate <code>JsonValue</code>.</li>
 <li>Each grammar entry will have a different strategy for generating the <code>JsonValue</code>.</li>
 </ul>
 <p>Let's take a look at an example:</p>
-<div class="highlight"><pre><span></span><span class="nx">grammarRule</span><span class="p">{</span><span class="nx">integer</span><span class="p">,</span><span class="w"> </span><span class="p">[][]</span><span class="nx">elementType</span><span class="p">{</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">ltDigits</span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">ltSign</span><span class="p">,</span><span class="w"> </span><span class="nx">ltDigits</span><span class="p">},</span>
-<span class="p">},</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">values</span><span class="w"> </span><span class="o">...*</span><span class="nx">stackElement</span><span class="p">)</span><span class="w"> </span><span class="nx">JsonValue</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">size</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">values</span><span class="p">)</span>
-<span class="w">    </span><span class="nx">digits</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">values</span><span class="p">[</span><span class="nx">size</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="c1">// 1</span>
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">sign</span><span class="w"> </span><span class="kt">uint8</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="sc">&#39;+&#39;</span><span class="w"> </span><span class="c1">// 2</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">size</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 3</span>
-<span class="w">        </span><span class="nx">sign</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">values</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">Value</span><span class="p">().(</span><span class="kt">uint8</span><span class="p">)</span><span class="w"> </span><span class="c1">// - or +</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">    </span><span class="nx">v</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Sprintf</span><span class="p">(</span><span class="s">&quot;%c%s&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">sign</span><span class="p">,</span><span class="w"> </span><span class="nx">digits</span><span class="p">.</span><span class="nx">Value</span><span class="p">())</span><span class="w"> </span><span class="c1">// 4</span>
-<span class="w">    </span><span class="c1">// 5</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">JsonValue</span><span class="p">{</span>
-<span class="w">        </span><span class="nx">Value</span><span class="p">:</span><span class="w">     </span><span class="nx">v</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">ValueType</span><span class="p">:</span><span class="w"> </span><span class="nx">NUMBER</span><span class="p">,</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">}},</span>
-</pre></div>
-
+<div class="highlight"><pre><xnx>grammarRule</xnx><xp>{</xp><xnx>integer</xnx><xp>,</xp>&nbsp;<xp>[</xp><xp>]</xp><xp>[</xp><xp>]</xp><xnx>elementType</xnx><xp>{</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>ltDigits</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>ltSign</xnx><xp>,</xp>&nbsp;<xnx>ltDigits</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xp>}</xp><xp>,</xp>&nbsp;<xkd>func</xkd><xp>(</xp><xnx>values</xnx>&nbsp;<xo>...</xo><xo>*</xo><xnx>stackElement</xnx><xp>)</xp>&nbsp;<xnx>JsonValue</xnx>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>size</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>values</xnx><xp>)</xp><xw>
+</xw><xw>    </xw><xnx>digits</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>values</xnx><xp>[</xp><xnx>size</xnx><xo>-</xo><xmi>1</xmi><xp>]</xp>&nbsp;<xc1>// 1</xc1><xw>
+</xw><xw>    </xw><xkd>var</xkd>&nbsp;<xnx>sign</xnx>&nbsp;<xkt>uint8</xkt>&nbsp;<xp>=</xp>&nbsp;<xsc>'+'</xsc>&nbsp;<xc1>// 2</xc1><xw>
+</xw><xw>    </xw><xk>if</xk>&nbsp;<xnx>size</xnx>&nbsp;<xo>==</xo>&nbsp;<xmi>2</xmi>&nbsp;<xp>{</xp>&nbsp;<xc1>// 3</xc1><xw>
+</xw><xw>        </xw><xnx>sign</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>values</xnx><xp>[</xp><xmi>0</xmi><xp>]</xp><xp>.</xp><xnx>Value</xnx><xp>(</xp><xp>)</xp><xp>.</xp><xp>(</xp><xkt>uint8</xkt><xp>)</xp>&nbsp;<xc1>// - or +</xc1><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xnx>v</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>fmt</xnx><xp>.</xp><xnx>Sprintf</xnx><xp>(</xp><xs>&quot;%c%s&quot;</xs><xp>,</xp>&nbsp;<xnx>sign</xnx><xp>,</xp>&nbsp;<xnx>digits</xnx><xp>.</xp><xnx>Value</xnx><xp>(</xp><xp>)</xp><xp>)</xp>&nbsp;<xc1>// 4</xc1><xw>
+</xw><xw>    </xw><xc1>// 5</xc1><xw>
+</xw><xw>    </xw><xk>return</xk>&nbsp;<xnx>JsonValue</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xnx>Value</xnx><xp>:</xp><xw>     </xw><xnx>v</xnx><xp>,</xp><xw>
+</xw><xw>        </xw><xnx>ValueType</xnx><xp>:</xp>&nbsp;<xnx>NUMBER</xnx><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xp>}</xp><xp>}</xp><xp>,</xp><xw>
+</xw></pre></div>
 <ol>
 <li>The <code>integer</code> rule has two productions. The last element of both productions is the digits. </li>
 <li>An integer might have a sign, so the default value for sign is <code>+</code>.</li>
@@ -825,82 +809,80 @@ process:
 <li>Return the created <code>JsonValue</code></li>
 </ol>
 <p><code>integer</code> is a part of a bigger rule which is <code>number</code>. <code>number</code> has two more components which are <code>fraction</code> and <code>exponent</code>. Let's take a look at each and finally how they are all put together.</p>
-<div class="highlight"><pre><span></span><span class="nx">grammarRule</span><span class="p">{</span><span class="nx">fraction</span><span class="p">,</span><span class="w"> </span><span class="p">[][]</span><span class="nx">elementType</span><span class="p">{</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">ltFractionSymbol</span><span class="p">,</span><span class="w"> </span><span class="nx">ltDigits</span><span class="p">},</span>
-<span class="p">},</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">values</span><span class="w"> </span><span class="o">...*</span><span class="nx">stackElement</span><span class="p">)</span><span class="w"> </span><span class="nx">JsonValue</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="c1">// 1</span>
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">fractionDigits</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Sprintf</span><span class="p">(</span><span class="s">&quot;.%s&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">values</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">Value</span><span class="p">())</span>
-
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">JsonValue</span><span class="p">{</span>
-<span class="w">        </span><span class="nx">Value</span><span class="p">:</span><span class="w">     </span><span class="nx">fractionDigits</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">ValueType</span><span class="p">:</span><span class="w"> </span><span class="nx">NUMBER</span><span class="p">,</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">}},</span>
-
-<span class="nx">grammarRule</span><span class="p">{</span><span class="nx">exponent</span><span class="p">,</span><span class="w"> </span><span class="p">[][]</span><span class="nx">elementType</span><span class="p">{</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">ltExponent</span><span class="p">,</span><span class="w"> </span><span class="nx">integer</span><span class="p">},</span>
-<span class="p">},</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">values</span><span class="w"> </span><span class="o">...*</span><span class="nx">stackElement</span><span class="p">)</span><span class="w"> </span><span class="nx">JsonValue</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="c1">// 2</span>
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">exponentExpr</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Sprintf</span><span class="p">(</span><span class="s">&quot;e%s&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">values</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">asJsonValue</span><span class="p">().</span><span class="nx">Value</span><span class="p">.(</span><span class="kt">string</span><span class="p">))</span>
-
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">JsonValue</span><span class="p">{</span>
-<span class="w">        </span><span class="nx">Value</span><span class="p">:</span><span class="w">     </span><span class="nx">exponentExpr</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">ValueType</span><span class="p">:</span><span class="w"> </span><span class="nx">NUMBER</span><span class="p">,</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">}},</span>
-</pre></div>
-
+<div class="highlight"><pre><xnx>grammarRule</xnx><xp>{</xp><xnx>fraction</xnx><xp>,</xp>&nbsp;<xp>[</xp><xp>]</xp><xp>[</xp><xp>]</xp><xnx>elementType</xnx><xp>{</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>ltFractionSymbol</xnx><xp>,</xp>&nbsp;<xnx>ltDigits</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xp>}</xp><xp>,</xp>&nbsp;<xkd>func</xkd><xp>(</xp><xnx>values</xnx>&nbsp;<xo>...</xo><xo>*</xo><xnx>stackElement</xnx><xp>)</xp>&nbsp;<xnx>JsonValue</xnx>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xc1>// 1</xc1><xw>
+</xw><xw>    </xw><xkd>var</xkd>&nbsp;<xnx>fractionDigits</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>fmt</xnx><xp>.</xp><xnx>Sprintf</xnx><xp>(</xp><xs>&quot;.%s&quot;</xs><xp>,</xp>&nbsp;<xnx>values</xnx><xp>[</xp><xmi>1</xmi><xp>]</xp><xp>.</xp><xnx>Value</xnx><xp>(</xp><xp>)</xp><xp>)</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>return</xk>&nbsp;<xnx>JsonValue</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xnx>Value</xnx><xp>:</xp><xw>     </xw><xnx>fractionDigits</xnx><xp>,</xp><xw>
+</xw><xw>        </xw><xnx>ValueType</xnx><xp>:</xp>&nbsp;<xnx>NUMBER</xnx><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xp>}</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xw>
+</xw><xnx>grammarRule</xnx><xp>{</xp><xnx>exponent</xnx><xp>,</xp>&nbsp;<xp>[</xp><xp>]</xp><xp>[</xp><xp>]</xp><xnx>elementType</xnx><xp>{</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>ltExponent</xnx><xp>,</xp>&nbsp;<xnx>integer</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xp>}</xp><xp>,</xp>&nbsp;<xkd>func</xkd><xp>(</xp><xnx>values</xnx>&nbsp;<xo>...</xo><xo>*</xo><xnx>stackElement</xnx><xp>)</xp>&nbsp;<xnx>JsonValue</xnx>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xc1>// 2</xc1><xw>
+</xw><xw>    </xw><xkd>var</xkd>&nbsp;<xnx>exponentExpr</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>fmt</xnx><xp>.</xp><xnx>Sprintf</xnx><xp>(</xp><xs>&quot;e%s&quot;</xs><xp>,</xp>&nbsp;<xnx>values</xnx><xp>[</xp><xmi>1</xmi><xp>]</xp><xp>.</xp><xnx>asJsonValue</xnx><xp>(</xp><xp>)</xp><xp>.</xp><xnx>Value</xnx><xp>.</xp><xp>(</xp><xkt>string</xkt><xp>)</xp><xp>)</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>return</xk>&nbsp;<xnx>JsonValue</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xnx>Value</xnx><xp>:</xp><xw>     </xw><xnx>exponentExpr</xnx><xp>,</xp><xw>
+</xw><xw>        </xw><xnx>ValueType</xnx><xp>:</xp>&nbsp;<xnx>NUMBER</xnx><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xp>}</xp><xp>}</xp><xp>,</xp><xw>
+</xw></pre></div>
 <ol start="0">
 <li>The code for both <code>fraction</code> and <code>exponent</code> are almost the same. So, let's take a look at the difference.</li>
 <li>For <code>fraction</code>, the most important part is the <code>digits</code>, because the fraction symbol is always <code>.</code> anyway. So, we simply take the digits value, make it a string and return.</li>
 <li>For <code>exponent</code>, the most important part is the <code>integer</code>. We saw earlier what <code>integer</code> returned. The <code>Value</code> of an <code>integer</code> is a string, so we simply cast the last element to <code>JsonValue</code> (<code>asJsonValue</code> is just a helper method), and grab the string value.</li>
 </ol>
 <p>Now that we have all the constituents of the <code>number</code> rule. Let's see how it's all put together. It's simpler than it looks:</p>
-<div class="highlight"><pre><span></span><span class="nx">grammarRule</span><span class="p">{</span><span class="nx">number</span><span class="p">,</span><span class="w"> </span><span class="p">[][]</span><span class="nx">elementType</span><span class="p">{</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">integer</span><span class="p">,</span><span class="w"> </span><span class="nx">fraction</span><span class="p">,</span><span class="w"> </span><span class="nx">exponent</span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">integer</span><span class="p">,</span><span class="w"> </span><span class="nx">fraction</span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">integer</span><span class="p">,</span><span class="w"> </span><span class="nx">exponent</span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span><span class="nx">integer</span><span class="p">},</span>
-<span class="p">},</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">values</span><span class="w"> </span><span class="o">...*</span><span class="nx">stackElement</span><span class="p">)</span><span class="w"> </span><span class="nx">JsonValue</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">size</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">values</span><span class="p">)</span>
-<span class="w">    </span><span class="c1">// 1</span>
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">integerValue</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">values</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">asJsonValue</span><span class="p">().</span><span class="nx">Value</span><span class="p">.(</span><span class="kt">string</span><span class="p">)</span>
-
-<span class="w">    </span><span class="c1">// 2</span>
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">fraction</span><span class="w"> </span><span class="kt">string</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">size</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">strings</span><span class="p">.</span><span class="nx">HasPrefix</span><span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">asJsonValue</span><span class="p">().</span><span class="nx">Value</span><span class="p">.(</span><span class="kt">string</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;.&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">fraction</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">values</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">asJsonValue</span><span class="p">().</span><span class="nx">Value</span><span class="p">.(</span><span class="kt">string</span><span class="p">)</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">fraction</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="c1">// 3</span>
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">exponent</span><span class="w"> </span><span class="kt">string</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">size</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">strings</span><span class="p">.</span><span class="nx">HasPrefix</span><span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">asJsonValue</span><span class="p">().</span><span class="nx">Value</span><span class="p">.(</span><span class="kt">string</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;e&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">exponent</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">values</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">asJsonValue</span><span class="p">().</span><span class="nx">Value</span><span class="p">.(</span><span class="kt">string</span><span class="p">)</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">size</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">strings</span><span class="p">.</span><span class="nx">HasPrefix</span><span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="nx">asJsonValue</span><span class="p">().</span><span class="nx">Value</span><span class="p">.(</span><span class="kt">string</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;e&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">exponent</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">values</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="nx">asJsonValue</span><span class="p">().</span><span class="nx">Value</span><span class="p">.(</span><span class="kt">string</span><span class="p">)</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">exponent</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="c1">// 4</span>
-<span class="w">    </span><span class="nx">expression</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Sprintf</span><span class="p">(</span><span class="s">&quot;%s%s%s&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">integerValue</span><span class="p">,</span><span class="w"> </span><span class="nx">fraction</span><span class="p">,</span><span class="w"> </span><span class="nx">exponent</span><span class="p">)</span>
-<span class="w">    </span><span class="c1">// 5</span>
-<span class="w">    </span><span class="nx">value</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">strconv</span><span class="p">.</span><span class="nx">ParseFloat</span><span class="p">(</span><span class="nx">expression</span><span class="p">,</span><span class="w"> </span><span class="mi">64</span><span class="p">)</span><span class="w"> </span><span class="c1">// TODO: potential for an error!</span>
-
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="c1">// 6</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">JsonValue</span><span class="p">{</span>
-<span class="w">        </span><span class="nx">Value</span><span class="p">:</span><span class="w">     </span><span class="nx">value</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">ValueType</span><span class="p">:</span><span class="w"> </span><span class="nx">NUMBER</span><span class="p">,</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">}},</span>
-</pre></div>
-
+<div class="highlight"><pre><xnx>grammarRule</xnx><xp>{</xp><xnx>number</xnx><xp>,</xp>&nbsp;<xp>[</xp><xp>]</xp><xp>[</xp><xp>]</xp><xnx>elementType</xnx><xp>{</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>integer</xnx><xp>,</xp>&nbsp;<xnx>fraction</xnx><xp>,</xp>&nbsp;<xnx>exponent</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>integer</xnx><xp>,</xp>&nbsp;<xnx>fraction</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>integer</xnx><xp>,</xp>&nbsp;<xnx>exponent</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>{</xp><xnx>integer</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xp>}</xp><xp>,</xp>&nbsp;<xkd>func</xkd><xp>(</xp><xnx>values</xnx>&nbsp;<xo>...</xo><xo>*</xo><xnx>stackElement</xnx><xp>)</xp>&nbsp;<xnx>JsonValue</xnx>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>size</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>values</xnx><xp>)</xp><xw>
+</xw><xw>    </xw><xc1>// 1</xc1><xw>
+</xw><xw>    </xw><xkd>var</xkd>&nbsp;<xnx>integerValue</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>values</xnx><xp>[</xp><xmi>0</xmi><xp>]</xp><xp>.</xp><xnx>asJsonValue</xnx><xp>(</xp><xp>)</xp><xp>.</xp><xnx>Value</xnx><xp>.</xp><xp>(</xp><xkt>string</xkt><xp>)</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xc1>// 2</xc1><xw>
+</xw><xw>    </xw><xkd>var</xkd>&nbsp;<xnx>fraction</xnx>&nbsp;<xkt>string</xkt><xw>
+</xw><xw>    </xw><xk>if</xk>&nbsp;<xnx>size</xnx>&nbsp;<xo>&gt;=</xo>&nbsp;<xmi>2</xmi>&nbsp;<xo>&amp;&amp;</xo>&nbsp;<xnx>strings</xnx><xp>.</xp><xnx>HasPrefix</xnx><xp>(</xp><xnx>values</xnx><xp>[</xp><xmi>1</xmi><xp>]</xp><xp>.</xp><xnx>asJsonValue</xnx><xp>(</xp><xp>)</xp><xp>.</xp><xnx>Value</xnx><xp>.</xp><xp>(</xp><xkt>string</xkt><xp>)</xp><xp>,</xp>&nbsp;<xs>&quot;.&quot;</xs><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xnx>fraction</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>values</xnx><xp>[</xp><xmi>1</xmi><xp>]</xp><xp>.</xp><xnx>asJsonValue</xnx><xp>(</xp><xp>)</xp><xp>.</xp><xnx>Value</xnx><xp>.</xp><xp>(</xp><xkt>string</xkt><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xnx>fraction</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;&quot;</xs><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xc1>// 3</xc1><xw>
+</xw><xw>    </xw><xkd>var</xkd>&nbsp;<xnx>exponent</xnx>&nbsp;<xkt>string</xkt><xw>
+</xw><xw>    </xw><xk>if</xk>&nbsp;<xnx>size</xnx>&nbsp;<xo>==</xo>&nbsp;<xmi>2</xmi>&nbsp;<xo>&amp;&amp;</xo>&nbsp;<xnx>strings</xnx><xp>.</xp><xnx>HasPrefix</xnx><xp>(</xp><xnx>values</xnx><xp>[</xp><xmi>1</xmi><xp>]</xp><xp>.</xp><xnx>asJsonValue</xnx><xp>(</xp><xp>)</xp><xp>.</xp><xnx>Value</xnx><xp>.</xp><xp>(</xp><xkt>string</xkt><xp>)</xp><xp>,</xp>&nbsp;<xs>&quot;e&quot;</xs><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xnx>exponent</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>values</xnx><xp>[</xp><xmi>1</xmi><xp>]</xp><xp>.</xp><xnx>asJsonValue</xnx><xp>(</xp><xp>)</xp><xp>.</xp><xnx>Value</xnx><xp>.</xp><xp>(</xp><xkt>string</xkt><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnx>size</xnx>&nbsp;<xo>==</xo>&nbsp;<xmi>3</xmi>&nbsp;<xo>&amp;&amp;</xo>&nbsp;<xnx>strings</xnx><xp>.</xp><xnx>HasPrefix</xnx><xp>(</xp><xnx>values</xnx><xp>[</xp><xmi>2</xmi><xp>]</xp><xp>.</xp><xnx>asJsonValue</xnx><xp>(</xp><xp>)</xp><xp>.</xp><xnx>Value</xnx><xp>.</xp><xp>(</xp><xkt>string</xkt><xp>)</xp><xp>,</xp>&nbsp;<xs>&quot;e&quot;</xs><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xnx>exponent</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>values</xnx><xp>[</xp><xmi>2</xmi><xp>]</xp><xp>.</xp><xnx>asJsonValue</xnx><xp>(</xp><xp>)</xp><xp>.</xp><xnx>Value</xnx><xp>.</xp><xp>(</xp><xkt>string</xkt><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xnx>exponent</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>&quot;&quot;</xs><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xc1>// 4</xc1><xw>
+</xw><xw>    </xw><xnx>expression</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>fmt</xnx><xp>.</xp><xnx>Sprintf</xnx><xp>(</xp><xs>&quot;%s%s%s&quot;</xs><xp>,</xp>&nbsp;<xnx>integerValue</xnx><xp>,</xp>&nbsp;<xnx>fraction</xnx><xp>,</xp>&nbsp;<xnx>exponent</xnx><xp>)</xp><xw>
+</xw><xw>    </xw><xc1>// 5</xc1><xw>
+</xw><xw>    </xw><xnx>value</xnx><xp>,</xp>&nbsp;<xnx>err</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>strconv</xnx><xp>.</xp><xnx>ParseFloat</xnx><xp>(</xp><xnx>expression</xnx><xp>,</xp>&nbsp;<xmi>64</xmi><xp>)</xp>&nbsp;<xc1>// TODO: potential for an error!</xc1><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>if</xk>&nbsp;<xnx>err</xnx>&nbsp;<xo>!=</xo>&nbsp;<xkc>nil</xkc>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xnx>fmt</xnx><xp>.</xp><xnx>Printf</xnx><xp>(</xp><xs>&quot;%s\n&quot;</xs><xp>,</xp>&nbsp;<xnx>err</xnx><xp>.</xp><xnx>Error</xnx><xp>(</xp><xp>)</xp><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xc1>// 6</xc1><xw>
+</xw><xw>    </xw><xk>return</xk>&nbsp;<xnx>JsonValue</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xnx>Value</xnx><xp>:</xp><xw>     </xw><xnx>value</xnx><xp>,</xp><xw>
+</xw><xw>        </xw><xnx>ValueType</xnx><xp>:</xp>&nbsp;<xnx>NUMBER</xnx><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xp>}</xp><xp>}</xp><xp>,</xp><xw>
+</xw></pre></div>
 <ol>
 <li>From the production rules, we know that the first element is always <code>integer</code>. So, we grab the value as string</li>
 <li><code>fraction</code> may or or may not be the second element. So, if it is, we save the value to the <code>fraction</code> variable.</li>
@@ -911,75 +893,73 @@ process:
 </ol>
 <p>There are a lot more <code>toJson</code> implementations that we did not cover, but the logic is the same across all. Take the passed <code>values</code> argument and based on the known grammar rules, try to create the target <code>JsonValue</code> object. Feel free to check out the Github repository for the full implementation.</p>
 <p>That's technically it! We now have a working shift-reduce parser. Let's take a look at a test to get a better understanding of the input and the output.</p>
-<div class="highlight"><pre><span></span><span class="kd">func</span><span class="w"> </span><span class="nx">TestParse</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">inputJson</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">`{</span>
-<span class="s">    &quot;value&quot;: [</span>
-<span class="s">        1239,</span>
-<span class="s">        123.45</span>
-<span class="s">    ],</span>
-<span class="s">    &quot;name&quot;: &quot;renault&quot;,</span>
-<span class="s">    &quot;token&quot;: true,</span>
-<span class="s">    &quot;hello&quot;: null</span>
-<span class="s">}`</span>
-<span class="w">    </span><span class="nx">t</span><span class="p">.</span><span class="nx">Run</span><span class="p">(</span><span class="s">&quot;check json&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">json</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">Parse</span><span class="p">(</span><span class="nx">inputJson</span><span class="p">)</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">t</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">&quot;%s&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">        </span><span class="nx">expected</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">JsonValue</span><span class="p">{</span>
-<span class="w">            </span><span class="nx">ValueType</span><span class="p">:</span><span class="w"> </span><span class="nx">OBJECT</span><span class="p">,</span>
-<span class="w">            </span><span class="nx">Value</span><span class="p">:</span><span class="w"> </span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="nx">JsonValue</span><span class="p">{</span>
-<span class="w">                </span><span class="s">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                    </span><span class="nx">ValueType</span><span class="p">:</span><span class="w"> </span><span class="nx">ARRAY</span><span class="p">,</span>
-<span class="w">                    </span><span class="nx">Value</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="nx">JsonValue</span><span class="p">{</span>
-<span class="w">                        </span><span class="p">{</span><span class="nx">ValueType</span><span class="p">:</span><span class="w"> </span><span class="nx">NUMBER</span><span class="p">,</span><span class="w"> </span><span class="nx">Value</span><span class="p">:</span><span class="w"> </span><span class="nb">float64</span><span class="p">(</span><span class="mi">1239</span><span class="p">)},</span>
-<span class="w">                        </span><span class="p">{</span><span class="nx">ValueType</span><span class="p">:</span><span class="w"> </span><span class="nx">NUMBER</span><span class="p">,</span><span class="w"> </span><span class="nx">Value</span><span class="p">:</span><span class="w"> </span><span class="nb">float64</span><span class="p">(</span><span class="mf">123.45</span><span class="p">)},</span>
-<span class="w">                    </span><span class="p">},</span>
-<span class="w">                </span><span class="p">},</span>
-<span class="w">                </span><span class="s">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                    </span><span class="nx">ValueType</span><span class="p">:</span><span class="w"> </span><span class="nx">STRING</span><span class="p">,</span>
-<span class="w">                    </span><span class="nx">Value</span><span class="p">:</span><span class="w">     </span><span class="s">&quot;renault&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="p">},</span>
-<span class="w">                </span><span class="s">&quot;token&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                    </span><span class="nx">ValueType</span><span class="p">:</span><span class="w"> </span><span class="nx">BOOL</span><span class="p">,</span>
-<span class="w">                    </span><span class="nx">Value</span><span class="p">:</span><span class="w">     </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">                </span><span class="p">},</span>
-<span class="w">                </span><span class="s">&quot;hello&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                    </span><span class="nx">ValueType</span><span class="p">:</span><span class="w"> </span><span class="nx">NULL</span><span class="p">,</span>
-<span class="w">                    </span><span class="nx">Value</span><span class="p">:</span><span class="w">     </span><span class="kc">nil</span><span class="p">,</span>
-<span class="w">                </span><span class="p">},</span>
-<span class="w">            </span><span class="p">},</span>
-<span class="w">        </span><span class="p">}</span>
-
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">reflect</span><span class="p">.</span><span class="nx">DeepEqual</span><span class="p">(</span><span class="nx">json</span><span class="p">,</span><span class="w"> </span><span class="nx">expected</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">t</span><span class="p">.</span><span class="nx">Fail</span><span class="p">()</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">})</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>func</xkd>&nbsp;<xnx>TestParse</xnx><xp>(</xp><xnx>t</xnx>&nbsp;<xo>*</xo><xnx>testing</xnx><xp>.</xp><xnx>T</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xkd>var</xkd>&nbsp;<xnx>inputJson</xnx>&nbsp;<xp>=</xp>&nbsp;<xs>`{
+    &quot;value&quot;: [
+        1239,
+        123.45
+    ],
+    &quot;name&quot;: &quot;renault&quot;,
+    &quot;token&quot;: true,
+    &quot;hello&quot;: null
+}`</xs><xw>
+</xw><xw>    </xw><xnx>t</xnx><xp>.</xp><xnx>Run</xnx><xp>(</xp><xs>&quot;check json&quot;</xs><xp>,</xp>&nbsp;<xkd>func</xkd><xp>(</xp><xnx>t</xnx>&nbsp;<xo>*</xo><xnx>testing</xnx><xp>.</xp><xnx>T</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xnx>json</xnx><xp>,</xp>&nbsp;<xnx>err</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>Parse</xnx><xp>(</xp><xnx>inputJson</xnx><xp>)</xp><xw>
+</xw><xw>        </xw><xk>if</xk>&nbsp;<xnx>err</xnx>&nbsp;<xo>!=</xo>&nbsp;<xkc>nil</xkc>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnx>t</xnx><xp>.</xp><xnx>Fatalf</xnx><xp>(</xp><xs>&quot;%s&quot;</xs><xp>,</xp>&nbsp;<xnx>err</xnx><xp>.</xp><xnx>Error</xnx><xp>(</xp><xp>)</xp><xp>)</xp><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>        </xw><xnx>expected</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>JsonValue</xnx><xp>{</xp><xw>
+</xw><xw>            </xw><xnx>ValueType</xnx><xp>:</xp>&nbsp;<xnx>OBJECT</xnx><xp>,</xp><xw>
+</xw><xw>            </xw><xnx>Value</xnx><xp>:</xp>&nbsp;<xkd>map</xkd><xp>[</xp><xkt>string</xkt><xp>]</xp><xnx>JsonValue</xnx><xp>{</xp><xw>
+</xw><xw>                </xw><xs>&quot;value&quot;</xs><xp>:</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>                    </xw><xnx>ValueType</xnx><xp>:</xp>&nbsp;<xnx>ARRAY</xnx><xp>,</xp><xw>
+</xw><xw>                    </xw><xnx>Value</xnx><xp>:</xp>&nbsp;<xp>[</xp><xp>]</xp><xnx>JsonValue</xnx><xp>{</xp><xw>
+</xw><xw>                        </xw><xp>{</xp><xnx>ValueType</xnx><xp>:</xp>&nbsp;<xnx>NUMBER</xnx><xp>,</xp>&nbsp;<xnx>Value</xnx><xp>:</xp>&nbsp;<xnb>float64</xnb><xp>(</xp><xmi>1239</xmi><xp>)</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xw>                        </xw><xp>{</xp><xnx>ValueType</xnx><xp>:</xp>&nbsp;<xnx>NUMBER</xnx><xp>,</xp>&nbsp;<xnx>Value</xnx><xp>:</xp>&nbsp;<xnb>float64</xnb><xp>(</xp><xmf>123.45</xmf><xp>)</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xw>                    </xw><xp>}</xp><xp>,</xp><xw>
+</xw><xw>                </xw><xp>}</xp><xp>,</xp><xw>
+</xw><xw>                </xw><xs>&quot;name&quot;</xs><xp>:</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>                    </xw><xnx>ValueType</xnx><xp>:</xp>&nbsp;<xnx>STRING</xnx><xp>,</xp><xw>
+</xw><xw>                    </xw><xnx>Value</xnx><xp>:</xp><xw>     </xw><xs>&quot;renault&quot;</xs><xp>,</xp><xw>
+</xw><xw>                </xw><xp>}</xp><xp>,</xp><xw>
+</xw><xw>                </xw><xs>&quot;token&quot;</xs><xp>:</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>                    </xw><xnx>ValueType</xnx><xp>:</xp>&nbsp;<xnx>BOOL</xnx><xp>,</xp><xw>
+</xw><xw>                    </xw><xnx>Value</xnx><xp>:</xp><xw>     </xw><xkc>true</xkc><xp>,</xp><xw>
+</xw><xw>                </xw><xp>}</xp><xp>,</xp><xw>
+</xw><xw>                </xw><xs>&quot;hello&quot;</xs><xp>:</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>                    </xw><xnx>ValueType</xnx><xp>:</xp>&nbsp;<xnx>NULL</xnx><xp>,</xp><xw>
+</xw><xw>                    </xw><xnx>Value</xnx><xp>:</xp><xw>     </xw><xkc>nil</xkc><xp>,</xp><xw>
+</xw><xw>                </xw><xp>}</xp><xp>,</xp><xw>
+</xw><xw>            </xw><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>        </xw><xk>if</xk>&nbsp;<xp>!</xp><xnx>reflect</xnx><xp>.</xp><xnx>DeepEqual</xnx><xp>(</xp><xnx>json</xnx><xp>,</xp>&nbsp;<xnx>expected</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnx>t</xnx><xp>.</xp><xnx>Fail</xnx><xp>(</xp><xp>)</xp><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xp>)</xp><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <h2>Unmarshalling</h2>
 <p>We have already achieved our goal, but more often than not, people want to deserialize their JSON payload into a custom struct or a custom object. In this section, we will make use of Golang's <a href="https://pkg.go.dev/reflect">reflect</a> package to achive this. This section is going to be code-heavy.</p>
-<div class="highlight"><pre><span></span><span class="c1">// Unmarshal deserializes the parsed JsonValue into the provided object.</span>
-<span class="c1">// Please keep in mind that obj needs to be a pointer</span>
-<span class="c1">// to the object we want to deserialize the json into</span>
-<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">jv</span><span class="w"> </span><span class="o">*</span><span class="nx">JsonValue</span><span class="p">)</span><span class="w"> </span><span class="nx">Unmarshal</span><span class="p">(</span><span class="nx">ptr</span><span class="w"> </span><span class="kt">any</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">v</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">reflect</span><span class="p">.</span><span class="nx">ValueOf</span><span class="p">(</span><span class="nx">ptr</span><span class="p">)</span><span class="w"> </span><span class="c1">// 1</span>
-
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Kind</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">reflect</span><span class="p">.</span><span class="nx">Pointer</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 2</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&quot;expected: a pointer&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="nx">kind</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Elem</span><span class="p">().</span><span class="nx">Kind</span><span class="p">()</span><span class="w"> </span><span class="c1">// 3</span>
-
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">ok</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">isSupported</span><span class="p">(</span><span class="nx">kind</span><span class="p">);</span><span class="w"> </span><span class="p">!</span><span class="nx">ok</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 4</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Sprintf</span><span class="p">(</span><span class="s">&quot;unsupported type: %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">kind</span><span class="p">.</span><span class="nx">String</span><span class="p">()))</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">jv</span><span class="p">.</span><span class="nx">setValue</span><span class="p">(</span><span class="nx">kind</span><span class="p">,</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Elem</span><span class="p">())</span><span class="w"> </span><span class="c1">// 5</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xc1>// Unmarshal deserializes the parsed JsonValue into the provided object.</xc1><xw>
+</xw><xc1>// Please keep in mind that obj needs to be a pointer</xc1><xw>
+</xw><xc1>// to the object we want to deserialize the json into</xc1><xw>
+</xw><xkd>func</xkd>&nbsp;<xp>(</xp><xnx>jv</xnx>&nbsp;<xo>*</xo><xnx>JsonValue</xnx><xp>)</xp>&nbsp;<xnx>Unmarshal</xnx><xp>(</xp><xnx>ptr</xnx>&nbsp;<xkt>any</xkt><xp>)</xp>&nbsp;<xkt>error</xkt>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>v</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>reflect</xnx><xp>.</xp><xnx>ValueOf</xnx><xp>(</xp><xnx>ptr</xnx><xp>)</xp>&nbsp;<xc1>// 1</xc1><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>if</xk>&nbsp;<xnx>v</xnx><xp>.</xp><xnx>Kind</xnx><xp>(</xp><xp>)</xp>&nbsp;<xo>!=</xo>&nbsp;<xnx>reflect</xnx><xp>.</xp><xnx>Pointer</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// 2</xc1><xw>
+</xw><xw>        </xw><xk>return</xk>&nbsp;<xnx>errors</xnx><xp>.</xp><xnx>New</xnx><xp>(</xp><xs>&quot;expected: a pointer&quot;</xs><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xnx>kind</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>v</xnx><xp>.</xp><xnx>Elem</xnx><xp>(</xp><xp>)</xp><xp>.</xp><xnx>Kind</xnx><xp>(</xp><xp>)</xp>&nbsp;<xc1>// 3</xc1><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>if</xk>&nbsp;<xnx>_</xnx><xp>,</xp>&nbsp;<xnx>ok</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>isSupported</xnx><xp>(</xp><xnx>kind</xnx><xp>)</xp><xp>;</xp>&nbsp;<xp>!</xp><xnx>ok</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// 4</xc1><xw>
+</xw><xw>        </xw><xk>return</xk>&nbsp;<xnx>errors</xnx><xp>.</xp><xnx>New</xnx><xp>(</xp><xnx>fmt</xnx><xp>.</xp><xnx>Sprintf</xnx><xp>(</xp><xs>&quot;unsupported type: %s&quot;</xs><xp>,</xp>&nbsp;<xnx>kind</xnx><xp>.</xp><xnx>String</xnx><xp>(</xp><xp>)</xp><xp>)</xp><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>return</xk>&nbsp;<xnx>jv</xnx><xp>.</xp><xnx>setValue</xnx><xp>(</xp><xnx>kind</xnx><xp>,</xp>&nbsp;<xnx>v</xnx><xp>.</xp><xnx>Elem</xnx><xp>(</xp><xp>)</xp><xp>)</xp>&nbsp;<xc1>// 5</xc1><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ol start="0">
 <li><code>Unmarshal</code> is a function that takes a <code>JsonValue</code> object and a pointer to a supposedly valid type.</li>
 <li>We get the value of this provided object</li>
@@ -991,52 +971,51 @@ process:
 </li>
 <li>Once we pass all the checks, it's time to set the value.</li>
 </ol>
-<div class="highlight"><pre><span></span><span class="kd">type</span><span class="w"> </span><span class="nx">numberConverter</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="kt">float64</span><span class="p">)</span><span class="w"> </span><span class="kd">interface</span><span class="p">{}</span>
-
-<span class="kd">var</span><span class="w"> </span><span class="nx">numbers</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kd">map</span><span class="p">[</span><span class="nx">reflect</span><span class="p">.</span><span class="nx">Kind</span><span class="p">]</span><span class="nx">numberConverter</span><span class="p">{</span>
-<span class="w">    </span><span class="nx">reflect</span><span class="p">.</span><span class="nx">Int</span><span class="p">:</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="kt">float64</span><span class="p">)</span><span class="w"> </span><span class="kd">interface</span><span class="p">{}</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nx">reflect</span><span class="p">.</span><span class="nx">Int8</span><span class="p">:</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="kt">float64</span><span class="p">)</span><span class="w"> </span><span class="kd">interface</span><span class="p">{}</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">int8</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nx">reflect</span><span class="p">.</span><span class="nx">Int16</span><span class="p">:</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="kt">float64</span><span class="p">)</span><span class="w"> </span><span class="kd">interface</span><span class="p">{}</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">int16</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="c1">// most of the converters are omitted</span>
-<span class="p">}</span>
-
-<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">jv</span><span class="w"> </span><span class="o">*</span><span class="nx">JsonValue</span><span class="p">)</span><span class="w"> </span><span class="nx">setValue</span><span class="p">(</span><span class="nx">kind</span><span class="w"> </span><span class="nx">reflect</span><span class="p">.</span><span class="nx">Kind</span><span class="p">,</span><span class="w"> </span><span class="nx">v</span><span class="w"> </span><span class="nx">reflect</span><span class="p">.</span><span class="nx">Value</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">jt</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">isSupported</span><span class="p">(</span><span class="nx">kind</span><span class="p">)</span><span class="w"> </span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">jt</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">jv</span><span class="p">.</span><span class="nx">ValueType</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 1</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Sprintf</span><span class="p">(</span><span class="s">&quot;type mismatch: expected: %s, provided: %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">jv</span><span class="p">.</span><span class="nx">ValueType</span><span class="p">,</span><span class="w"> </span><span class="nx">jt</span><span class="p">))</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">kind</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">reflect</span><span class="p">.</span><span class="nx">String</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 2</span>
-<span class="w">        </span><span class="nx">v</span><span class="p">.</span><span class="nx">Set</span><span class="p">(</span><span class="nx">reflect</span><span class="p">.</span><span class="nx">ValueOf</span><span class="p">(</span><span class="nx">jv</span><span class="p">.</span><span class="nx">Value</span><span class="p">))</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">kind</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">reflect</span><span class="p">.</span><span class="nx">Bool</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 3</span>
-<span class="w">        </span><span class="nx">v</span><span class="p">.</span><span class="nx">Set</span><span class="p">(</span><span class="nx">reflect</span><span class="p">.</span><span class="nx">ValueOf</span><span class="p">(</span><span class="nx">jv</span><span class="p">.</span><span class="nx">Value</span><span class="p">))</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">converter</span><span class="p">,</span><span class="w"> </span><span class="nx">ok</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">numbers</span><span class="p">[</span><span class="nx">kind</span><span class="p">];</span><span class="w"> </span><span class="nx">ok</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 4</span>
-<span class="w">        </span><span class="nx">v</span><span class="p">.</span><span class="nx">Set</span><span class="p">(</span><span class="nx">reflect</span><span class="p">.</span><span class="nx">ValueOf</span><span class="p">(</span><span class="nx">converter</span><span class="p">(</span><span class="nx">jv</span><span class="p">.</span><span class="nx">Value</span><span class="p">.(</span><span class="kt">float64</span><span class="p">))))</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">kind</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">reflect</span><span class="p">.</span><span class="nx">Slice</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 5</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">jv</span><span class="p">.</span><span class="nx">handleSlice</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="nx">jt</span><span class="p">,</span><span class="w"> </span><span class="nx">ok</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nx">err</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">kind</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">reflect</span><span class="p">.</span><span class="nx">Struct</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 6</span>
-<span class="w">        </span><span class="nx">m</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">jv</span><span class="p">.</span><span class="nx">Value</span><span class="p">.(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="nx">JsonValue</span><span class="p">)</span><span class="w"> </span><span class="c1">// 6-1</span>
-
-<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="nx">k</span><span class="p">,</span><span class="w"> </span><span class="nx">val</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">m</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">f</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">FieldByName</span><span class="p">(</span><span class="nx">k</span><span class="p">)</span><span class="w"> </span><span class="c1">// 6-2</span>
-<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">val</span><span class="p">.</span><span class="nx">setValue</span><span class="p">(</span><span class="nx">f</span><span class="p">.</span><span class="nx">Kind</span><span class="p">(),</span><span class="w"> </span><span class="nx">f</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 6-3</span>
-<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="nx">err</span>
-<span class="w">            </span><span class="p">}</span>
-<span class="w">        </span><span class="p">}</span>
-
-<span class="w">    </span><span class="p">}</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="c1">// 7</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>type</xkd>&nbsp;<xnx>numberConverter</xnx>&nbsp;<xp>=</xp>&nbsp;<xkd>func</xkd><xp>(</xp><xnx>i</xnx>&nbsp;<xkt>float64</xkt><xp>)</xp>&nbsp;<xkd>interface</xkd><xp>{</xp><xp>}</xp><xw>
+</xw><xw>
+</xw><xkd>var</xkd>&nbsp;<xnx>numbers</xnx>&nbsp;<xp>=</xp>&nbsp;<xkd>map</xkd><xp>[</xp><xnx>reflect</xnx><xp>.</xp><xnx>Kind</xnx><xp>]</xp><xnx>numberConverter</xnx><xp>{</xp><xw>
+</xw><xw>    </xw><xnx>reflect</xnx><xp>.</xp><xnx>Int</xnx><xp>:</xp>&nbsp;<xkd>func</xkd><xp>(</xp><xnx>i</xnx>&nbsp;<xkt>float64</xkt><xp>)</xp>&nbsp;<xkd>interface</xkd><xp>{</xp><xp>}</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xk>return</xk>&nbsp;<xnb>int</xnb><xp>(</xp><xnx>i</xnx><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xnx>reflect</xnx><xp>.</xp><xnx>Int8</xnx><xp>:</xp>&nbsp;<xkd>func</xkd><xp>(</xp><xnx>i</xnx>&nbsp;<xkt>float64</xkt><xp>)</xp>&nbsp;<xkd>interface</xkd><xp>{</xp><xp>}</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xk>return</xk>&nbsp;<xnb>int8</xnb><xp>(</xp><xnx>i</xnx><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xnx>reflect</xnx><xp>.</xp><xnx>Int16</xnx><xp>:</xp>&nbsp;<xkd>func</xkd><xp>(</xp><xnx>i</xnx>&nbsp;<xkt>float64</xkt><xp>)</xp>&nbsp;<xkd>interface</xkd><xp>{</xp><xp>}</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xk>return</xk>&nbsp;<xnb>int16</xnb><xp>(</xp><xnx>i</xnx><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xc1>// most of the converters are omitted</xc1><xw>
+</xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xkd>func</xkd>&nbsp;<xp>(</xp><xnx>jv</xnx>&nbsp;<xo>*</xo><xnx>JsonValue</xnx><xp>)</xp>&nbsp;<xnx>setValue</xnx><xp>(</xp><xnx>kind</xnx>&nbsp;<xnx>reflect</xnx><xp>.</xp><xnx>Kind</xnx><xp>,</xp>&nbsp;<xnx>v</xnx>&nbsp;<xnx>reflect</xnx><xp>.</xp><xnx>Value</xnx><xp>)</xp>&nbsp;<xkt>error</xkt>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>jt</xnx><xp>,</xp>&nbsp;<xnx>_</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>isSupported</xnx><xp>(</xp><xnx>kind</xnx><xp>)</xp><xw> 
+    </xw><xk>if</xk>&nbsp;<xnx>jt</xnx>&nbsp;<xo>!=</xo>&nbsp;<xnx>jv</xnx><xp>.</xp><xnx>ValueType</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// 1</xc1><xw>
+</xw><xw>        </xw><xk>return</xk>&nbsp;<xnx>errors</xnx><xp>.</xp><xnx>New</xnx><xp>(</xp><xnx>fmt</xnx><xp>.</xp><xnx>Sprintf</xnx><xp>(</xp><xs>&quot;type mismatch: expected: %s, provided: %s&quot;</xs><xp>,</xp>&nbsp;<xnx>jv</xnx><xp>.</xp><xnx>ValueType</xnx><xp>,</xp>&nbsp;<xnx>jt</xnx><xp>)</xp><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>if</xk>&nbsp;<xnx>kind</xnx>&nbsp;<xo>==</xo>&nbsp;<xnx>reflect</xnx><xp>.</xp><xnx>String</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// 2</xc1><xw>
+</xw><xw>        </xw><xnx>v</xnx><xp>.</xp><xnx>Set</xnx><xp>(</xp><xnx>reflect</xnx><xp>.</xp><xnx>ValueOf</xnx><xp>(</xp><xnx>jv</xnx><xp>.</xp><xnx>Value</xnx><xp>)</xp><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnx>kind</xnx>&nbsp;<xo>==</xo>&nbsp;<xnx>reflect</xnx><xp>.</xp><xnx>Bool</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// 3</xc1><xw>
+</xw><xw>        </xw><xnx>v</xnx><xp>.</xp><xnx>Set</xnx><xp>(</xp><xnx>reflect</xnx><xp>.</xp><xnx>ValueOf</xnx><xp>(</xp><xnx>jv</xnx><xp>.</xp><xnx>Value</xnx><xp>)</xp><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnx>converter</xnx><xp>,</xp>&nbsp;<xnx>ok</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>numbers</xnx><xp>[</xp><xnx>kind</xnx><xp>]</xp><xp>;</xp>&nbsp;<xnx>ok</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// 4</xc1><xw>
+</xw><xw>        </xw><xnx>v</xnx><xp>.</xp><xnx>Set</xnx><xp>(</xp><xnx>reflect</xnx><xp>.</xp><xnx>ValueOf</xnx><xp>(</xp><xnx>converter</xnx><xp>(</xp><xnx>jv</xnx><xp>.</xp><xnx>Value</xnx><xp>.</xp><xp>(</xp><xkt>float64</xkt><xp>)</xp><xp>)</xp><xp>)</xp><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnx>kind</xnx>&nbsp;<xo>==</xo>&nbsp;<xnx>reflect</xnx><xp>.</xp><xnx>Slice</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// 5</xc1><xw>
+</xw><xw>        </xw><xk>if</xk>&nbsp;<xnx>err</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>jv</xnx><xp>.</xp><xnx>handleSlice</xnx><xp>(</xp><xnx>v</xnx><xp>,</xp>&nbsp;<xnx>jt</xnx><xp>,</xp>&nbsp;<xnx>ok</xnx><xp>)</xp><xp>;</xp>&nbsp;<xnx>err</xnx>&nbsp;<xo>!=</xo>&nbsp;<xkc>nil</xkc>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xk>return</xk>&nbsp;<xnx>err</xnx><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnx>kind</xnx>&nbsp;<xo>==</xo>&nbsp;<xnx>reflect</xnx><xp>.</xp><xnx>Struct</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// 6</xc1><xw>
+</xw><xw>        </xw><xnx>m</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>jv</xnx><xp>.</xp><xnx>Value</xnx><xp>.</xp><xp>(</xp><xkd>map</xkd><xp>[</xp><xkt>string</xkt><xp>]</xp><xnx>JsonValue</xnx><xp>)</xp>&nbsp;<xc1>// 6-1</xc1><xw>
+</xw><xw>
+</xw><xw>        </xw><xk>for</xk>&nbsp;<xnx>k</xnx><xp>,</xp>&nbsp;<xnx>val</xnx>&nbsp;<xo>:=</xo>&nbsp;<xk>range</xk>&nbsp;<xnx>m</xnx>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnx>f</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>v</xnx><xp>.</xp><xnx>FieldByName</xnx><xp>(</xp><xnx>k</xnx><xp>)</xp>&nbsp;<xc1>// 6-2</xc1><xw>
+</xw><xw>            </xw><xk>if</xk>&nbsp;<xnx>err</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>val</xnx><xp>.</xp><xnx>setValue</xnx><xp>(</xp><xnx>f</xnx><xp>.</xp><xnx>Kind</xnx><xp>(</xp><xp>)</xp><xp>,</xp>&nbsp;<xnx>f</xnx><xp>)</xp><xp>;</xp>&nbsp;<xnx>err</xnx>&nbsp;<xo>!=</xo>&nbsp;<xkc>nil</xkc>&nbsp;<xp>{</xp>&nbsp;<xc1>// 6-3</xc1><xw>
+</xw><xw>                </xw><xk>return</xk>&nbsp;<xnx>err</xnx><xw>
+</xw><xw>            </xw><xp>}</xp><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xk>return</xk>&nbsp;<xkc>nil</xkc>&nbsp;<xc1>// 7</xc1><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ol>
 <li>If the type of the provided pointer does not match with what the JSON object contains, then that's a mismatch</li>
 <li>If the kind is string, we simply set the value to that object (<code>jv.Value</code> is already a string)</li>
@@ -1052,40 +1031,39 @@ process:
 <li>If no error occurs, we return <code>nil</code> indicating success</li>
 </ol>
 <p>Let's now take a look at <code>handleSlice</code>:</p>
-<div class="highlight"><pre><span></span><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">jv</span><span class="w"> </span><span class="o">*</span><span class="nx">JsonValue</span><span class="p">)</span><span class="w"> </span><span class="nx">handleSlice</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">reflect</span><span class="p">.</span><span class="nx">Value</span><span class="p">,</span><span class="w"> </span><span class="nx">jt</span><span class="w"> </span><span class="nx">JsonValueType</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">dataType</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Type</span><span class="p">().</span><span class="nx">Elem</span><span class="p">().</span><span class="nx">Kind</span><span class="p">()</span><span class="w"> </span><span class="c1">// 1</span>
-
-<span class="w">    </span><span class="nx">values</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">jv</span><span class="p">.</span><span class="nx">Value</span><span class="p">.([]</span><span class="nx">JsonValue</span><span class="p">)</span><span class="w"> </span><span class="c1">// 2</span>
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">jsonType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">values</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">ValueType</span><span class="w"> </span><span class="c1">// 3</span>
-
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">values</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 4</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">value</span><span class="p">.</span><span class="nx">ValueType</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">jsonType</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 4-1</span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&quot;json array does not have elements of one type&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="c1">// 5</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">jt</span><span class="p">,</span><span class="w"> </span><span class="nx">ok</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">isSupported</span><span class="p">(</span><span class="nx">dataType</span><span class="p">);</span><span class="w"> </span><span class="p">!</span><span class="nx">ok</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">jt</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">jsonType</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&quot;type mismatch for array&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="c1">// 6</span>
-<span class="w">    </span><span class="nx">refSlice</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">reflect</span><span class="p">.</span><span class="nx">MakeSlice</span><span class="p">(</span><span class="nx">reflect</span><span class="p">.</span><span class="nx">SliceOf</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">Type</span><span class="p">().</span><span class="nx">Elem</span><span class="p">()),</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">values</span><span class="p">),</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">values</span><span class="p">))</span>
-
-<span class="w">    </span><span class="c1">// 7</span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">values</span><span class="p">);</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// 7-1</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">setValue</span><span class="p">(</span><span class="nx">dataType</span><span class="p">,</span><span class="w"> </span><span class="nx">refSlice</span><span class="p">.</span><span class="nx">Index</span><span class="p">(</span><span class="nx">i</span><span class="p">));</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nx">err</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">    </span><span class="c1">// 8</span>
-<span class="w">    </span><span class="nx">v</span><span class="p">.</span><span class="nx">Set</span><span class="p">(</span><span class="nx">refSlice</span><span class="p">)</span>
-<span class="w">    </span><span class="c1">// 9</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>func</xkd>&nbsp;<xp>(</xp><xnx>jv</xnx>&nbsp;<xo>*</xo><xnx>JsonValue</xnx><xp>)</xp>&nbsp;<xnx>handleSlice</xnx><xp>(</xp><xnx>v</xnx>&nbsp;<xnx>reflect</xnx><xp>.</xp><xnx>Value</xnx><xp>,</xp>&nbsp;<xnx>jt</xnx>&nbsp;<xnx>JsonValueType</xnx><xp>)</xp>&nbsp;<xkt>error</xkt>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>dataType</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>v</xnx><xp>.</xp><xnx>Type</xnx><xp>(</xp><xp>)</xp><xp>.</xp><xnx>Elem</xnx><xp>(</xp><xp>)</xp><xp>.</xp><xnx>Kind</xnx><xp>(</xp><xp>)</xp>&nbsp;<xc1>// 1</xc1><xw>
+</xw><xw>
+</xw><xw>    </xw><xnx>values</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>jv</xnx><xp>.</xp><xnx>Value</xnx><xp>.</xp><xp>(</xp><xp>[</xp><xp>]</xp><xnx>JsonValue</xnx><xp>)</xp>&nbsp;<xc1>// 2</xc1><xw>
+</xw><xw>    </xw><xkd>var</xkd>&nbsp;<xnx>jsonType</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>values</xnx><xp>[</xp><xmi>0</xmi><xp>]</xp><xp>.</xp><xnx>ValueType</xnx>&nbsp;<xc1>// 3</xc1><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>for</xk>&nbsp;<xnx>_</xnx><xp>,</xp>&nbsp;<xnx>value</xnx>&nbsp;<xo>:=</xo>&nbsp;<xk>range</xk>&nbsp;<xnx>values</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// 4</xc1><xw>
+</xw><xw>        </xw><xk>if</xk>&nbsp;<xnx>value</xnx><xp>.</xp><xnx>ValueType</xnx>&nbsp;<xo>!=</xo>&nbsp;<xnx>jsonType</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// 4-1</xc1><xw>
+</xw><xw>            </xw><xk>return</xk>&nbsp;<xnx>errors</xnx><xp>.</xp><xnx>New</xnx><xp>(</xp><xs>&quot;json array does not have elements of one type&quot;</xs><xp>)</xp><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xc1>// 5</xc1><xw>
+</xw><xw>    </xw><xk>if</xk>&nbsp;<xnx>jt</xnx><xp>,</xp>&nbsp;<xnx>ok</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>isSupported</xnx><xp>(</xp><xnx>dataType</xnx><xp>)</xp><xp>;</xp>&nbsp;<xp>!</xp><xnx>ok</xnx>&nbsp;<xo>||</xo>&nbsp;<xnx>jt</xnx>&nbsp;<xo>!=</xo>&nbsp;<xnx>jsonType</xnx>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xk>return</xk>&nbsp;<xnx>errors</xnx><xp>.</xp><xnx>New</xnx><xp>(</xp><xs>&quot;type mismatch for array&quot;</xs><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xc1>// 6</xc1><xw>
+</xw><xw>    </xw><xnx>refSlice</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>reflect</xnx><xp>.</xp><xnx>MakeSlice</xnx><xp>(</xp><xnx>reflect</xnx><xp>.</xp><xnx>SliceOf</xnx><xp>(</xp><xnx>v</xnx><xp>.</xp><xnx>Type</xnx><xp>(</xp><xp>)</xp><xp>.</xp><xnx>Elem</xnx><xp>(</xp><xp>)</xp><xp>)</xp><xp>,</xp>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>values</xnx><xp>)</xp><xp>,</xp>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>values</xnx><xp>)</xp><xp>)</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xc1>// 7</xc1><xw>
+</xw><xw>    </xw><xk>for</xk>&nbsp;<xnx>i</xnx>&nbsp;<xo>:=</xo>&nbsp;<xmi>0</xmi><xp>;</xp>&nbsp;<xnx>i</xnx>&nbsp;<xp>&lt;</xp>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>values</xnx><xp>)</xp><xp>;</xp>&nbsp;<xnx>i</xnx><xo>++</xo>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xc1>// 7-1</xc1><xw>
+</xw><xw>        </xw><xk>if</xk>&nbsp;<xnx>err</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>values</xnx><xp>[</xp><xnx>i</xnx><xp>]</xp><xp>.</xp><xnx>setValue</xnx><xp>(</xp><xnx>dataType</xnx><xp>,</xp>&nbsp;<xnx>refSlice</xnx><xp>.</xp><xnx>Index</xnx><xp>(</xp><xnx>i</xnx><xp>)</xp><xp>)</xp><xp>;</xp>&nbsp;<xnx>err</xnx>&nbsp;<xo>!=</xo>&nbsp;<xkc>nil</xkc>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xk>return</xk>&nbsp;<xnx>err</xnx><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xc1>// 8</xc1><xw>
+</xw><xw>    </xw><xnx>v</xnx><xp>.</xp><xnx>Set</xnx><xp>(</xp><xnx>refSlice</xnx><xp>)</xp><xw>
+</xw><xw>    </xw><xc1>// 9</xc1><xw>
+</xw><xw>    </xw><xk>return</xk>&nbsp;<xkc>nil</xkc><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ol>
 <li>We get the data type of the user-provided slice</li>
 <li>We cast the JSON value to a slice of <code>JsonValue</code></li>
@@ -1104,45 +1082,44 @@ process:
 <li>Return <code>nil</code> because no error occurred.</li>
 </ol>
 <p>Here's a test showing how it's actually used:</p>
-<div class="highlight"><pre><span></span><span class="kd">type</span><span class="w"> </span><span class="nx">Person</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">Name</span><span class="w"> </span><span class="kt">string</span>
-<span class="w">    </span><span class="nx">Age</span><span class="w">  </span><span class="kt">uint8</span>
-<span class="p">}</span>
-
-<span class="kd">type</span><span class="w"> </span><span class="nx">ComplexPerson</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">Person</span><span class="w">       </span><span class="nx">Person</span>
-<span class="w">    </span><span class="nx">Job</span><span class="w">          </span><span class="kt">string</span>
-<span class="w">    </span><span class="nx">LuckyNumbers</span><span class="w"> </span><span class="p">[]</span><span class="kt">int</span>
-<span class="p">}</span>
-
-<span class="kd">func</span><span class="w"> </span><span class="nx">TestUnmarshalling</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">input</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="s">`{</span>
-<span class="s">        &quot;Person&quot;: {</span>
-<span class="s">            &quot;Name&quot;: &quot;John&quot;, </span>
-<span class="s">            &quot;Age&quot;: 25</span>
-<span class="s">         }, </span>
-<span class="s">        &quot;Job&quot;: &quot;Plumber&quot;, </span>
-<span class="s">        &quot;LuckyNumbers&quot;: [-1, 0, 1, 1022]</span>
-<span class="s">    }`</span>
-
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">cPerson</span><span class="w"> </span><span class="nx">ComplexPerson</span>
-
-<span class="w">    </span><span class="nx">expected</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">ComplexPerson</span><span class="p">{</span>
-<span class="w">        </span><span class="nx">Person</span><span class="p">:</span><span class="w">       </span><span class="nx">Person</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;John&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">Age</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">},</span>
-<span class="w">        </span><span class="nx">Job</span><span class="p">:</span><span class="w">          </span><span class="s">&quot;Plumber&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">LuckyNumbers</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1022</span><span class="p">},</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="nx">t</span><span class="p">.</span><span class="nx">Run</span><span class="p">(</span><span class="s">&quot;test&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">json</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">Parse</span><span class="p">(</span><span class="nx">input</span><span class="p">)</span>
-<span class="w">        </span><span class="nx">_</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">json</span><span class="p">.</span><span class="nx">Unmarshal</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">cPerson</span><span class="p">)</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">reflect</span><span class="p">.</span><span class="nx">DeepEqual</span><span class="p">(</span><span class="nx">cPerson</span><span class="p">,</span><span class="w"> </span><span class="nx">expected</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">t</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">&quot;expected: &#39;%-v&#39;&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">expected</span><span class="p">)</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">})</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>type</xkd>&nbsp;<xnx>Person</xnx>&nbsp;<xkd>struct</xkd>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>Name</xnx>&nbsp;<xkt>string</xkt><xw>
+</xw><xw>    </xw><xnx>Age</xnx><xw>  </xw><xkt>uint8</xkt><xw>
+</xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xkd>type</xkd>&nbsp;<xnx>ComplexPerson</xnx>&nbsp;<xkd>struct</xkd>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>Person</xnx><xw>       </xw><xnx>Person</xnx><xw>
+</xw><xw>    </xw><xnx>Job</xnx><xw>          </xw><xkt>string</xkt><xw>
+</xw><xw>    </xw><xnx>LuckyNumbers</xnx>&nbsp;<xp>[</xp><xp>]</xp><xkt>int</xkt><xw>
+</xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xkd>func</xkd>&nbsp;<xnx>TestUnmarshalling</xnx><xp>(</xp><xnx>t</xnx>&nbsp;<xo>*</xo><xnx>testing</xnx><xp>.</xp><xnx>T</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>input</xnx>&nbsp;<xo>:=</xo>&nbsp;<xs>`{
+        &quot;Person&quot;: {
+            &quot;Name&quot;: &quot;John&quot;, 
+            &quot;Age&quot;: 25
+         }, 
+        &quot;Job&quot;: &quot;Plumber&quot;, 
+        &quot;LuckyNumbers&quot;: [-1, 0, 1, 1022]
+    }`</xs><xw>
+</xw><xw>
+</xw><xw>    </xw><xkd>var</xkd>&nbsp;<xnx>cPerson</xnx>&nbsp;<xnx>ComplexPerson</xnx><xw>
+</xw><xw>
+</xw><xw>    </xw><xnx>expected</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>ComplexPerson</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xnx>Person</xnx><xp>:</xp><xw>       </xw><xnx>Person</xnx><xp>{</xp><xnx>Name</xnx><xp>:</xp>&nbsp;<xs>&quot;John&quot;</xs><xp>,</xp>&nbsp;<xnx>Age</xnx><xp>:</xp>&nbsp;<xmi>25</xmi><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xnx>Job</xnx><xp>:</xp><xw>          </xw><xs>&quot;Plumber&quot;</xs><xp>,</xp><xw>
+</xw><xw>        </xw><xnx>LuckyNumbers</xnx><xp>:</xp>&nbsp;<xp>[</xp><xp>]</xp><xkt>int</xkt><xp>{</xp><xo>-</xo><xmi>1</xmi><xp>,</xp>&nbsp;<xmi>0</xmi><xp>,</xp>&nbsp;<xmi>1</xmi><xp>,</xp>&nbsp;<xmi>1022</xmi><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xnx>t</xnx><xp>.</xp><xnx>Run</xnx><xp>(</xp><xs>&quot;test&quot;</xs><xp>,</xp>&nbsp;<xkd>func</xkd><xp>(</xp><xnx>t</xnx>&nbsp;<xo>*</xo><xnx>testing</xnx><xp>.</xp><xnx>T</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xnx>json</xnx><xp>,</xp>&nbsp;<xnx>_</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>Parse</xnx><xp>(</xp><xnx>input</xnx><xp>)</xp><xw>
+</xw><xw>        </xw><xnx>_</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>json</xnx><xp>.</xp><xnx>Unmarshal</xnx><xp>(</xp><xo>&amp;</xo><xnx>cPerson</xnx><xp>)</xp><xw>
+</xw><xw>        </xw><xk>if</xk>&nbsp;<xp>!</xp><xnx>reflect</xnx><xp>.</xp><xnx>DeepEqual</xnx><xp>(</xp><xnx>cPerson</xnx><xp>,</xp>&nbsp;<xnx>expected</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnx>t</xnx><xp>.</xp><xnx>Fatalf</xnx><xp>(</xp><xs>&quot;expected: '%-v'&quot;</xs><xp>,</xp>&nbsp;<xnx>expected</xnx><xp>)</xp><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xp>)</xp><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <p>That's it! You can find the full implementation in the <a href="https://github.com/rhaeguard/gojson">Github repository</a>. </p>
 <p>Cheers!</p>
 <h1>References</h1>

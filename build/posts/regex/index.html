@@ -40,49 +40,47 @@
 </ul>
 <h2>Parsing</h2>
 <p>On its own, a regex string is just that --- a string. We need to transform it into something that has a structure. Such as the following:</p>
-<div class="highlight"><pre><span></span><span class="c1">// original regex string</span>
-<span class="s">&quot;[a-zA-Z0–9_]+@[a-zA-Z0–9]+.[a-zA-Z]{2,}&quot;</span>
-
-<span class="c1">// regex tokens</span>
-<span class="nx">Repeat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nx">infinity</span><span class="p">):</span>
-<span class="w">   </span><span class="nx">Range</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="p">,</span><span class="o">...</span><span class="nx">z</span><span class="p">,</span><span class="w"> </span><span class="nx">A</span><span class="p">,</span><span class="w"> </span><span class="nx">B</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="nx">Z</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="nx">_</span><span class="p">)</span>
-<span class="nx">Literal</span><span class="p">(</span><span class="err">@</span><span class="p">)</span>
-<span class="nx">Repeat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nx">infinity</span><span class="p">):</span>
-<span class="w">   </span><span class="nx">Range</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="p">,</span><span class="o">...</span><span class="nx">z</span><span class="p">,</span><span class="w"> </span><span class="nx">A</span><span class="p">,</span><span class="w"> </span><span class="nx">B</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="nx">Z</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="mi">9</span><span class="p">)</span>
-<span class="nx">Literal</span><span class="p">(.)</span>
-<span class="nx">Repeat</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nx">infinity</span><span class="p">):</span>
-<span class="w">   </span><span class="nx">Range</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="p">,</span><span class="o">...</span><span class="nx">z</span><span class="p">,</span><span class="w"> </span><span class="nx">A</span><span class="p">,</span><span class="w"> </span><span class="nx">B</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="nx">Z</span><span class="p">)</span>
-</pre></div>
-
+<div class="highlight"><pre><xc1>// original regex string</xc1><xw>
+</xw><xs>&quot;[a-zA-Z0–9_]+@[a-zA-Z0–9]+.[a-zA-Z]{2,}&quot;</xs><xw>
+</xw><xw>
+</xw><xc1>// regex tokens</xc1><xw>
+</xw><xnx>Repeat</xnx><xp>(</xp><xmi>1</xmi><xp>,</xp>&nbsp;<xnx>infinity</xnx><xp>)</xp><xp>:</xp><xw>
+</xw><xw>   </xw><xnx>Range</xnx><xp>(</xp><xnx>a</xnx><xp>,</xp>&nbsp;<xnx>b</xnx><xp>,</xp><xo>...</xo><xnx>z</xnx><xp>,</xp>&nbsp;<xnx>A</xnx><xp>,</xp>&nbsp;<xnx>B</xnx><xp>,</xp><xo>...</xo><xp>,</xp><xnx>Z</xnx><xp>,</xp>&nbsp;<xmi>0</xmi><xp>,</xp><xo>...</xo><xp>,</xp><xmi>9</xmi><xp>,</xp><xnx>_</xnx><xp>)</xp><xw>
+</xw><xnx>Literal</xnx><xp>(</xp><xerr>@</xerr><xp>)</xp><xw>
+</xw><xnx>Repeat</xnx><xp>(</xp><xmi>1</xmi><xp>,</xp>&nbsp;<xnx>infinity</xnx><xp>)</xp><xp>:</xp><xw>
+</xw><xw>   </xw><xnx>Range</xnx><xp>(</xp><xnx>a</xnx><xp>,</xp>&nbsp;<xnx>b</xnx><xp>,</xp><xo>...</xo><xnx>z</xnx><xp>,</xp>&nbsp;<xnx>A</xnx><xp>,</xp>&nbsp;<xnx>B</xnx><xp>,</xp><xo>...</xo><xp>,</xp><xnx>Z</xnx><xp>,</xp>&nbsp;<xmi>0</xmi><xp>,</xp><xo>...</xo><xp>,</xp><xmi>9</xmi><xp>)</xp><xw>
+</xw><xnx>Literal</xnx><xp>(</xp><xp>.</xp><xp>)</xp><xw>
+</xw><xnx>Repeat</xnx><xp>(</xp><xmi>2</xmi><xp>,</xp>&nbsp;<xnx>infinity</xnx><xp>)</xp><xp>:</xp><xw>
+</xw><xw>   </xw><xnx>Range</xnx><xp>(</xp><xnx>a</xnx><xp>,</xp>&nbsp;<xnx>b</xnx><xp>,</xp><xo>...</xo><xnx>z</xnx><xp>,</xp>&nbsp;<xnx>A</xnx><xp>,</xp>&nbsp;<xnx>B</xnx><xp>,</xp><xo>...</xo><xp>,</xp><xnx>Z</xnx><xp>)</xp><xw>
+</xw></pre></div>
 <p>In this section, we'll go over the process of parsing a regex string into tokens. 
 The core idea when it comes to parsing a regex string is simple, we will look for the characters that have special meanings such as <code>* + ? () [] {}</code> etc. and will try to create tokens with the help of those characters. It'll be more clear once we start writing some code.
 Before getting into the parsing algorithm, let's define some types and constants.</p>
-<div class="highlight"><pre><span></span><span class="kd">type</span><span class="w"> </span><span class="nx">tokenType</span><span class="w"> </span><span class="kt">uint8</span><span class="w"> </span><span class="c1">// &lt;1&gt;</span>
-
-<span class="kd">const</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="c1">// &lt;2&gt;</span>
-<span class="w">   </span><span class="nx">group</span><span class="w">           </span><span class="nx">tokenType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">iota</span>
-<span class="w">   </span><span class="nx">bracket</span><span class="w">         </span><span class="nx">tokenType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">iota</span>
-<span class="w">   </span><span class="nx">or</span><span class="w">              </span><span class="nx">tokenType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">iota</span>
-<span class="w">   </span><span class="nx">repeat</span><span class="w">          </span><span class="nx">tokenType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">iota</span>
-<span class="w">   </span><span class="nx">literal</span><span class="w">         </span><span class="nx">tokenType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">iota</span>
-<span class="w">   </span><span class="nx">groupUncaptured</span><span class="w"> </span><span class="nx">tokenType</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">iota</span>
-<span class="p">)</span>
-
-<span class="kd">type</span><span class="w"> </span><span class="nx">token</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;3&gt;</span>
-<span class="w">   </span><span class="nx">tokenType</span><span class="w"> </span><span class="nx">tokenType</span>
-<span class="w">   </span><span class="c1">// the payload required for each token will be different </span>
-<span class="w">   </span><span class="c1">// so we need to be flexible with the type</span>
-<span class="w">   </span><span class="nx">value</span><span class="w">     </span><span class="kd">interface</span><span class="p">{}</span>
-<span class="p">}</span>
-
-<span class="kd">type</span><span class="w"> </span><span class="nx">parseContext</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;4&gt;</span>
-<span class="w">   </span><span class="c1">// the index of the character we&#39;re processing</span>
-<span class="w">   </span><span class="c1">// in the regex string</span>
-<span class="w">   </span><span class="nx">pos</span><span class="w">    </span><span class="kt">int</span>
-<span class="w">   </span><span class="nx">tokens</span><span class="w"> </span><span class="p">[]</span><span class="nx">token</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>type</xkd>&nbsp;<xnx>tokenType</xnx>&nbsp;<xkt>uint8</xkt>&nbsp;<xc1>// &lt;1&gt;</xc1><xw>
+</xw><xw>
+</xw><xkd>const</xkd>&nbsp;<xp>(</xp>&nbsp;<xc1>// &lt;2&gt;</xc1><xw>
+</xw><xw>   </xw><xnx>group</xnx><xw>           </xw><xnx>tokenType</xnx>&nbsp;<xp>=</xp>&nbsp;<xkc>iota</xkc><xw>
+</xw><xw>   </xw><xnx>bracket</xnx><xw>         </xw><xnx>tokenType</xnx>&nbsp;<xp>=</xp>&nbsp;<xkc>iota</xkc><xw>
+</xw><xw>   </xw><xnx>or</xnx><xw>              </xw><xnx>tokenType</xnx>&nbsp;<xp>=</xp>&nbsp;<xkc>iota</xkc><xw>
+</xw><xw>   </xw><xnx>repeat</xnx><xw>          </xw><xnx>tokenType</xnx>&nbsp;<xp>=</xp>&nbsp;<xkc>iota</xkc><xw>
+</xw><xw>   </xw><xnx>literal</xnx><xw>         </xw><xnx>tokenType</xnx>&nbsp;<xp>=</xp>&nbsp;<xkc>iota</xkc><xw>
+</xw><xw>   </xw><xnx>groupUncaptured</xnx>&nbsp;<xnx>tokenType</xnx>&nbsp;<xp>=</xp>&nbsp;<xkc>iota</xkc><xw>
+</xw><xp>)</xp><xw>
+</xw><xw>
+</xw><xkd>type</xkd>&nbsp;<xnx>token</xnx>&nbsp;<xkd>struct</xkd>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;3&gt;</xc1><xw>
+</xw><xw>   </xw><xnx>tokenType</xnx>&nbsp;<xnx>tokenType</xnx><xw>
+</xw><xw>   </xw><xc1>// the payload required for each token will be different </xc1><xw>
+</xw><xw>   </xw><xc1>// so we need to be flexible with the type</xc1><xw>
+</xw><xw>   </xw><xnx>value</xnx><xw>     </xw><xkd>interface</xkd><xp>{</xp><xp>}</xp><xw>
+</xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xkd>type</xkd>&nbsp;<xnx>parseContext</xnx>&nbsp;<xkd>struct</xkd>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;4&gt;</xc1><xw>
+</xw><xw>   </xw><xc1>// the index of the character we're processing</xc1><xw>
+</xw><xw>   </xw><xc1>// in the regex string</xc1><xw>
+</xw><xw>   </xw><xnx>pos</xnx><xw>    </xw><xkt>int</xkt><xw>
+</xw><xw>   </xw><xnx>tokens</xnx>&nbsp;<xp>[</xp><xp>]</xp><xnx>token</xnx><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ol>
 <li>It's just a type alias for the character type</li>
 <li>Constants for specifying the type of the token we are working with; think enums.</li>
@@ -90,56 +88,54 @@ Before getting into the parsing algorithm, let's define some types and constants
 <li><code>parseContext</code> will help us keep track of our positions and will hold the tokens parsed so far</li>
 </ol>
 <p>Now, next is our parsing algorithm:</p>
-<div class="highlight"><pre><span></span><span class="kd">func</span><span class="w"> </span><span class="nx">parse</span><span class="p">(</span><span class="nx">regex</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="nx">parseContext</span><span class="w"> </span><span class="p">{</span>
-<span class="w">   </span><span class="nx">ctx</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">parseContext</span><span class="p">{</span>
-<span class="w">      </span><span class="nx">pos</span><span class="p">:</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">      </span><span class="nx">tokens</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="nx">token</span><span class="p">{},</span>
-<span class="w">   </span><span class="p">}</span>
-<span class="w">   </span><span class="k">for</span><span class="w"> </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">regex</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nx">process</span><span class="p">(</span><span class="nx">regex</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="p">)</span>
-<span class="w">      </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="o">++</span>
-<span class="w">   </span><span class="p">}</span>
-
-<span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="nx">ctx</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>func</xkd>&nbsp;<xnx>parse</xnx><xp>(</xp><xnx>regex</xnx>&nbsp;<xkt>string</xkt><xp>)</xp>&nbsp;<xo>*</xo><xnx>parseContext</xnx>&nbsp;<xp>{</xp><xw>
+</xw><xw>   </xw><xnx>ctx</xnx>&nbsp;<xo>:=</xo>&nbsp;<xo>&amp;</xo><xnx>parseContext</xnx><xp>{</xp><xw>
+</xw><xw>      </xw><xnx>pos</xnx><xp>:</xp><xw>    </xw><xmi>0</xmi><xp>,</xp><xw>
+</xw><xw>      </xw><xnx>tokens</xnx><xp>:</xp>&nbsp;<xp>[</xp><xp>]</xp><xnx>token</xnx><xp>{</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xw>   </xw><xp>}</xp><xw>
+</xw><xw>   </xw><xk>for</xk>&nbsp;<xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx>&nbsp;<xp>&lt;</xp>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>regex</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>      </xw><xnx>process</xnx><xp>(</xp><xnx>regex</xnx><xp>,</xp>&nbsp;<xnx>ctx</xnx><xp>)</xp><xw>
+</xw><xw>      </xw><xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx><xo>++</xo><xw>
+</xw><xw>   </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>   </xw><xk>return</xk>&nbsp;<xnx>ctx</xnx><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ul>
 <li>We loop through each character and process it until we reach to the end of the regex string. </li>
 </ul>
 <p>Next, let's take a look at the <code>process</code> method. It's a bit more involved, so let's take it step by step.</p>
-<div class="highlight"><pre><span></span><span class="kd">func</span><span class="w"> </span><span class="nx">process</span><span class="p">(</span><span class="nx">regex</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="w"> </span><span class="o">*</span><span class="nx">parseContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">ch</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">regex</span><span class="p">[</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="p">]</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">ch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;(&#39;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;1&gt;</span>
-<span class="w">        </span><span class="nx">groupCtx</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">parseContext</span><span class="p">{</span>
-<span class="w">            </span><span class="nx">pos</span><span class="p">:</span><span class="w">    </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="p">,</span>
-<span class="w">            </span><span class="nx">tokens</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="nx">token</span><span class="p">{},</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">        </span><span class="nx">parseGroup</span><span class="p">(</span><span class="nx">regex</span><span class="p">,</span><span class="w"> </span><span class="nx">groupCtx</span><span class="p">)</span>
-<span class="w">        </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="p">,</span><span class="w"> </span><span class="nx">token</span><span class="p">{</span>
-<span class="w">            </span><span class="nx">tokenType</span><span class="p">:</span><span class="w"> </span><span class="nx">group</span><span class="p">,</span>
-<span class="w">            </span><span class="nx">value</span><span class="p">:</span><span class="w">     </span><span class="nx">groupCtx</span><span class="p">.</span><span class="nx">tokens</span><span class="p">,</span>
-<span class="w">        </span><span class="p">})</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">ch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;[&#39;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;2&gt;</span>
-<span class="w">        </span><span class="nx">parseBracket</span><span class="p">(</span><span class="nx">regex</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="p">)</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">ch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;|&#39;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;3&gt;</span>
-<span class="w">        </span><span class="nx">parseOr</span><span class="p">(</span><span class="nx">regex</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="p">)</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">ch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;*&#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">ch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;?&#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">ch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;+&#39;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;4&gt;</span>
-<span class="w">        </span><span class="nx">parseRepeat</span><span class="p">(</span><span class="nx">regex</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="p">)</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">ch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;{&#39;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;5&gt;</span>
-<span class="w">        </span><span class="nx">parseRepeatSpecified</span><span class="p">(</span><span class="nx">regex</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="p">)</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;6&gt;</span>
-<span class="w">        </span><span class="c1">// literal</span>
-<span class="w">        </span><span class="nx">t</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">token</span><span class="p">{</span>
-<span class="w">            </span><span class="nx">tokenType</span><span class="p">:</span><span class="w"> </span><span class="nx">literal</span><span class="p">,</span>
-<span class="w">            </span><span class="nx">value</span><span class="p">:</span><span class="w">     </span><span class="nx">ch</span><span class="p">,</span>
-<span class="w">        </span><span class="p">}</span>
-
-<span class="w">        </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="p">,</span><span class="w"> </span><span class="nx">t</span><span class="p">)</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>func</xkd>&nbsp;<xnx>process</xnx><xp>(</xp><xnx>regex</xnx>&nbsp;<xkt>string</xkt><xp>,</xp>&nbsp;<xnx>ctx</xnx>&nbsp;<xo>*</xo><xnx>parseContext</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>ch</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>regex</xnx><xp>[</xp><xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx><xp>]</xp><xw>
+</xw><xw>    </xw><xk>if</xk>&nbsp;<xnx>ch</xnx>&nbsp;<xo>==</xo>&nbsp;<xsc>'('</xsc>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;1&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>groupCtx</xnx>&nbsp;<xo>:=</xo>&nbsp;<xo>&amp;</xo><xnx>parseContext</xnx><xp>{</xp><xw>
+</xw><xw>            </xw><xnx>pos</xnx><xp>:</xp><xw>    </xw><xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx><xp>,</xp><xw>
+</xw><xw>            </xw><xnx>tokens</xnx><xp>:</xp>&nbsp;<xp>[</xp><xp>]</xp><xnx>token</xnx><xp>{</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>        </xw><xnx>parseGroup</xnx><xp>(</xp><xnx>regex</xnx><xp>,</xp>&nbsp;<xnx>groupCtx</xnx><xp>)</xp><xw>
+</xw><xw>        </xw><xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx><xp>,</xp>&nbsp;<xnx>token</xnx><xp>{</xp><xw>
+</xw><xw>            </xw><xnx>tokenType</xnx><xp>:</xp>&nbsp;<xnx>group</xnx><xp>,</xp><xw>
+</xw><xw>            </xw><xnx>value</xnx><xp>:</xp><xw>     </xw><xnx>groupCtx</xnx><xp>.</xp><xnx>tokens</xnx><xp>,</xp><xw>
+</xw><xw>        </xw><xp>}</xp><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnx>ch</xnx>&nbsp;<xo>==</xo>&nbsp;<xsc>'['</xsc>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;2&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>parseBracket</xnx><xp>(</xp><xnx>regex</xnx><xp>,</xp>&nbsp;<xnx>ctx</xnx><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnx>ch</xnx>&nbsp;<xo>==</xo>&nbsp;<xsc>'|'</xsc>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;3&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>parseOr</xnx><xp>(</xp><xnx>regex</xnx><xp>,</xp>&nbsp;<xnx>ctx</xnx><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnx>ch</xnx>&nbsp;<xo>==</xo>&nbsp;<xsc>'*'</xsc>&nbsp;<xo>||</xo>&nbsp;<xnx>ch</xnx>&nbsp;<xo>==</xo>&nbsp;<xsc>'?'</xsc>&nbsp;<xo>||</xo>&nbsp;<xnx>ch</xnx>&nbsp;<xo>==</xo>&nbsp;<xsc>'+'</xsc>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;4&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>parseRepeat</xnx><xp>(</xp><xnx>regex</xnx><xp>,</xp>&nbsp;<xnx>ctx</xnx><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnx>ch</xnx>&nbsp;<xo>==</xo>&nbsp;<xsc>'{'</xsc>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;5&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>parseRepeatSpecified</xnx><xp>(</xp><xnx>regex</xnx><xp>,</xp>&nbsp;<xnx>ctx</xnx><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;6&gt;</xc1><xw>
+</xw><xw>        </xw><xc1>// literal</xc1><xw>
+</xw><xw>        </xw><xnx>t</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>token</xnx><xp>{</xp><xw>
+</xw><xw>            </xw><xnx>tokenType</xnx><xp>:</xp>&nbsp;<xnx>literal</xnx><xp>,</xp><xw>
+</xw><xw>            </xw><xnx>value</xnx><xp>:</xp><xw>     </xw><xnx>ch</xnx><xp>,</xp><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>        </xw><xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx><xp>,</xp>&nbsp;<xnx>t</xnx><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <p>As we mentioned earlier, we try to match the characters we recognize and use them to parse tokens.</p>
 <ol>
 <li>If the current character is <code>(</code>, the opening parenthesis, we know we're dealing with a group, thus we try to parse the next couple of characters as a group.</li>
@@ -153,72 +149,69 @@ Before getting into the parsing algorithm, let's define some types and constants
 <li>If the character did not match with anything, we consider it as a literal. Please keep in mind that this is a simplified implementation. There are a lot of cases to consider when it comes to parsing regular expressions; for instance, 1 is a literal, but depending on the context it can actually be a part of a backreference <code>\1</code> that refers to the first captured group. Our simplified algorithm also DOES NOT consider the escape characters (which means <code>\a</code> is considered as a concatenation of two literals: <code>\</code> and <code>a</code>).</li>
 </ol>
 <p>Next, we'll examine each function defined in the above snippet. Let's start with the parsing of group expressions <strong><em>(1)</em></strong>:</p>
-<div class="highlight"><pre><span></span><span class="kd">func</span><span class="w"> </span><span class="nx">parseGroup</span><span class="p">(</span><span class="nx">regex</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="w"> </span><span class="o">*</span><span class="nx">parseContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">   </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="c1">// get past the LPAREN (</span>
-<span class="w">   </span><span class="k">for</span><span class="w"> </span><span class="nx">regex</span><span class="p">[</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="sc">&#39;)&#39;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nx">process</span><span class="p">(</span><span class="nx">regex</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="p">)</span>
-<span class="w">      </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">   </span><span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>func</xkd>&nbsp;<xnx>parseGroup</xnx><xp>(</xp><xnx>regex</xnx>&nbsp;<xkt>string</xkt><xp>,</xp>&nbsp;<xnx>ctx</xnx>&nbsp;<xo>*</xo><xnx>parseContext</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>   </xw><xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx>&nbsp;<xo>+=</xo>&nbsp;<xmi>1</xmi>&nbsp;<xc1>// get past the LPAREN (</xc1><xw>
+</xw><xw>   </xw><xk>for</xk>&nbsp;<xnx>regex</xnx><xp>[</xp><xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx><xp>]</xp>&nbsp;<xo>!=</xo>&nbsp;<xsc>')'</xsc>&nbsp;<xp>{</xp><xw>
+</xw><xw>      </xw><xnx>process</xnx><xp>(</xp><xnx>regex</xnx><xp>,</xp>&nbsp;<xnx>ctx</xnx><xp>)</xp><xw>
+</xw><xw>      </xw><xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx>&nbsp;<xo>+=</xo>&nbsp;<xmi>1</xmi><xw>
+</xw><xw>   </xw><xp>}</xp><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ul>
 <li>We process each character like we did in the <code>parse</code> method until we encounter the closing parenthesis. We will not cover the error handling in this tutorial, so we're simply not checking if the index is still within bounds. It will panic anyway. </li>
 </ul>
 <p>What about the extra code around <code>parseGroup</code> in the <code>process</code> function? What happens there? Here's the snippet:</p>
-<div class="highlight"><pre><span></span><span class="c1">// snippet from the `process` function</span>
-<span class="nx">groupCtx</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">parseContext</span><span class="p">{</span>
-<span class="w">   </span><span class="nx">pos</span><span class="p">:</span><span class="w">    </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="p">,</span>
-<span class="w">   </span><span class="nx">tokens</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="nx">token</span><span class="p">{},</span>
-<span class="p">}</span>
-
-<span class="c1">// parsing</span>
-<span class="nx">parseGroup</span><span class="p">(</span><span class="nx">regex</span><span class="p">,</span><span class="w"> </span><span class="nx">groupCtx</span><span class="p">)</span>
-
-<span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="p">,</span><span class="w"> </span><span class="nx">token</span><span class="p">{</span>
-<span class="w">   </span><span class="nx">tokenType</span><span class="p">:</span><span class="w"> </span><span class="nx">group</span><span class="p">,</span>
-<span class="w">   </span><span class="nx">value</span><span class="p">:</span><span class="w">     </span><span class="nx">groupCtx</span><span class="p">.</span><span class="nx">tokens</span><span class="p">,</span>
-<span class="p">})</span>
-</pre></div>
-
+<div class="highlight"><pre><xc1>// snippet from the `process` function</xc1><xw>
+</xw><xnx>groupCtx</xnx>&nbsp;<xo>:=</xo>&nbsp;<xo>&amp;</xo><xnx>parseContext</xnx><xp>{</xp><xw>
+</xw><xw>   </xw><xnx>pos</xnx><xp>:</xp><xw>    </xw><xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx><xp>,</xp><xw>
+</xw><xw>   </xw><xnx>tokens</xnx><xp>:</xp>&nbsp;<xp>[</xp><xp>]</xp><xnx>token</xnx><xp>{</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xc1>// parsing</xc1><xw>
+</xw><xnx>parseGroup</xnx><xp>(</xp><xnx>regex</xnx><xp>,</xp>&nbsp;<xnx>groupCtx</xnx><xp>)</xp><xw>
+</xw><xw>
+</xw><xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx><xp>,</xp>&nbsp;<xnx>token</xnx><xp>{</xp><xw>
+</xw><xw>   </xw><xnx>tokenType</xnx><xp>:</xp>&nbsp;<xnx>group</xnx><xp>,</xp><xw>
+</xw><xw>   </xw><xnx>value</xnx><xp>:</xp><xw>     </xw><xnx>groupCtx</xnx><xp>.</xp><xnx>tokens</xnx><xp>,</xp><xw>
+</xw><xp>}</xp><xp>)</xp><xw>
+</xw></pre></div>
 <ul>
 <li>We create a new context specific to each group, so that we'll be able to bundle together all the tokens within a specific group without dealing with the top level context object. </li>
 <li>Once we're done parsing the group, we bundle all the parsed tokens into a new token of type <code>group</code> and append it to the global token list.</li>
 </ul>
 <p>Let's now see how we can parse bracket expressions <strong><em>(2)</em></strong>. This is the whole function, but we'll cover it step by step.</p>
-<div class="highlight"><pre><span></span><span class="kd">func</span><span class="w"> </span><span class="nx">parseBracket</span><span class="p">(</span><span class="nx">regex</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="w"> </span><span class="o">*</span><span class="nx">parseContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="o">++</span><span class="w"> </span><span class="c1">// get past the LBRACKET</span>
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">literals</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">regex</span><span class="p">[</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="sc">&#39;]&#39;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;1&gt;</span>
-<span class="w">        </span><span class="nx">ch</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">regex</span><span class="p">[</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="p">]</span>
-
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">ch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;-&#39;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;2&gt;</span>
-<span class="w">            </span><span class="nx">next</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">regex</span><span class="p">[</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="c1">// &lt;3-1&gt;</span>
-<span class="w">            </span><span class="nx">prev</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">literals</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="nx">literals</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="c1">// &lt;3-1&gt;</span>
-<span class="w">            </span><span class="nx">literals</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="nx">literals</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Sprintf</span><span class="p">(</span><span class="s">&quot;%c%c&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">prev</span><span class="p">,</span><span class="w"> </span><span class="nx">next</span><span class="p">)</span><span class="w"> </span><span class="c1">// &lt;3-2&gt;</span>
-<span class="w">            </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="o">++</span><span class="w">  </span><span class="c1">// to consume the &#39;next&#39; char</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;4&gt;</span>
-<span class="w">            </span><span class="nx">literals</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">literals</span><span class="p">,</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Sprintf</span><span class="p">(</span><span class="s">&quot;%c&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">ch</span><span class="p">))</span>
-<span class="w">        </span><span class="p">}</span>
-
-<span class="w">        </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="o">++</span><span class="w"> </span><span class="c1">// &lt;5&gt;</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="nx">literalsSet</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="kd">map</span><span class="p">[</span><span class="kt">uint8</span><span class="p">]</span><span class="kt">bool</span><span class="p">{}</span>
-
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">l</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">literals</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;6&gt;</span>
-<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">l</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="nx">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="nx">l</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;7&gt;</span>
-<span class="w">            </span><span class="nx">literalsSet</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">true</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="p">,</span><span class="w"> </span><span class="nx">token</span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;8&gt;</span>
-<span class="w">        </span><span class="nx">tokenType</span><span class="p">:</span><span class="w"> </span><span class="nx">bracket</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">value</span><span class="p">:</span><span class="w">     </span><span class="nx">literalsSet</span><span class="p">,</span>
-<span class="w">    </span><span class="p">})</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>func</xkd>&nbsp;<xnx>parseBracket</xnx><xp>(</xp><xnx>regex</xnx>&nbsp;<xkt>string</xkt><xp>,</xp>&nbsp;<xnx>ctx</xnx>&nbsp;<xo>*</xo><xnx>parseContext</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx><xo>++</xo>&nbsp;<xc1>// get past the LBRACKET</xc1><xw>
+</xw><xw>    </xw><xkd>var</xkd>&nbsp;<xnx>literals</xnx>&nbsp;<xp>[</xp><xp>]</xp><xkt>string</xkt><xw>
+</xw><xw>    </xw><xk>for</xk>&nbsp;<xnx>regex</xnx><xp>[</xp><xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx><xp>]</xp>&nbsp;<xo>!=</xo>&nbsp;<xsc>']'</xsc>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;1&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>ch</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>regex</xnx><xp>[</xp><xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx><xp>]</xp><xw>
+</xw><xw>
+</xw><xw>        </xw><xk>if</xk>&nbsp;<xnx>ch</xnx>&nbsp;<xo>==</xo>&nbsp;<xsc>'-'</xsc>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;2&gt;</xc1><xw>
+</xw><xw>            </xw><xnx>next</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>regex</xnx><xp>[</xp><xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx><xo>+</xo><xmi>1</xmi><xp>]</xp>&nbsp;<xc1>// &lt;3-1&gt;</xc1><xw>
+</xw><xw>            </xw><xnx>prev</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>literals</xnx><xp>[</xp><xnb>len</xnb><xp>(</xp><xnx>literals</xnx><xp>)</xp><xo>-</xo><xmi>1</xmi><xp>]</xp><xp>[</xp><xmi>0</xmi><xp>]</xp>&nbsp;<xc1>// &lt;3-1&gt;</xc1><xw>
+</xw><xw>            </xw><xnx>literals</xnx><xp>[</xp><xnb>len</xnb><xp>(</xp><xnx>literals</xnx><xp>)</xp><xo>-</xo><xmi>1</xmi><xp>]</xp>&nbsp;<xp>=</xp>&nbsp;<xnx>fmt</xnx><xp>.</xp><xnx>Sprintf</xnx><xp>(</xp><xs>&quot;%c%c&quot;</xs><xp>,</xp>&nbsp;<xnx>prev</xnx><xp>,</xp>&nbsp;<xnx>next</xnx><xp>)</xp>&nbsp;<xc1>// &lt;3-2&gt;</xc1><xw>
+</xw><xw>            </xw><xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx><xo>++</xo><xw>  </xw><xc1>// to consume the 'next' char</xc1><xw>
+</xw><xw>        </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;4&gt;</xc1><xw>
+</xw><xw>            </xw><xnx>literals</xnx>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xnx>literals</xnx><xp>,</xp>&nbsp;<xnx>fmt</xnx><xp>.</xp><xnx>Sprintf</xnx><xp>(</xp><xs>&quot;%c&quot;</xs><xp>,</xp>&nbsp;<xnx>ch</xnx><xp>)</xp><xp>)</xp><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>        </xw><xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx><xo>++</xo>&nbsp;<xc1>// &lt;5&gt;</xc1><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xnx>literalsSet</xnx>&nbsp;<xo>:=</xo>&nbsp;<xkd>map</xkd><xp>[</xp><xkt>uint8</xkt><xp>]</xp><xkt>bool</xkt><xp>{</xp><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>for</xk>&nbsp;<xnx>_</xnx><xp>,</xp>&nbsp;<xnx>l</xnx>&nbsp;<xo>:=</xo>&nbsp;<xk>range</xk>&nbsp;<xnx>literals</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;6&gt;</xc1><xw>
+</xw><xw>        </xw><xk>for</xk>&nbsp;<xnx>i</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>l</xnx><xp>[</xp><xmi>0</xmi><xp>]</xp><xp>;</xp>&nbsp;<xnx>i</xnx>&nbsp;<xo>&lt;=</xo>&nbsp;<xnx>l</xnx><xp>[</xp><xnb>len</xnb><xp>(</xp><xnx>l</xnx><xp>)</xp><xo>-</xo><xmi>1</xmi><xp>]</xp><xp>;</xp>&nbsp;<xnx>i</xnx><xo>++</xo>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;7&gt;</xc1><xw>
+</xw><xw>            </xw><xnx>literalsSet</xnx><xp>[</xp><xnx>i</xnx><xp>]</xp>&nbsp;<xp>=</xp>&nbsp;<xkc>true</xkc><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx><xp>,</xp>&nbsp;<xnx>token</xnx><xp>{</xp>&nbsp;<xc1>// &lt;8&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>tokenType</xnx><xp>:</xp>&nbsp;<xnx>bracket</xnx><xp>,</xp><xw>
+</xw><xw>        </xw><xnx>value</xnx><xp>:</xp><xw>     </xw><xnx>literalsSet</xnx><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xp>)</xp><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ol>
 <li>Similar to the way we parsed the group expression, we go through each character till we reach the closing bracket (<code>]</code>). </li>
 <li>For each character we check if it is <code>-</code> because that's the range indicator (e.g., <code>a-zK-Z2-8</code>). </li>
@@ -236,38 +229,37 @@ Before getting into the parsing algorithm, let's define some types and constants
 <li>Finally, once we have all the duplicates removed, we save the bracket token to our list of tokens.</li>
 </ol>
 <p>Next in line is <code>parseOr</code> which is able to parse alternations <strong><em>(3)</em></strong>.</p>
-<div class="highlight"><pre><span></span><span class="kd">func</span><span class="w"> </span><span class="nx">parseOr</span><span class="p">(</span><span class="nx">regex</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="w"> </span><span class="o">*</span><span class="nx">parseContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="c1">// &lt;1:start&gt;</span>
-<span class="w">    </span><span class="nx">rhsContext</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">parseContext</span><span class="p">{</span>
-<span class="w">        </span><span class="nx">pos</span><span class="p">:</span><span class="w">    </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">tokens</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="nx">token</span><span class="p">{},</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">    </span><span class="nx">rhsContext</span><span class="p">.</span><span class="nx">pos</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="c1">// get past |</span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">rhsContext</span><span class="p">.</span><span class="nx">pos</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">regex</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">regex</span><span class="p">[</span><span class="nx">rhsContext</span><span class="p">.</span><span class="nx">pos</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="sc">&#39;)&#39;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">process</span><span class="p">(</span><span class="nx">regex</span><span class="p">,</span><span class="w"> </span><span class="nx">rhsContext</span><span class="p">)</span>
-<span class="w">        </span><span class="nx">rhsContext</span><span class="p">.</span><span class="nx">pos</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">    </span><span class="c1">// &lt;1:end&gt;</span>
-
-<span class="w">    </span><span class="c1">// both sides of the OR expression</span>
-<span class="w">    </span><span class="nx">left</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">token</span><span class="p">{</span>
-<span class="w">        </span><span class="nx">tokenType</span><span class="p">:</span><span class="w"> </span><span class="nx">groupUncaptured</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">value</span><span class="p">:</span><span class="w">     </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="p">,</span><span class="w"> </span><span class="c1">// &lt;2&gt;</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="nx">right</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">token</span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;3&gt;</span>
-<span class="w">        </span><span class="nx">tokenType</span><span class="p">:</span><span class="w"> </span><span class="nx">groupUncaptured</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">value</span><span class="p">:</span><span class="w">     </span><span class="nx">rhsContext</span><span class="p">.</span><span class="nx">tokens</span><span class="p">,</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">    </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">rhsContext</span><span class="p">.</span><span class="nx">pos</span><span class="w"> </span><span class="c1">// &lt;4&gt;</span>
-
-<span class="w">    </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[]</span><span class="nx">token</span><span class="p">{{</span><span class="w"> </span><span class="c1">// &lt;5&gt;</span>
-<span class="w">        </span><span class="nx">tokenType</span><span class="p">:</span><span class="w"> </span><span class="nx">or</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">value</span><span class="p">:</span><span class="w">     </span><span class="p">[]</span><span class="nx">token</span><span class="p">{</span><span class="nx">left</span><span class="p">,</span><span class="w"> </span><span class="nx">right</span><span class="p">},</span>
-<span class="w">    </span><span class="p">}}</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>func</xkd>&nbsp;<xnx>parseOr</xnx><xp>(</xp><xnx>regex</xnx>&nbsp;<xkt>string</xkt><xp>,</xp>&nbsp;<xnx>ctx</xnx>&nbsp;<xo>*</xo><xnx>parseContext</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xc1>// &lt;1:start&gt;</xc1><xw>
+</xw><xw>    </xw><xnx>rhsContext</xnx>&nbsp;<xo>:=</xo>&nbsp;<xo>&amp;</xo><xnx>parseContext</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xnx>pos</xnx><xp>:</xp><xw>    </xw><xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx><xp>,</xp><xw>
+</xw><xw>        </xw><xnx>tokens</xnx><xp>:</xp>&nbsp;<xp>[</xp><xp>]</xp><xnx>token</xnx><xp>{</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xnx>rhsContext</xnx><xp>.</xp><xnx>pos</xnx>&nbsp;<xo>+=</xo>&nbsp;<xmi>1</xmi>&nbsp;<xc1>// get past |</xc1><xw>
+</xw><xw>    </xw><xk>for</xk>&nbsp;<xnx>rhsContext</xnx><xp>.</xp><xnx>pos</xnx>&nbsp;<xp>&lt;</xp>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>regex</xnx><xp>)</xp>&nbsp;<xo>&amp;&amp;</xo>&nbsp;<xnx>regex</xnx><xp>[</xp><xnx>rhsContext</xnx><xp>.</xp><xnx>pos</xnx><xp>]</xp>&nbsp;<xo>!=</xo>&nbsp;<xsc>')'</xsc>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xnx>process</xnx><xp>(</xp><xnx>regex</xnx><xp>,</xp>&nbsp;<xnx>rhsContext</xnx><xp>)</xp><xw>
+</xw><xw>        </xw><xnx>rhsContext</xnx><xp>.</xp><xnx>pos</xnx>&nbsp;<xo>+=</xo>&nbsp;<xmi>1</xmi><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xc1>// &lt;1:end&gt;</xc1><xw>
+</xw><xw>
+</xw><xw>    </xw><xc1>// both sides of the OR expression</xc1><xw>
+</xw><xw>    </xw><xnx>left</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>token</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xnx>tokenType</xnx><xp>:</xp>&nbsp;<xnx>groupUncaptured</xnx><xp>,</xp><xw>
+</xw><xw>        </xw><xnx>value</xnx><xp>:</xp><xw>     </xw><xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx><xp>,</xp>&nbsp;<xc1>// &lt;2&gt;</xc1><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xnx>right</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>token</xnx><xp>{</xp>&nbsp;<xc1>// &lt;3&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>tokenType</xnx><xp>:</xp>&nbsp;<xnx>groupUncaptured</xnx><xp>,</xp><xw>
+</xw><xw>        </xw><xnx>value</xnx><xp>:</xp><xw>     </xw><xnx>rhsContext</xnx><xp>.</xp><xnx>tokens</xnx><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>rhsContext</xnx><xp>.</xp><xnx>pos</xnx>&nbsp;<xc1>// &lt;4&gt;</xc1><xw>
+</xw><xw>
+</xw><xw>    </xw><xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx>&nbsp;<xp>=</xp>&nbsp;<xp>[</xp><xp>]</xp><xnx>token</xnx><xp>{</xp><xp>{</xp>&nbsp;<xc1>// &lt;5&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>tokenType</xnx><xp>:</xp>&nbsp;<xnx>or</xnx><xp>,</xp><xw>
+</xw><xw>        </xw><xnx>value</xnx><xp>:</xp><xw>     </xw><xp>[</xp><xp>]</xp><xnx>token</xnx><xp>{</xp><xnx>left</xnx><xp>,</xp>&nbsp;<xnx>right</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xp>}</xp><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ol>
 <li>The alternation (<em>or</em>) operation has the following syntax: <code>&lt;left&gt;|&lt;right&gt;</code> or <code>(&lt;left&gt;|&lt;right&gt;)</code> meaning it is an alternation between what's in the left hand side and what's on the right hand side. By the time we encounter the <code>|</code> symbol, we've already parsed everything to the left of it. Now, it's time to parse everything to the right. It's almost the same code as parsing groups.  We create a right-hand-side specific empty context, and collect all the tokens into it. We do this until the end of the regex string or until we face a closing parenthesis. </li>
 <li>Now that we are done parsing both sides, it's time to create the alternation token. The left side will contain all the tokens that were in the original context object, because it contains all the tokens we have parsed so far. </li>
@@ -276,92 +268,90 @@ Before getting into the parsing algorithm, let's define some types and constants
 <li>We create the alternation token and add it to the original context. One important thing is that we do not keep the old tokens in the original context as they are already contained in the alternation token.</li>
 </ol>
 <p>Now let's look at repetitions <strong><em>(4)</em></strong>.</p>
-<div class="highlight"><pre><span></span><span class="kd">const</span><span class="w"> </span><span class="nx">repeatInfinity</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span>
-
-<span class="kd">func</span><span class="w"> </span><span class="nx">parseRepeat</span><span class="p">(</span><span class="nx">regex</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="w"> </span><span class="o">*</span><span class="nx">parseContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">ch</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">regex</span><span class="p">[</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="p">]</span>
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">min</span><span class="p">,</span><span class="w"> </span><span class="nx">max</span><span class="w"> </span><span class="kt">int</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">ch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;*&#39;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">min</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">0</span>
-<span class="w">        </span><span class="nx">max</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">repeatInfinity</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">ch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;?&#39;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">min</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">0</span>
-<span class="w">        </span><span class="nx">max</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// ch == &#39;+&#39;</span>
-<span class="w">        </span><span class="nx">min</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">        </span><span class="nx">max</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">repeatInfinity</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">    </span><span class="c1">// we need to wrap the last token with the quantifier data</span>
-<span class="w">    </span><span class="c1">// so that we know what the min and max apply to</span>
-<span class="w">    </span><span class="nx">lastToken</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="w">    </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">token</span><span class="p">{</span>
-<span class="w">        </span><span class="nx">tokenType</span><span class="p">:</span><span class="w"> </span><span class="nx">repeat</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">value</span><span class="p">:</span><span class="w"> </span><span class="nx">repeatPayload</span><span class="p">{</span>
-<span class="w">            </span><span class="nx">min</span><span class="p">:</span><span class="w">   </span><span class="nx">min</span><span class="p">,</span>
-<span class="w">            </span><span class="nx">max</span><span class="p">:</span><span class="w">   </span><span class="nx">max</span><span class="p">,</span>
-<span class="w">            </span><span class="nx">token</span><span class="p">:</span><span class="w"> </span><span class="nx">lastToken</span><span class="p">,</span>
-<span class="w">        </span><span class="p">},</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>const</xkd>&nbsp;<xnx>repeatInfinity</xnx>&nbsp;<xp>=</xp>&nbsp;<xo>-</xo><xmi>1</xmi><xw>
+</xw><xw>
+</xw><xkd>func</xkd>&nbsp;<xnx>parseRepeat</xnx><xp>(</xp><xnx>regex</xnx>&nbsp;<xkt>string</xkt><xp>,</xp>&nbsp;<xnx>ctx</xnx>&nbsp;<xo>*</xo><xnx>parseContext</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>ch</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>regex</xnx><xp>[</xp><xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx><xp>]</xp><xw>
+</xw><xw>    </xw><xkd>var</xkd>&nbsp;<xnx>min</xnx><xp>,</xp>&nbsp;<xnx>max</xnx>&nbsp;<xkt>int</xkt><xw>
+</xw><xw>    </xw><xk>if</xk>&nbsp;<xnx>ch</xnx>&nbsp;<xo>==</xo>&nbsp;<xsc>'*'</xsc>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xnx>min</xnx>&nbsp;<xp>=</xp>&nbsp;<xmi>0</xmi><xw>
+</xw><xw>        </xw><xnx>max</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>repeatInfinity</xnx><xw>
+</xw><xw>    </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnx>ch</xnx>&nbsp;<xo>==</xo>&nbsp;<xsc>'?'</xsc>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xnx>min</xnx>&nbsp;<xp>=</xp>&nbsp;<xmi>0</xmi><xw>
+</xw><xw>        </xw><xnx>max</xnx>&nbsp;<xp>=</xp>&nbsp;<xmi>1</xmi><xw>
+</xw><xw>    </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xc1>// ch == '+'</xc1><xw>
+</xw><xw>        </xw><xnx>min</xnx>&nbsp;<xp>=</xp>&nbsp;<xmi>1</xmi><xw>
+</xw><xw>        </xw><xnx>max</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>repeatInfinity</xnx><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xc1>// we need to wrap the last token with the quantifier data</xc1><xw>
+</xw><xw>    </xw><xc1>// so that we know what the min and max apply to</xc1><xw>
+</xw><xw>    </xw><xnx>lastToken</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx><xp>[</xp><xnb>len</xnb><xp>(</xp><xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx><xp>)</xp><xo>-</xo><xmi>1</xmi><xp>]</xp><xw>
+</xw><xw>    </xw><xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx><xp>[</xp><xnb>len</xnb><xp>(</xp><xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx><xp>)</xp><xo>-</xo><xmi>1</xmi><xp>]</xp>&nbsp;<xp>=</xp>&nbsp;<xnx>token</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xnx>tokenType</xnx><xp>:</xp>&nbsp;<xnx>repeat</xnx><xp>,</xp><xw>
+</xw><xw>        </xw><xnx>value</xnx><xp>:</xp>&nbsp;<xnx>repeatPayload</xnx><xp>{</xp><xw>
+</xw><xw>            </xw><xnx>min</xnx><xp>:</xp><xw>   </xw><xnx>min</xnx><xp>,</xp><xw>
+</xw><xw>            </xw><xnx>max</xnx><xp>:</xp><xw>   </xw><xnx>max</xnx><xp>,</xp><xw>
+</xw><xw>            </xw><xnx>token</xnx><xp>:</xp>&nbsp;<xnx>lastToken</xnx><xp>,</xp><xw>
+</xw><xw>        </xw><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ul>
 <li>Basic idea for this particular method is that each symbol here specifies some minimum and maximum number of repetitions. <code>repeatInfinity</code> is <code>-1</code>, but we use it as infinity. </li>
 <li>Once we have the boundaries set, we simply take  the last parsed token (<em>because the repetition symbols are always to the right side of the token</em>), wrap it in a <code>repeat</code> token and appropriate boundaries, and finally save it back to the same position in the tokens list. </li>
 </ul>
 <p>The other repetition expression has a bit longer code, but the idea is still the same <strong><em>(5)</em></strong>.</p>
-<div class="highlight"><pre><span></span><span class="kd">func</span><span class="w"> </span><span class="nx">parseRepeatSpecified</span><span class="p">(</span><span class="nx">regex</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="w"> </span><span class="o">*</span><span class="nx">parseContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="c1">// +1 because we skip LCURLY { at the beginning</span>
-<span class="w">    </span><span class="nx">start</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">    </span><span class="c1">// proceed until we reach to the end of the curly braces</span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">regex</span><span class="p">[</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="sc">&#39;}&#39;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="o">++</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="nx">boundariesStr</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">regex</span><span class="p">[</span><span class="nx">start</span><span class="p">:</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">pos</span><span class="p">]</span><span class="w"> </span><span class="c1">// &lt;1&gt;</span>
-<span class="w">    </span><span class="nx">pieces</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">strings</span><span class="p">.</span><span class="nx">Split</span><span class="p">(</span><span class="nx">boundariesStr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;,&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// &lt;2&gt;</span>
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">min</span><span class="p">,</span><span class="w"> </span><span class="nx">max</span><span class="w"> </span><span class="kt">int</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">pieces</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;3&gt;</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">value</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">strconv</span><span class="p">.</span><span class="nx">Atoi</span><span class="p">(</span><span class="nx">pieces</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">min</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">value</span>
-<span class="w">            </span><span class="nx">max</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">value</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">pieces</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;4&gt;</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">value</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">strconv</span><span class="p">.</span><span class="nx">Atoi</span><span class="p">(</span><span class="nx">pieces</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">min</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">value</span>
-<span class="w">        </span><span class="p">}</span>
-
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">pieces</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">max</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">repeatInfinity</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">value</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">strconv</span><span class="p">.</span><span class="nx">Atoi</span><span class="p">(</span><span class="nx">pieces</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">max</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">value</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nb">panic</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Sprintf</span><span class="p">(</span><span class="s">&quot;There must be either 1 or 2 values specified for the quantifier: provided &#39;%s&#39;&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">boundariesStr</span><span class="p">))</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="c1">// we need to wrap the last token with the quantifier data</span>
-<span class="w">    </span><span class="c1">// so that we know what the min and max apply to</span>
-<span class="w">    </span><span class="c1">// &lt;5&gt;</span>
-<span class="w">    </span><span class="nx">lastToken</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="w">    </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">token</span><span class="p">{</span>
-<span class="w">        </span><span class="nx">tokenType</span><span class="p">:</span><span class="w"> </span><span class="nx">repeat</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">value</span><span class="p">:</span><span class="w"> </span><span class="nx">repeatPayload</span><span class="p">{</span>
-<span class="w">            </span><span class="nx">min</span><span class="p">:</span><span class="w">   </span><span class="nx">min</span><span class="p">,</span>
-<span class="w">            </span><span class="nx">max</span><span class="p">:</span><span class="w">   </span><span class="nx">max</span><span class="p">,</span>
-<span class="w">            </span><span class="nx">token</span><span class="p">:</span><span class="w"> </span><span class="nx">lastToken</span><span class="p">,</span>
-<span class="w">        </span><span class="p">},</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>func</xkd>&nbsp;<xnx>parseRepeatSpecified</xnx><xp>(</xp><xnx>regex</xnx>&nbsp;<xkt>string</xkt><xp>,</xp>&nbsp;<xnx>ctx</xnx>&nbsp;<xo>*</xo><xnx>parseContext</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xc1>// +1 because we skip LCURLY { at the beginning</xc1><xw>
+</xw><xw>    </xw><xnx>start</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx>&nbsp;<xo>+</xo>&nbsp;<xmi>1</xmi><xw>
+</xw><xw>    </xw><xc1>// proceed until we reach to the end of the curly braces</xc1><xw>
+</xw><xw>    </xw><xk>for</xk>&nbsp;<xnx>regex</xnx><xp>[</xp><xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx><xp>]</xp>&nbsp;<xo>!=</xo>&nbsp;<xsc>'}'</xsc>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx><xo>++</xo><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xnx>boundariesStr</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>regex</xnx><xp>[</xp><xnx>start</xnx><xp>:</xp><xnx>ctx</xnx><xp>.</xp><xnx>pos</xnx><xp>]</xp>&nbsp;<xc1>// &lt;1&gt;</xc1><xw>
+</xw><xw>    </xw><xnx>pieces</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>strings</xnx><xp>.</xp><xnx>Split</xnx><xp>(</xp><xnx>boundariesStr</xnx><xp>,</xp>&nbsp;<xs>&quot;,&quot;</xs><xp>)</xp>&nbsp;<xc1>// &lt;2&gt;</xc1><xw>
+</xw><xw>    </xw><xkd>var</xkd>&nbsp;<xnx>min</xnx><xp>,</xp>&nbsp;<xnx>max</xnx>&nbsp;<xkt>int</xkt><xw>
+</xw><xw>    </xw><xk>if</xk>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>pieces</xnx><xp>)</xp>&nbsp;<xo>==</xo>&nbsp;<xmi>1</xmi>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;3&gt;</xc1><xw>
+</xw><xw>        </xw><xk>if</xk>&nbsp;<xnx>value</xnx><xp>,</xp>&nbsp;<xnx>err</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>strconv</xnx><xp>.</xp><xnx>Atoi</xnx><xp>(</xp><xnx>pieces</xnx><xp>[</xp><xmi>0</xmi><xp>]</xp><xp>)</xp><xp>;</xp>&nbsp;<xnx>err</xnx>&nbsp;<xo>!=</xo>&nbsp;<xkc>nil</xkc>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnb>panic</xnb><xp>(</xp><xnx>err</xnx><xp>.</xp><xnx>Error</xnx><xp>(</xp><xp>)</xp><xp>)</xp><xw>
+</xw><xw>        </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnx>min</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>value</xnx><xw>
+</xw><xw>            </xw><xnx>max</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>value</xnx><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>pieces</xnx><xp>)</xp>&nbsp;<xo>==</xo>&nbsp;<xmi>2</xmi>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;4&gt;</xc1><xw>
+</xw><xw>        </xw><xk>if</xk>&nbsp;<xnx>value</xnx><xp>,</xp>&nbsp;<xnx>err</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>strconv</xnx><xp>.</xp><xnx>Atoi</xnx><xp>(</xp><xnx>pieces</xnx><xp>[</xp><xmi>0</xmi><xp>]</xp><xp>)</xp><xp>;</xp>&nbsp;<xnx>err</xnx>&nbsp;<xo>!=</xo>&nbsp;<xkc>nil</xkc>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnb>panic</xnb><xp>(</xp><xnx>err</xnx><xp>.</xp><xnx>Error</xnx><xp>(</xp><xp>)</xp><xp>)</xp><xw>
+</xw><xw>        </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnx>min</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>value</xnx><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>        </xw><xk>if</xk>&nbsp;<xnx>pieces</xnx><xp>[</xp><xmi>1</xmi><xp>]</xp>&nbsp;<xo>==</xo>&nbsp;<xs>&quot;&quot;</xs>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnx>max</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>repeatInfinity</xnx><xw>
+</xw><xw>        </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xk>if</xk>&nbsp;<xnx>value</xnx><xp>,</xp>&nbsp;<xnx>err</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>strconv</xnx><xp>.</xp><xnx>Atoi</xnx><xp>(</xp><xnx>pieces</xnx><xp>[</xp><xmi>1</xmi><xp>]</xp><xp>)</xp><xp>;</xp>&nbsp;<xnx>err</xnx>&nbsp;<xo>!=</xo>&nbsp;<xkc>nil</xkc>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnb>panic</xnb><xp>(</xp><xnx>err</xnx><xp>.</xp><xnx>Error</xnx><xp>(</xp><xp>)</xp><xp>)</xp><xw>
+</xw><xw>        </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnx>max</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>value</xnx><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xnb>panic</xnb><xp>(</xp><xnx>fmt</xnx><xp>.</xp><xnx>Sprintf</xnx><xp>(</xp><xs>&quot;There must be either 1 or 2 values specified for the quantifier: provided '%s'&quot;</xs><xp>,</xp>&nbsp;<xnx>boundariesStr</xnx><xp>)</xp><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xc1>// we need to wrap the last token with the quantifier data</xc1><xw>
+</xw><xw>    </xw><xc1>// so that we know what the min and max apply to</xc1><xw>
+</xw><xw>    </xw><xc1>// &lt;5&gt;</xc1><xw>
+</xw><xw>    </xw><xnx>lastToken</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx><xp>[</xp><xnb>len</xnb><xp>(</xp><xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx><xp>)</xp><xo>-</xo><xmi>1</xmi><xp>]</xp><xw>
+</xw><xw>    </xw><xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx><xp>[</xp><xnb>len</xnb><xp>(</xp><xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx><xp>)</xp><xo>-</xo><xmi>1</xmi><xp>]</xp>&nbsp;<xp>=</xp>&nbsp;<xnx>token</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xnx>tokenType</xnx><xp>:</xp>&nbsp;<xnx>repeat</xnx><xp>,</xp><xw>
+</xw><xw>        </xw><xnx>value</xnx><xp>:</xp>&nbsp;<xnx>repeatPayload</xnx><xp>{</xp><xw>
+</xw><xw>            </xw><xnx>min</xnx><xp>:</xp><xw>   </xw><xnx>min</xnx><xp>,</xp><xw>
+</xw><xw>            </xw><xnx>max</xnx><xp>:</xp><xw>   </xw><xnx>max</xnx><xp>,</xp><xw>
+</xw><xw>            </xw><xnx>token</xnx><xp>:</xp>&nbsp;<xnx>lastToken</xnx><xp>,</xp><xw>
+</xw><xw>        </xw><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ol>
 <li>We need to get the string expression for boundaries which is everything between the curly braces <code>{}</code>.</li>
 <li>Next, we split that string into pieces separated by a comma <code>,</code></li>
@@ -391,13 +381,12 @@ Before getting into the parsing algorithm, let's define some types and constants
 <h3>Regular expression to epsilon-NFA</h3>
 <p>The previous step provides us with a list of tokens. We now need to convert these to an epsilon-NFA. To achieve this, we will use an algorithm called Thompson's construction. It's an algorithm to construct and combine multiple NFAs into one NFA.</p>
 <p>To represent an NFA state, we'll use this simple structure:</p>
-<div class="highlight"><pre><span></span><span class="kd">type</span><span class="w"> </span><span class="nx">state</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">start</span><span class="w">       </span><span class="kt">bool</span>
-<span class="w">    </span><span class="nx">terminal</span><span class="w">    </span><span class="kt">bool</span>
-<span class="w">    </span><span class="nx">transitions</span><span class="w"> </span><span class="kd">map</span><span class="p">[</span><span class="kt">uint8</span><span class="p">][]</span><span class="o">*</span><span class="nx">state</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>type</xkd>&nbsp;<xnx>state</xnx>&nbsp;<xkd>struct</xkd>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>start</xnx><xw>       </xw><xkt>bool</xkt><xw>
+</xw><xw>    </xw><xnx>terminal</xnx><xw>    </xw><xkt>bool</xkt><xw>
+</xw><xw>    </xw><xnx>transitions</xnx>&nbsp;<xkd>map</xkd><xp>[</xp><xkt>uint8</xkt><xp>]</xp><xp>[</xp><xp>]</xp><xo>*</xo><xnx>state</xnx><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ol>
 <li><code>start</code> indicates whether the state's the entrypoint or not.</li>
 <li><code>terminal</code> indicates wheteher the state's the final state. Reaching this state means that the input matches with the regex.</li>
@@ -415,40 +404,39 @@ Before getting into the parsing algorithm, let's define some types and constants
 <li>There will be an epsilon transition from the last state of the concatenated NFAs to the terminal state.</li>
 </ul>
 <p>Let's go over the same thing in code:</p>
-<div class="highlight"><pre><span></span><span class="kd">const</span><span class="w"> </span><span class="nx">epsilonChar</span><span class="w"> </span><span class="kt">uint8</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c1">// empty character</span>
-
-<span class="kd">func</span><span class="w"> </span><span class="nx">toNfa</span><span class="p">(</span><span class="nx">ctx</span><span class="w"> </span><span class="o">*</span><span class="nx">parseContext</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="nx">state</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">startState</span><span class="p">,</span><span class="w"> </span><span class="nx">endState</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">tokenToNfa</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="w"> </span><span class="c1">// &lt;1&gt;</span>
-
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="p">);</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;2&gt;</span>
-<span class="w">        </span><span class="nx">startNext</span><span class="p">,</span><span class="w"> </span><span class="nx">endNext</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">tokenToNfa</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">tokens</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span><span class="w"> </span><span class="c1">// &lt;3&gt;</span>
-<span class="w">        </span><span class="nx">endState</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span>
-<span class="w">            </span><span class="nx">endState</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">],</span><span class="w"> </span>
-<span class="w">            </span><span class="nx">startNext</span><span class="p">,</span>
-<span class="w">        </span><span class="p">)</span><span class="w"> </span><span class="c1">// &lt;4&gt;</span>
-<span class="w">        </span><span class="nx">endState</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">endNext</span><span class="w"> </span><span class="c1">// &lt;5&gt;</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="nx">start</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">state</span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;6&gt;</span>
-<span class="w">        </span><span class="nx">transitions</span><span class="p">:</span><span class="w"> </span><span class="kd">map</span><span class="p">[</span><span class="kt">uint8</span><span class="p">][]</span><span class="o">*</span><span class="nx">state</span><span class="p">{</span>
-<span class="w">            </span><span class="nx">epsilonChar</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nx">startState</span><span class="p">},</span>
-<span class="w">        </span><span class="p">},</span>
-<span class="w">        </span><span class="nx">start</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">    </span><span class="nx">end</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">state</span><span class="p">{</span><span class="w"> </span><span class="c1">// 7</span>
-<span class="w">        </span><span class="nx">transitions</span><span class="p">:</span><span class="w"> </span><span class="kd">map</span><span class="p">[</span><span class="kt">uint8</span><span class="p">][]</span><span class="o">*</span><span class="nx">state</span><span class="p">{},</span>
-<span class="w">        </span><span class="nx">terminal</span><span class="p">:</span><span class="w">    </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="nx">endState</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span>
-<span class="w">        </span><span class="nx">endState</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">],</span><span class="w"> </span>
-<span class="w">        </span><span class="nx">end</span><span class="p">,</span>
-<span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="c1">// &lt;8&gt;</span>
-
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">start</span><span class="w"> </span><span class="c1">// &lt;9&gt;</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>const</xkd>&nbsp;<xnx>epsilonChar</xnx>&nbsp;<xkt>uint8</xkt>&nbsp;<xp>=</xp>&nbsp;<xmi>0</xmi>&nbsp;<xc1>// empty character</xc1><xw>
+</xw><xw>
+</xw><xkd>func</xkd>&nbsp;<xnx>toNfa</xnx><xp>(</xp><xnx>ctx</xnx>&nbsp;<xo>*</xo><xnx>parseContext</xnx><xp>)</xp>&nbsp;<xo>*</xo><xnx>state</xnx>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>startState</xnx><xp>,</xp>&nbsp;<xnx>endState</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>tokenToNfa</xnx><xp>(</xp><xo>&amp;</xo><xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx><xp>[</xp><xmi>0</xmi><xp>]</xp><xp>)</xp>&nbsp;<xc1>// &lt;1&gt;</xc1><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>for</xk>&nbsp;<xnx>i</xnx>&nbsp;<xo>:=</xo>&nbsp;<xmi>1</xmi><xp>;</xp>&nbsp;<xnx>i</xnx>&nbsp;<xp>&lt;</xp>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx><xp>)</xp><xp>;</xp>&nbsp;<xnx>i</xnx><xo>++</xo>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;2&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>startNext</xnx><xp>,</xp>&nbsp;<xnx>endNext</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>tokenToNfa</xnx><xp>(</xp><xo>&amp;</xo><xnx>ctx</xnx><xp>.</xp><xnx>tokens</xnx><xp>[</xp><xnx>i</xnx><xp>]</xp><xp>)</xp>&nbsp;<xc1>// &lt;3&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>endState</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xw>
+</xw><xw>            </xw><xnx>endState</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp><xp>,</xp><xw> 
+            </xw><xnx>startNext</xnx><xp>,</xp><xw>
+</xw><xw>        </xw><xp>)</xp>&nbsp;<xc1>// &lt;4&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>endState</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>endNext</xnx>&nbsp;<xc1>// &lt;5&gt;</xc1><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xnx>start</xnx>&nbsp;<xo>:=</xo>&nbsp;<xo>&amp;</xo><xnx>state</xnx><xp>{</xp>&nbsp;<xc1>// &lt;6&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>transitions</xnx><xp>:</xp>&nbsp;<xkd>map</xkd><xp>[</xp><xkt>uint8</xkt><xp>]</xp><xp>[</xp><xp>]</xp><xo>*</xo><xnx>state</xnx><xp>{</xp><xw>
+</xw><xw>            </xw><xnx>epsilonChar</xnx><xp>:</xp>&nbsp;<xp>{</xp><xnx>startState</xnx><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xnx>start</xnx><xp>:</xp>&nbsp;<xkc>true</xkc><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xnx>end</xnx>&nbsp;<xo>:=</xo>&nbsp;<xo>&amp;</xo><xnx>state</xnx><xp>{</xp>&nbsp;<xc1>// 7</xc1><xw>
+</xw><xw>        </xw><xnx>transitions</xnx><xp>:</xp>&nbsp;<xkd>map</xkd><xp>[</xp><xkt>uint8</xkt><xp>]</xp><xp>[</xp><xp>]</xp><xo>*</xo><xnx>state</xnx><xp>{</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xnx>terminal</xnx><xp>:</xp><xw>    </xw><xkc>true</xkc><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xnx>endState</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xw>
+</xw><xw>        </xw><xnx>endState</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp><xp>,</xp><xw> 
+        </xw><xnx>end</xnx><xp>,</xp><xw>
+</xw><xw>    </xw><xp>)</xp>&nbsp;<xc1>// &lt;8&gt;</xc1><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>return</xk>&nbsp;<xnx>start</xnx>&nbsp;<xc1>// &lt;9&gt;</xc1><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ol>
 <li>We take the first token, and convert that to an NFA. <code>tokenToNfa</code> function will be explained later. For now, just know that it creates an NFA from the given token, and returns the start and end states of this newly created NFA.</li>
 <li>We go over the rest of tokens</li>
@@ -461,29 +449,28 @@ Before getting into the parsing algorithm, let's define some types and constants
 <li>Finally, we return the start state because that's the entrypoint.</li>
 </ol>
 <p>Now that we have the outline of what we're doing to construct our NFA, let's take a look at how each token is converted into an NFA.</p>
-<div class="highlight"><pre><span></span><span class="c1">// returns (start, end)</span>
-<span class="kd">func</span><span class="w"> </span><span class="nx">tokenToNfa</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="o">*</span><span class="nx">token</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="nx">state</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="nx">state</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">start</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">state</span><span class="p">{</span>
-<span class="w">        </span><span class="nx">transitions</span><span class="p">:</span><span class="w"> </span><span class="kd">map</span><span class="p">[</span><span class="kt">uint8</span><span class="p">][]</span><span class="o">*</span><span class="nx">state</span><span class="p">{},</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">    </span><span class="nx">end</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">state</span><span class="p">{</span>
-<span class="w">        </span><span class="nx">transitions</span><span class="p">:</span><span class="w"> </span><span class="kd">map</span><span class="p">[</span><span class="kt">uint8</span><span class="p">][]</span><span class="o">*</span><span class="nx">state</span><span class="p">{},</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">tokenType</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">literal</span><span class="p">:</span>
-<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">or</span><span class="p">:</span>
-<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">bracket</span><span class="p">:</span>
-<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">group</span><span class="p">,</span><span class="w"> </span><span class="nx">groupUncaptured</span><span class="p">:</span>
-<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">repeat</span><span class="p">:</span>
-<span class="w">    </span><span class="k">default</span><span class="p">:</span>
-<span class="w">        </span><span class="nb">panic</span><span class="p">(</span><span class="s">&quot;unknown type of token&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">start</span><span class="p">,</span><span class="w"> </span><span class="nx">end</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xc1>// returns (start, end)</xc1><xw>
+</xw><xkd>func</xkd>&nbsp;<xnx>tokenToNfa</xnx><xp>(</xp><xnx>t</xnx>&nbsp;<xo>*</xo><xnx>token</xnx><xp>)</xp>&nbsp;<xp>(</xp><xo>*</xo><xnx>state</xnx><xp>,</xp>&nbsp;<xo>*</xo><xnx>state</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xnx>start</xnx>&nbsp;<xo>:=</xo>&nbsp;<xo>&amp;</xo><xnx>state</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xnx>transitions</xnx><xp>:</xp>&nbsp;<xkd>map</xkd><xp>[</xp><xkt>uint8</xkt><xp>]</xp><xp>[</xp><xp>]</xp><xo>*</xo><xnx>state</xnx><xp>{</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xnx>end</xnx>&nbsp;<xo>:=</xo>&nbsp;<xo>&amp;</xo><xnx>state</xnx><xp>{</xp><xw>
+</xw><xw>        </xw><xnx>transitions</xnx><xp>:</xp>&nbsp;<xkd>map</xkd><xp>[</xp><xkt>uint8</xkt><xp>]</xp><xp>[</xp><xp>]</xp><xo>*</xo><xnx>state</xnx><xp>{</xp><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>switch</xk>&nbsp;<xnx>t</xnx><xp>.</xp><xnx>tokenType</xnx>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xk>case</xk>&nbsp;<xnx>literal</xnx><xp>:</xp><xw>
+</xw><xw>    </xw><xk>case</xk>&nbsp;<xnx>or</xnx><xp>:</xp><xw>
+</xw><xw>    </xw><xk>case</xk>&nbsp;<xnx>bracket</xnx><xp>:</xp><xw>
+</xw><xw>    </xw><xk>case</xk>&nbsp;<xnx>group</xnx><xp>,</xp>&nbsp;<xnx>groupUncaptured</xnx><xp>:</xp><xw>
+</xw><xw>    </xw><xk>case</xk>&nbsp;<xnx>repeat</xnx><xp>:</xp><xw>
+</xw><xw>    </xw><xk>default</xk><xp>:</xp><xw>
+</xw><xw>        </xw><xnb>panic</xnb><xp>(</xp><xs>&quot;unknown type of token&quot;</xs><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>return</xk>&nbsp;<xnx>start</xnx><xp>,</xp>&nbsp;<xnx>end</xnx><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ul>
 <li>The code above is the skeleton of the <code>tokenToNfa</code> function, we'll go over each token type and how it is handled.</li>
 <li>Overall, we create empty <code>start</code> and <code>end</code> states, perform some logic within switch statement, and return those variables.</li>
@@ -495,11 +482,10 @@ Before getting into the parsing algorithm, let's define some types and constants
 <ul>
 <li>In order to go from <code>start</code> to <code>end</code>, we need the transition <code>ch</code>. <code>ch</code> represents a single character.</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="k">case</span><span class="w"> </span><span class="nx">literal</span><span class="p">:</span>
-<span class="w">    </span><span class="nx">ch</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">value</span><span class="p">.(</span><span class="kt">uint8</span><span class="p">)</span>
-<span class="w">    </span><span class="nx">start</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">ch</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[]</span><span class="o">*</span><span class="nx">state</span><span class="p">{</span><span class="nx">end</span><span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xk>case</xk>&nbsp;<xnx>literal</xnx><xp>:</xp><xw>
+</xw><xw>    </xw><xnx>ch</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>t</xnx><xp>.</xp><xnx>value</xnx><xp>.</xp><xp>(</xp><xkt>uint8</xkt><xp>)</xp><xw>
+</xw><xw>    </xw><xnx>start</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>ch</xnx><xp>]</xp>&nbsp;<xp>=</xp>&nbsp;<xp>[</xp><xp>]</xp><xo>*</xo><xnx>state</xnx><xp>{</xp><xnx>end</xnx><xp>}</xp><xw>
+</xw></pre></div>
 <ul>
 <li>We can see the exact same thing in the code as well. <code>t.value</code> is referring to the value we saved in the <code>token</code> struct back when we were parsing the tokens.</li>
 </ul>
@@ -513,19 +499,18 @@ Before getting into the parsing algorithm, let's define some types and constants
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre><span></span><span class="k">case</span><span class="w"> </span><span class="nx">or</span><span class="p">:</span>
-<span class="w">    </span><span class="nx">values</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">value</span><span class="p">.([]</span><span class="nx">token</span><span class="p">)</span>
-<span class="w">    </span><span class="nx">left</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="w">    </span><span class="nx">right</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">values</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-
-<span class="w">    </span><span class="nx">s1</span><span class="p">,</span><span class="w"> </span><span class="nx">e1</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">tokenToNfa</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">left</span><span class="p">)</span><span class="w"> </span><span class="c1">// &lt;1&gt;</span>
-<span class="w">    </span><span class="nx">s2</span><span class="p">,</span><span class="w"> </span><span class="nx">e2</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">tokenToNfa</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">right</span><span class="p">)</span><span class="w"> </span><span class="c1">// &lt;1&gt;</span>
-
-<span class="w">    </span><span class="nx">start</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[]</span><span class="o">*</span><span class="nx">state</span><span class="p">{</span><span class="nx">s1</span><span class="p">,</span><span class="w"> </span><span class="nx">s2</span><span class="p">}</span><span class="w"> </span><span class="c1">// &lt;2&gt;</span>
-<span class="w">    </span><span class="nx">e1</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[]</span><span class="o">*</span><span class="nx">state</span><span class="p">{</span><span class="nx">end</span><span class="p">}</span><span class="w"> </span><span class="c1">// &lt;3&gt;</span>
-<span class="w">    </span><span class="nx">e2</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[]</span><span class="o">*</span><span class="nx">state</span><span class="p">{</span><span class="nx">end</span><span class="p">}</span><span class="w"> </span><span class="c1">// &lt;3&gt;</span>
-</pre></div>
-
+<div class="highlight"><pre><xk>case</xk>&nbsp;<xnx>or</xnx><xp>:</xp><xw>
+</xw><xw>    </xw><xnx>values</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>t</xnx><xp>.</xp><xnx>value</xnx><xp>.</xp><xp>(</xp><xp>[</xp><xp>]</xp><xnx>token</xnx><xp>)</xp><xw>
+</xw><xw>    </xw><xnx>left</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>values</xnx><xp>[</xp><xmi>0</xmi><xp>]</xp><xw>
+</xw><xw>    </xw><xnx>right</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>values</xnx><xp>[</xp><xmi>1</xmi><xp>]</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xnx>s1</xnx><xp>,</xp>&nbsp;<xnx>e1</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>tokenToNfa</xnx><xp>(</xp><xo>&amp;</xo><xnx>left</xnx><xp>)</xp>&nbsp;<xc1>// &lt;1&gt;</xc1><xw>
+</xw><xw>    </xw><xnx>s2</xnx><xp>,</xp>&nbsp;<xnx>e2</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>tokenToNfa</xnx><xp>(</xp><xo>&amp;</xo><xnx>right</xnx><xp>)</xp>&nbsp;<xc1>// &lt;1&gt;</xc1><xw>
+</xw><xw>
+</xw><xw>    </xw><xnx>start</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp>&nbsp;<xp>=</xp>&nbsp;<xp>[</xp><xp>]</xp><xo>*</xo><xnx>state</xnx><xp>{</xp><xnx>s1</xnx><xp>,</xp>&nbsp;<xnx>s2</xnx><xp>}</xp>&nbsp;<xc1>// &lt;2&gt;</xc1><xw>
+</xw><xw>    </xw><xnx>e1</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp>&nbsp;<xp>=</xp>&nbsp;<xp>[</xp><xp>]</xp><xo>*</xo><xnx>state</xnx><xp>{</xp><xnx>end</xnx><xp>}</xp>&nbsp;<xc1>// &lt;3&gt;</xc1><xw>
+</xw><xw>    </xw><xnx>e2</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp>&nbsp;<xp>=</xp>&nbsp;<xp>[</xp><xp>]</xp><xo>*</xo><xnx>state</xnx><xp>{</xp><xnx>end</xnx><xp>}</xp>&nbsp;<xc1>// &lt;3&gt;</xc1><xw>
+</xw></pre></div>
 <ol>
 <li>Creating both left and right NFAs</li>
 <li>Connecting the start state with the starts of both NFAs with an epsilon transition</li>
@@ -537,14 +522,13 @@ Before getting into the parsing algorithm, let's define some types and constants
 <li>We can think of bracket expressions as a big Or expressions. For example, <code>[a-c0-2x]</code> means <code>a|b|c|0|1|2|x</code>. So it makes sense for it to visually resemble the Or expression. One minor difference is that in bracket expressions we work with literals and not arbitrary NFAs, so we can simply create a transition for each literal from the start state to the end state. </li>
 <li>The image is the visualization of the expression: <code>[a-c]</code></li>
 </ul>
-<div class="highlight"><pre><span></span><span class="k">case</span><span class="w"> </span><span class="nx">bracket</span><span class="p">:</span>
-<span class="w">    </span><span class="nx">literals</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">value</span><span class="p">.(</span><span class="kd">map</span><span class="p">[</span><span class="kt">uint8</span><span class="p">]</span><span class="kt">bool</span><span class="p">)</span>
-
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">l</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">literals</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;1&gt;</span>
-<span class="w">        </span><span class="nx">start</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">l</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[]</span><span class="o">*</span><span class="nx">state</span><span class="p">{</span><span class="nx">end</span><span class="p">}</span><span class="w"> </span><span class="c1">// &lt;2&gt;</span>
-<span class="w">    </span><span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xk>case</xk>&nbsp;<xnx>bracket</xnx><xp>:</xp><xw>
+</xw><xw>    </xw><xnx>literals</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>t</xnx><xp>.</xp><xnx>value</xnx><xp>.</xp><xp>(</xp><xkd>map</xkd><xp>[</xp><xkt>uint8</xkt><xp>]</xp><xkt>bool</xkt><xp>)</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>for</xk>&nbsp;<xnx>l</xnx>&nbsp;<xo>:=</xo>&nbsp;<xk>range</xk>&nbsp;<xnx>literals</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;1&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>start</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>l</xnx><xp>]</xp>&nbsp;<xp>=</xp>&nbsp;<xp>[</xp><xp>]</xp><xo>*</xo><xnx>state</xnx><xp>{</xp><xnx>end</xnx><xp>}</xp>&nbsp;<xc1>// &lt;2&gt;</xc1><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw></pre></div>
 <ol>
 <li>We go through each literal in the bracket</li>
 <li>We add a transition from the <code>start</code> state to the <code>end</code> state.</li>
@@ -558,21 +542,20 @@ Before getting into the parsing algorithm, let's define some types and constants
 </ul>
 <h4>Groups</h4>
 <p>To convert a group expression into an NFA, we need to concatenate all the individual NFAs created from the tokens inside the group. We've already seen how this is done when we covered <code>toNFA</code> function. The code is exactly the same, with different variable names: </p>
-<div class="highlight"><pre><span></span><span class="c1">// there is no difference between </span>
-<span class="c1">// group, groupUncaptured types in our engine</span>
-<span class="k">case</span><span class="w"> </span><span class="nx">group</span><span class="p">,</span><span class="w"> </span><span class="nx">groupUncaptured</span><span class="p">:</span>
-<span class="w">    </span><span class="nx">tokens</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">value</span><span class="p">.([]</span><span class="nx">token</span><span class="p">)</span>
-<span class="w">    </span><span class="nx">start</span><span class="p">,</span><span class="w"> </span><span class="nx">end</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">tokenToNfa</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">tokens</span><span class="p">);</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">ts</span><span class="p">,</span><span class="w"> </span><span class="nx">te</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">tokenToNfa</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">tokens</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
-<span class="w">        </span><span class="nx">end</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span>
-<span class="w">            </span><span class="nx">end</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">],</span><span class="w"> </span>
-<span class="w">            </span><span class="nx">ts</span><span class="p">,</span>
-<span class="w">        </span><span class="p">)</span>
-<span class="w">        </span><span class="nx">end</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">te</span>
-<span class="w">    </span><span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xc1>// there is no difference between </xc1><xw>
+</xw><xc1>// group, groupUncaptured types in our engine</xc1><xw>
+</xw><xk>case</xk>&nbsp;<xnx>group</xnx><xp>,</xp>&nbsp;<xnx>groupUncaptured</xnx><xp>:</xp><xw>
+</xw><xw>    </xw><xnx>tokens</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>t</xnx><xp>.</xp><xnx>value</xnx><xp>.</xp><xp>(</xp><xp>[</xp><xp>]</xp><xnx>token</xnx><xp>)</xp><xw>
+</xw><xw>    </xw><xnx>start</xnx><xp>,</xp>&nbsp;<xnx>end</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>tokenToNfa</xnx><xp>(</xp><xo>&amp;</xo><xnx>tokens</xnx><xp>[</xp><xmi>0</xmi><xp>]</xp><xp>)</xp><xw>
+</xw><xw>    </xw><xk>for</xk>&nbsp;<xnx>i</xnx>&nbsp;<xo>:=</xo>&nbsp;<xmi>1</xmi><xp>;</xp>&nbsp;<xnx>i</xnx>&nbsp;<xp>&lt;</xp>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>tokens</xnx><xp>)</xp><xp>;</xp>&nbsp;<xnx>i</xnx><xo>++</xo>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xnx>ts</xnx><xp>,</xp>&nbsp;<xnx>te</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>tokenToNfa</xnx><xp>(</xp><xo>&amp;</xo><xnx>tokens</xnx><xp>[</xp><xnx>i</xnx><xp>]</xp><xp>)</xp><xw>
+</xw><xw>        </xw><xnx>end</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xw>
+</xw><xw>            </xw><xnx>end</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp><xp>,</xp><xw> 
+            </xw><xnx>ts</xnx><xp>,</xp><xw>
+</xw><xw>        </xw><xp>)</xp><xw>
+</xw><xw>        </xw><xnx>end</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>te</xnx><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw></pre></div>
 <h4>Repetition</h4>
 <p>Out of all the examples we've covered, understanding repetition might be the trickiest, thus we'll take it step by step and try to figure out a generalized solution that covers all repetition cases.</p>
 <p>In all the examples, we're about to go through, <code>A</code> will represent any NFA.</p>
@@ -618,70 +601,69 @@ Before getting into the parsing algorithm, let's define some types and constants
 <li>To achieve the early termination, all we need to do is to add an epsilon transition from the start state of each <code>A</code> instance to the end state.</li>
 </ul>
 <p>Let's now see how this is actually coded:</p>
-<div class="highlight"><pre><span></span><span class="k">case</span><span class="w"> </span><span class="nx">repeat</span><span class="p">:</span>
-<span class="w">    </span><span class="nx">p</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">value</span><span class="p">.(</span><span class="nx">repeatPayload</span><span class="p">)</span>
+<div class="highlight"><pre><xk>case</xk>&nbsp;<xnx>repeat</xnx><xp>:</xp><xw>
+</xw><xw>    </xw><xnx>p</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>t</xnx><xp>.</xp><xnx>value</xnx><xp>.</xp><xp>(</xp><xnx>repeatPayload</xnx><xp>)</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>if</xk>&nbsp;<xnx>p</xnx><xp>.</xp><xnx>min</xnx>&nbsp;<xo>==</xo>&nbsp;<xmi>0</xmi>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;1&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>start</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp>&nbsp;<xp>=</xp>&nbsp;<xp>[</xp><xp>]</xp><xo>*</xo><xnx>state</xnx><xp>{</xp><xnx>end</xnx><xp>}</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xkd>var</xkd>&nbsp;<xnx>copyCount</xnx>&nbsp;<xkt>int</xkt>&nbsp;<xc1>// &lt;2&gt;</xc1><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>if</xk>&nbsp;<xnx>p</xnx><xp>.</xp><xnx>max</xnx>&nbsp;<xo>==</xo>&nbsp;<xnx>repeatInfinity</xnx>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xk>if</xk>&nbsp;<xnx>p</xnx><xp>.</xp><xnx>min</xnx>&nbsp;<xo>==</xo>&nbsp;<xmi>0</xmi>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnx>copyCount</xnx>&nbsp;<xp>=</xp>&nbsp;<xmi>1</xmi><xw>
+</xw><xw>        </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnx>copyCount</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>p</xnx><xp>.</xp><xnx>min</xnx><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xp>}</xp>&nbsp;<xk>else</xk>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xnx>copyCount</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>p</xnx><xp>.</xp><xnx>max</xnx><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xnx>from</xnx><xp>,</xp>&nbsp;<xnx>to</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>tokenToNfa</xnx><xp>(</xp><xo>&amp;</xo><xnx>p</xnx><xp>.</xp><xnx>token</xnx><xp>)</xp>&nbsp;<xc1>// &lt;3&gt;</xc1><xw>
+</xw><xw>    </xw><xnx>start</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp>&nbsp;<xc1>// &lt;4&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>start</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp><xp>,</xp><xw> 
+        </xw><xnx>from</xnx><xp>,</xp><xw>
+</xw><xw>    </xw><xp>)</xp><xw> 
 
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">min</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;1&gt;</span>
-<span class="w">        </span><span class="nx">start</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[]</span><span class="o">*</span><span class="nx">state</span><span class="p">{</span><span class="nx">end</span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
+    </xw><xk>for</xk>&nbsp;<xnx>i</xnx>&nbsp;<xo>:=</xo>&nbsp;<xmi>2</xmi><xp>;</xp>&nbsp;<xnx>i</xnx>&nbsp;<xo>&lt;=</xo>&nbsp;<xnx>copyCount</xnx><xp>;</xp>&nbsp;<xnx>i</xnx><xo>++</xo>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;5&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>s</xnx><xp>,</xp>&nbsp;<xnx>e</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>tokenToNfa</xnx><xp>(</xp><xo>&amp;</xo><xnx>p</xnx><xp>.</xp><xnx>token</xnx><xp>)</xp><xw>
+</xw><xw>
+</xw><xw>        </xw><xc1>// connect the end of the previous one </xc1><xw>
+</xw><xw>        </xw><xc1>// to the start of this one</xc1><xw>
+</xw><xw>        </xw><xnx>to</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp>&nbsp;<xc1>// &lt;6&gt;</xc1><xw>
+</xw><xw>            </xw><xnx>to</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp><xp>,</xp><xw> 
+            </xw><xnx>s</xnx><xp>,</xp><xw>
+</xw><xw>        </xw><xp>)</xp><xw> 
 
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">copyCount</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="c1">// &lt;2&gt;</span>
+        </xw><xc1>// keep track of the previous NFA's entry and exit states</xc1><xw>
+</xw><xw>        </xw><xnx>from</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>s</xnx>&nbsp;<xc1>// &lt;7&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>to</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>e</xnx><xw>   </xw><xc1>// &lt;7&gt;</xc1><xw>
+</xw><xw>
+</xw><xw>        </xw><xc1>// after the minimum required amount of repetitions</xc1><xw>
+</xw><xw>        </xw><xc1>// the rest must be optional, thus we add an </xc1><xw>
+</xw><xw>        </xw><xc1>// epsilon transition to the start of each NFA </xc1><xw>
+</xw><xw>        </xw><xc1>// so that we can skip them if needed</xc1><xw>
+</xw><xw>        </xw><xk>if</xk>&nbsp;<xnx>i</xnx>&nbsp;<xp>&gt;</xp>&nbsp;<xnx>p</xnx><xp>.</xp><xnx>min</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;8&gt;</xc1><xw>
+</xw><xw>            </xw><xnx>s</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xw>
+</xw><xw>                </xw><xnx>s</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp><xp>,</xp><xw> 
+                </xw><xnx>end</xnx><xp>,</xp><xw>
+</xw><xw>            </xw><xp>)</xp><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xnx>to</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp>&nbsp;<xc1>// &lt;9&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>to</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp><xp>,</xp><xw> 
+        </xw><xnx>end</xnx><xp>,</xp><xw>
+</xw><xw>    </xw><xp>)</xp><xw> 
 
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">max</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">repeatInfinity</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">min</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">copyCount</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">copyCount</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">min</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">copyCount</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">max</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="nx">from</span><span class="p">,</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">tokenToNfa</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">p</span><span class="p">.</span><span class="nx">token</span><span class="p">)</span><span class="w"> </span><span class="c1">// &lt;3&gt;</span>
-<span class="w">    </span><span class="nx">start</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="w"> </span><span class="c1">// &lt;4&gt;</span>
-<span class="w">        </span><span class="nx">start</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">],</span><span class="w"> </span>
-<span class="w">        </span><span class="nx">from</span><span class="p">,</span>
-<span class="w">    </span><span class="p">)</span><span class="w"> </span>
-
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="nx">copyCount</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;5&gt;</span>
-<span class="w">        </span><span class="nx">s</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">tokenToNfa</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">p</span><span class="p">.</span><span class="nx">token</span><span class="p">)</span>
-
-<span class="w">        </span><span class="c1">// connect the end of the previous one </span>
-<span class="w">        </span><span class="c1">// to the start of this one</span>
-<span class="w">        </span><span class="nx">to</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="w"> </span><span class="c1">// &lt;6&gt;</span>
-<span class="w">            </span><span class="nx">to</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">],</span><span class="w"> </span>
-<span class="w">            </span><span class="nx">s</span><span class="p">,</span>
-<span class="w">        </span><span class="p">)</span><span class="w"> </span>
-
-<span class="w">        </span><span class="c1">// keep track of the previous NFA&#39;s entry and exit states</span>
-<span class="w">        </span><span class="nx">from</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">s</span><span class="w"> </span><span class="c1">// &lt;7&gt;</span>
-<span class="w">        </span><span class="nx">to</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">e</span><span class="w">   </span><span class="c1">// &lt;7&gt;</span>
-
-<span class="w">        </span><span class="c1">// after the minimum required amount of repetitions</span>
-<span class="w">        </span><span class="c1">// the rest must be optional, thus we add an </span>
-<span class="w">        </span><span class="c1">// epsilon transition to the start of each NFA </span>
-<span class="w">        </span><span class="c1">// so that we can skip them if needed</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">min</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;8&gt;</span>
-<span class="w">            </span><span class="nx">s</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span>
-<span class="w">                </span><span class="nx">s</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">],</span><span class="w"> </span>
-<span class="w">                </span><span class="nx">end</span><span class="p">,</span>
-<span class="w">            </span><span class="p">)</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="nx">to</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="w"> </span><span class="c1">// &lt;9&gt;</span>
-<span class="w">        </span><span class="nx">to</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">],</span><span class="w"> </span>
-<span class="w">        </span><span class="nx">end</span><span class="p">,</span>
-<span class="w">    </span><span class="p">)</span><span class="w"> </span>
-
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">max</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">repeatInfinity</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;10&gt;</span>
-<span class="w">        </span><span class="nx">end</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span>
-<span class="w">            </span><span class="nx">end</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">],</span><span class="w"> </span>
-<span class="w">            </span><span class="nx">from</span><span class="p">,</span>
-<span class="w">        </span><span class="p">)</span>
-<span class="w">    </span><span class="p">}</span>
-</pre></div>
-
+    </xw><xk>if</xk>&nbsp;<xnx>p</xnx><xp>.</xp><xnx>max</xnx>&nbsp;<xo>==</xo>&nbsp;<xnx>repeatInfinity</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;10&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>end</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp>&nbsp;<xp>=</xp>&nbsp;<xnb>append</xnb><xp>(</xp><xw>
+</xw><xw>            </xw><xnx>end</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp><xp>,</xp><xw> 
+            </xw><xnx>from</xnx><xp>,</xp><xw>
+</xw><xw>        </xw><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw></pre></div>
 <ol>
 <li>From our notes earlier, we know that if minimum is 0, we need to have an epsilon transition from the start state to the end state</li>
 <li><code>copyCount</code> is the maximum number of times we need to create an NFA from <code>p.token</code>.<ul>
@@ -707,53 +689,51 @@ Before getting into the parsing algorithm, let's define some types and constants
 <p>While going through the string, we'll use a cursor/pointer to a certain position in the string. The image below visualizes this. Keep in mind that, in addition to each index in the string, our pointer can also reference to the beginning of the string (prior to matching) and the end of the string (once we exhaust all the characters).</p>
 <p><img alt="cursur positions" src="/string_with_positions.png" /></p>
 <p>In code, we'll have these helper constants and method.</p>
-<div class="highlight"><pre><span></span><span class="kd">const</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="nx">startOfText</span><span class="w"> </span><span class="kt">uint8</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">    </span><span class="nx">endOfText</span><span class="w">   </span><span class="kt">uint8</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">2</span>
-<span class="p">)</span>
-
-<span class="kd">func</span><span class="w"> </span><span class="nx">getChar</span><span class="p">(</span><span class="nx">input</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">pos</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">uint8</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">pos</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">input</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">endOfText</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">pos</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">startOfText</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">input</span><span class="p">[</span><span class="nx">pos</span><span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>const</xkd>&nbsp;<xp>(</xp><xw>
+</xw><xw>    </xw><xnx>startOfText</xnx>&nbsp;<xkt>uint8</xkt>&nbsp;<xp>=</xp>&nbsp;<xmi>1</xmi><xw>
+</xw><xw>    </xw><xnx>endOfText</xnx><xw>   </xw><xkt>uint8</xkt>&nbsp;<xp>=</xp>&nbsp;<xmi>2</xmi><xw>
+</xw><xp>)</xp><xw>
+</xw><xw>
+</xw><xkd>func</xkd>&nbsp;<xnx>getChar</xnx><xp>(</xp><xnx>input</xnx>&nbsp;<xkt>string</xkt><xp>,</xp>&nbsp;<xnx>pos</xnx>&nbsp;<xkt>int</xkt><xp>)</xp>&nbsp;<xkt>uint8</xkt>&nbsp;<xp>{</xp><xw>
+</xw><xw>    </xw><xk>if</xk>&nbsp;<xnx>pos</xnx>&nbsp;<xo>&gt;=</xo>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>input</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xk>return</xk>&nbsp;<xnx>endOfText</xnx><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>if</xk>&nbsp;<xnx>pos</xnx>&nbsp;<xp>&lt;</xp>&nbsp;<xmi>0</xmi>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xk>return</xk>&nbsp;<xnx>startOfText</xnx><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>return</xk>&nbsp;<xnx>input</xnx><xp>[</xp><xnx>pos</xnx><xp>]</xp><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <p>Now onto the code for matching:</p>
-<div class="highlight"><pre><span></span><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">state</span><span class="p">)</span><span class="w"> </span><span class="nx">check</span><span class="p">(</span><span class="nx">input</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">pos</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;1&gt;</span>
-<span class="w">    </span><span class="nx">ch</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">getChar</span><span class="p">(</span><span class="nx">input</span><span class="p">,</span><span class="w"> </span><span class="nx">pos</span><span class="p">)</span><span class="w"> </span><span class="c1">// &lt;2&gt;</span>
-
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">ch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">endOfText</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">terminal</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;3&gt;</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">states</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">ch</span><span class="p">];</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">states</span><span class="p">)</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;4&gt;</span>
-<span class="w">        </span><span class="nx">nextState</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">states</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">nextState</span><span class="p">.</span><span class="nx">check</span><span class="p">(</span><span class="nx">input</span><span class="p">,</span><span class="w"> </span><span class="nx">pos</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;5&gt;</span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">state</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">transitions</span><span class="p">[</span><span class="nx">epsilonChar</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;6&gt;</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">state</span><span class="p">.</span><span class="nx">check</span><span class="p">(</span><span class="nx">input</span><span class="p">,</span><span class="w"> </span><span class="nx">pos</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;7&gt;</span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span>
-<span class="w">        </span><span class="p">}</span>
-
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">ch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">startOfText</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">state</span><span class="p">.</span><span class="nx">check</span><span class="p">(</span><span class="nx">input</span><span class="p">,</span><span class="w"> </span><span class="nx">pos</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// &lt;8&gt;</span>
-<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="c1">// &lt;9&gt;</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>func</xkd>&nbsp;<xp>(</xp><xnx>s</xnx>&nbsp;<xo>*</xo><xnx>state</xnx><xp>)</xp>&nbsp;<xnx>check</xnx><xp>(</xp><xnx>input</xnx>&nbsp;<xkt>string</xkt><xp>,</xp>&nbsp;<xnx>pos</xnx>&nbsp;<xkt>int</xkt><xp>)</xp>&nbsp;<xkt>bool</xkt>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;1&gt;</xc1><xw>
+</xw><xw>    </xw><xnx>ch</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>getChar</xnx><xp>(</xp><xnx>input</xnx><xp>,</xp>&nbsp;<xnx>pos</xnx><xp>)</xp>&nbsp;<xc1>// &lt;2&gt;</xc1><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>if</xk>&nbsp;<xnx>ch</xnx>&nbsp;<xo>==</xo>&nbsp;<xnx>endOfText</xnx>&nbsp;<xo>&amp;&amp;</xo>&nbsp;<xnx>s</xnx><xp>.</xp><xnx>terminal</xnx>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;3&gt;</xc1><xw>
+</xw><xw>        </xw><xk>return</xk>&nbsp;<xkc>true</xkc><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>if</xk>&nbsp;<xnx>states</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>s</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>ch</xnx><xp>]</xp><xp>;</xp>&nbsp;<xnb>len</xnb><xp>(</xp><xnx>states</xnx><xp>)</xp>&nbsp;<xp>&gt;</xp>&nbsp;<xmi>0</xmi>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;4&gt;</xc1><xw>
+</xw><xw>        </xw><xnx>nextState</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>states</xnx><xp>[</xp><xmi>0</xmi><xp>]</xp><xw>
+</xw><xw>        </xw><xk>if</xk>&nbsp;<xnx>nextState</xnx><xp>.</xp><xnx>check</xnx><xp>(</xp><xnx>input</xnx><xp>,</xp>&nbsp;<xnx>pos</xnx><xo>+</xo><xmi>1</xmi><xp>)</xp>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;5&gt;</xc1><xw>
+</xw><xw>            </xw><xk>return</xk>&nbsp;<xkc>true</xkc><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>for</xk>&nbsp;<xnx>_</xnx><xp>,</xp>&nbsp;<xnx>state</xnx>&nbsp;<xo>:=</xo>&nbsp;<xk>range</xk>&nbsp;<xnx>s</xnx><xp>.</xp><xnx>transitions</xnx><xp>[</xp><xnx>epsilonChar</xnx><xp>]</xp>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;6&gt;</xc1><xw>
+</xw><xw>        </xw><xk>if</xk>&nbsp;<xnx>state</xnx><xp>.</xp><xnx>check</xnx><xp>(</xp><xnx>input</xnx><xp>,</xp>&nbsp;<xnx>pos</xnx><xp>)</xp>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;7&gt;</xc1><xw>
+</xw><xw>            </xw><xk>return</xk>&nbsp;<xkc>true</xkc><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>        </xw><xk>if</xk>&nbsp;<xnx>ch</xnx>&nbsp;<xo>==</xo>&nbsp;<xnx>startOfText</xnx>&nbsp;<xo>&amp;&amp;</xo>&nbsp;<xnx>state</xnx><xp>.</xp><xnx>check</xnx><xp>(</xp><xnx>input</xnx><xp>,</xp>&nbsp;<xnx>pos</xnx><xo>+</xo><xmi>1</xmi><xp>)</xp>&nbsp;<xp>{</xp>&nbsp;<xc1>// &lt;8&gt;</xc1><xw>
+</xw><xw>            </xw><xk>return</xk>&nbsp;<xkc>true</xkc><xw>
+</xw><xw>        </xw><xp>}</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>return</xk>&nbsp;<xkc>false</xkc>&nbsp;<xc1>// &lt;9&gt;</xc1><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <ol>
 <li><code>(s *state)</code> is just a way to add a function to the <code>state</code> struct in Golang, not relevant to the algorithm</li>
 <li>We get the current character we need to check for. It can be a valid character from the string, <em>startOfText</em> or <em>endOfText</em></li>
@@ -770,76 +750,75 @@ Before getting into the parsing algorithm, let's define some types and constants
 </ol>
 <h3>Testing</h3>
 <p>Finally, let's test our code against some input. Please keep in mind that, some of those <em>invalid</em> emails are actually valid in real world, but since our regex is a simplified version, it does not accept those ones.</p>
-<div class="highlight"><pre><span></span><span class="kd">func</span><span class="w"> </span><span class="nx">TestNfa</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[]</span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">email</span><span class="w">    </span><span class="kt">string</span>
-<span class="w">        </span><span class="nx">validity</span><span class="w"> </span><span class="kt">bool</span>
-<span class="w">    </span><span class="p">}{</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;valid_email@example.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;john.doe@email.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user_name@email.org&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;support@email.io&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;contact@123.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sales@email.biz&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;test_email@email.test&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;random.email@email.xyz&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@domain12345.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@12345domain.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">},</span>
-<span class="w">        </span><span class="c1">// invalid when compared against our regex</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;alice.smith123@email.co.uk&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;invalid.email@&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;.invalid@email.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;email@invalid..com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@-invalid.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@invalid-.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@in valid.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@.co&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@domain.c&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@domain.1a&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@domain.c0m&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@domain..com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@.email.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@emai.l.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@e_mail.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@e+mail.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@e^mail.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@e*mail.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@e.mail.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@e_mail.net&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@sub.domain.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@sub-domain.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@sub.domain12345.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@sub.domain-12345.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@-sub.domain.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@sub-.domain.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@domain-.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@sub.domain.c0m&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@sub.domain.c&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@sub.domain.1a&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@sub.domain.c0m&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@sub.domain..com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@sub.domain.c0m&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@sub.domain..com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nx">email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;user@sub.domain.c0m&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">validity</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="nx">ctx</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">parse</span><span class="p">(</span><span class="s">`[a-zA-Z][a-zA-Z0-9_.]+@[a-zA-Z0-9]+.[a-zA-Z]{2,}`</span><span class="p">)</span>
-<span class="w">    </span><span class="nx">nfa</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">toNfa</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
-
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">instance</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">t</span><span class="p">.</span><span class="nx">Run</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Sprintf</span><span class="p">(</span><span class="s">&quot;Test: &#39;%s&#39;&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">instance</span><span class="p">.</span><span class="nx">email</span><span class="p">),</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">result</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">nfa</span><span class="p">.</span><span class="nx">check</span><span class="p">(</span><span class="nx">instance</span><span class="p">.</span><span class="nx">email</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">instance</span><span class="p">.</span><span class="nx">validity</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="nx">t</span><span class="p">.</span><span class="nx">Logf</span><span class="p">(</span><span class="s">&quot;Expected: %t, got: %t\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">instance</span><span class="p">.</span><span class="nx">validity</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="p">)</span>
-<span class="w">                </span><span class="nx">t</span><span class="p">.</span><span class="nx">Fail</span><span class="p">()</span>
-<span class="w">            </span><span class="p">}</span>
-<span class="w">        </span><span class="p">})</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><xkd>func</xkd>&nbsp;<xnx>TestNfa</xnx><xp>(</xp><xnx>t</xnx>&nbsp;<xo>*</xo><xnx>testing</xnx><xp>.</xp><xnx>T</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xkd>var</xkd>&nbsp;<xnx>data</xnx>&nbsp;<xp>=</xp>&nbsp;<xp>[</xp><xp>]</xp><xkd>struct</xkd>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xnx>email</xnx><xw>    </xw><xkt>string</xkt><xw>
+</xw><xw>        </xw><xnx>validity</xnx>&nbsp;<xkt>bool</xkt><xw>
+</xw><xw>    </xw><xp>}</xp><xp>{</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;valid_email@example.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>true</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;john.doe@email.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>true</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user_name@email.org&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>true</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;support@email.io&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>true</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;contact@123.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>true</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;sales@email.biz&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>true</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;test_email@email.test&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>true</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;random.email@email.xyz&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>true</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@domain12345.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>true</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@12345domain.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>true</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xc1>// invalid when compared against our regex</xc1><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;alice.smith123@email.co.uk&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;invalid.email@&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;.invalid@email.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;email@invalid..com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@-invalid.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@invalid-.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@in valid.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@.co&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@domain.c&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@domain.1a&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@domain.c0m&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@domain..com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@.email.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@emai.l.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@e_mail.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@e+mail.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@e^mail.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@e*mail.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@e.mail.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@e_mail.net&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@sub.domain.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@sub-domain.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@sub.domain12345.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@sub.domain-12345.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@-sub.domain.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@sub-.domain.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@domain-.com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@sub.domain.c0m&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@sub.domain.c&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@sub.domain.1a&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@sub.domain.c0m&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@sub.domain..com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@sub.domain.c0m&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@sub.domain..com&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>        </xw><xp>{</xp><xnx>email</xnx><xp>:</xp>&nbsp;<xs>&quot;user@sub.domain.c0m&quot;</xs><xp>,</xp>&nbsp;<xnx>validity</xnx><xp>:</xp>&nbsp;<xkc>false</xkc><xp>}</xp><xp>,</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xnx>ctx</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>parse</xnx><xp>(</xp><xs>`[a-zA-Z][a-zA-Z0-9_.]+@[a-zA-Z0-9]+.[a-zA-Z]{2,}`</xs><xp>)</xp><xw>
+</xw><xw>    </xw><xnx>nfa</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>toNfa</xnx><xp>(</xp><xnx>ctx</xnx><xp>)</xp><xw>
+</xw><xw>
+</xw><xw>    </xw><xk>for</xk>&nbsp;<xnx>_</xnx><xp>,</xp>&nbsp;<xnx>instance</xnx>&nbsp;<xo>:=</xo>&nbsp;<xk>range</xk>&nbsp;<xnx>data</xnx>&nbsp;<xp>{</xp><xw>
+</xw><xw>        </xw><xnx>t</xnx><xp>.</xp><xnx>Run</xnx><xp>(</xp><xnx>fmt</xnx><xp>.</xp><xnx>Sprintf</xnx><xp>(</xp><xs>&quot;Test: '%s'&quot;</xs><xp>,</xp>&nbsp;<xnx>instance</xnx><xp>.</xp><xnx>email</xnx><xp>)</xp><xp>,</xp>&nbsp;<xkd>func</xkd><xp>(</xp><xnx>t</xnx>&nbsp;<xo>*</xo><xnx>testing</xnx><xp>.</xp><xnx>T</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
+</xw><xw>            </xw><xnx>result</xnx>&nbsp;<xo>:=</xo>&nbsp;<xnx>nfa</xnx><xp>.</xp><xnx>check</xnx><xp>(</xp><xnx>instance</xnx><xp>.</xp><xnx>email</xnx><xp>,</xp>&nbsp;<xo>-</xo><xmi>1</xmi><xp>)</xp><xw>
+</xw><xw>            </xw><xk>if</xk>&nbsp;<xnx>result</xnx>&nbsp;<xo>!=</xo>&nbsp;<xnx>instance</xnx><xp>.</xp><xnx>validity</xnx>&nbsp;<xp>{</xp><xw>
+</xw><xw>                </xw><xnx>t</xnx><xp>.</xp><xnx>Logf</xnx><xp>(</xp><xs>&quot;Expected: %t, got: %t\n&quot;</xs><xp>,</xp>&nbsp;<xnx>instance</xnx><xp>.</xp><xnx>validity</xnx><xp>,</xp>&nbsp;<xnx>result</xnx><xp>)</xp><xw>
+</xw><xw>                </xw><xnx>t</xnx><xp>.</xp><xnx>Fail</xnx><xp>(</xp><xp>)</xp><xw>
+</xw><xw>            </xw><xp>}</xp><xw>
+</xw><xw>        </xw><xp>}</xp><xp>)</xp><xw>
+</xw><xw>    </xw><xp>}</xp><xw>
+</xw><xp>}</xp><xw>
+</xw></pre></div>
 <p>All the tests pass. We're done.</p>
 <p>Of course, there's a lot to improve in the code. You can check out the Github repository for this project. While the code will not be the exact same, the ideas are the same.</p>
 <p>Cheers!</p>
