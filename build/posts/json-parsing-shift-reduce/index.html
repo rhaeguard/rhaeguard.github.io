@@ -33,7 +33,7 @@
             
 
 <p>Parsing JSON is something that the majority of programmers have done. Almost all languages have means to deserialize (unmarshall) JSON from text into some data structure. In this article, we are going to try doing exactly that.</p>
-<h3>Grammar</h3>
+<h3 id="grammar">Grammar</h3>
 <p>Just like in natural languages, the programming languages and various data formats have a grammar. The grammar consists of rules that show how the text input needs to be structured. For JSON the following is a simplified version of a part of the grammar:</p>
 <div class="highlight"><pre><x>1. json ::= value
 2. value ::= object | array | string
@@ -83,11 +83,15 @@
 </ol>
 <p>The most obvious feature of recusive descent is the fact that the code actually resembles the grammar. It is used to parse JSON in golang's <a href="https://github.com/golang/go/blob/e73e25b624c37a936bb42f50a11f56297a4cd637/src/encoding/json/encode.go#L159">standard library</a>. I've also written a <a href="https://github.com/rhaeguard/jsonx/blob/45919f19218139c233fbdf57cb1213a03d5a6f78/src/main/java/io/rhaeguard/JsonX.java">top-down JSON parser</a>. </p>
 <p>Recursive descent/top-down parsing is awesome, but there are other ways of parsing as well. Bottom-up parsing is another approach that's extremely common. Especially with parser generators like <a href="https://en.wikipedia.org/wiki/Yacc">yacc</a>. As the name implies, in bottom-up parsing, we go from ground up. What this means is that we try to construct the parts of the parse tree that we know, and slowly grow the parse tree. For the example above, this could mean that we can construct a <em>string</em> first, and based on those, we can recognize that we have a <em>member</em>, and then create <em>members</em> and <em>object</em> and finally end up with the root <em>json</em>. </p>
-<p>You can also check out Professor Brailsford's video on Computerphile on this subject as he explains stuff way better than I can.</p>
-<iframe width="100%" height="315" src="https://www.youtube.com/embed/tH5AOX9929g?si=PRfAEyXSmLUT-37m" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-
+<p>You can also check out Professor Brailsford's video on Computerphile on this subject as he explains stuff way better than I can:</p>
+<p><a href="https://www.youtube.com/watch?v=tH5AOX9929g" target="_blank" class="youtube-thumbnail">
+  <img src="https://img.youtube.com/vi/tH5AOX9929g/hqdefault.jpg" alt="A Youtube video called 'Parsing Bottom Up' by Computerphile" loading="lazy">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/YouTube_full-color_icon_%282024%29.svg" 
+       alt="YouTube Logo" class="youtube-logo">
+</a></p>
+<p><youtube v="tH5AOX9929g" alt="A Youtube video called 'Parsing Bottom Up' by Computerphile"/></p>
 <p>In this tutorial, we will use a bottom-up approach, namely shift-reduce, to parse JSON. We will use Golang, but the concepts can be coded in any language.</p>
-<h1>Shift-Reduce Parsing</h1>
+<h1 id="shift-reduce-parsing">Shift-Reduce Parsing</h1>
 <p>The shift-reduce parsing approach is a table-driven parsing approach that consists of 2 operations - shift and reduce. Here's the simplified version of the algorithm:</p>
 <div class="highlight"><pre><x>init:
     0. the input to be parsed
@@ -244,7 +248,7 @@ process:
 <li><a href="#lexer">Lexer</a></li>
 <li><a href="#lexer">Parser</a></li>
 </ul>
-<h2>Grammar</h2>
+<h2 id="grammar_1">Grammar</h2>
 <p>We have already seen a glimpse of the JSON grammar. In this section, we will provide the complete grammar. </p>
 <p>Let's start with some basic building blocks.</p>
 <div class="highlight"><pre><xkd>type</xkd>&nbsp;<xnx>elementType</xnx>&nbsp;<xp>=</xp>&nbsp;<xkt>string</xkt><xw>
@@ -349,7 +353,7 @@ process:
 <li>Let's take the rule <code>integer</code>. It means that it's either a string of digits or a string of digits prefixed with a sign.</li>
 <li><code>number</code> is simply a combination of an integer, a fraction and an exponent where the fraction and the exponent could be omitted.</li>
 </ul>
-<h2>Lexer</h2>
+<h2 id="lexer">Lexer</h2>
 <p>Lexical analysis (or lexing, tokenization) is a process where we take a string input and try to tokenize it. A <em>token</em> is still a string but with a meaning attached to it, such as an identifier, a right or left parenthesis, keyword, etc. In the case of lexing JSON, our token types will be the following:</p>
 <ul>
 <li><code>ltObjectStart</code></li>
@@ -467,7 +471,7 @@ process:
 </xw><xw>    </xw><xp>{</xp><xp>&lt;</xp><xkc>nil</xkc><xp>&gt;</xp>&nbsp;<xp>}</xp>&nbsp;<xp>}</xp>&nbsp;<xc1>// object end</xc1><xw>
 </xw><xp>]</xp><xw>
 </xw></pre></div>
-<h2>Parsing</h2>
+<h2 id="parsing">Parsing</h2>
 <p>As we already know the shift-reduce parsing approach has (at least) two operations: shift and reduce. </p>
 <p>Shifting a token simply means pushing that token to the top of the parse stack. In our tableless approach, we will only shift in the following cases:
 - If lookahead is a prefix of the right hand side of any rule.
@@ -939,7 +943,7 @@ process:
 </xw><xw>    </xw><xp>}</xp><xp>)</xp><xw>
 </xw><xp>}</xp><xw>
 </xw></pre></div>
-<h2>Unmarshalling</h2>
+<h2 id="unmarshalling">Unmarshalling</h2>
 <p>We have already achieved our goal, but more often than not, people want to deserialize their JSON payload into a custom struct or a custom object. In this section, we will make use of Golang's <a href="https://pkg.go.dev/reflect">reflect</a> package to achive this. This section is going to be code-heavy.</p>
 <div class="highlight"><pre><xc1>// Unmarshal deserializes the parsed JsonValue into the provided object.</xc1><xw>
 </xw><xc1>// Please keep in mind that obj needs to be a pointer</xc1><xw>
@@ -1122,7 +1126,7 @@ process:
 </xw></pre></div>
 <p>That's it! You can find the full implementation in the <a href="https://github.com/rhaeguard/gojson">Github repository</a>. </p>
 <p>Cheers!</p>
-<h1>References</h1>
+<h1 id="references">References</h1>
 <ul>
 <li>My code is mostly based on these videos from Shawn Lupoli:</li>
 <li>https://www.youtube.com/watch?v=3XLT1AI1f0g</li>

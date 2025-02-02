@@ -11,7 +11,8 @@
   $--gh-tool-link-color,
   $--inline-code-bg-color,
   $--inline-code-text-color,
-  $--block-code-bg-color
+  $--block-code-bg-color,
+  $--target-highlighted-color,
 ) {
   background-color: $--bg-color;
 
@@ -81,6 +82,11 @@
       background-color: $--gh-tool-body-color;
     }
   }
+
+  *:target { 
+    background: yellow; 
+    color: $--target-highlighted-color; 
+  }
 }
 
 @mixin dark-appearance {
@@ -95,6 +101,7 @@
    white,
    #3c434d,
    white,
+   black,
    black
    );
 }
@@ -111,6 +118,7 @@
    #1e70bf,
    #e4e6e9,
    rgb(58, 58, 58),
+   black,
    black
    );
 }
@@ -149,8 +157,6 @@ hr { margin: 2rem 0; }
 p { margin: 1rem 0; }
 
 li { margin: 0.4rem 0; }
-
-*:target { background: yellow; }
 
 .wain {
   max-width: 640px;
@@ -219,4 +225,29 @@ figcaption {
 button {
   text-decoration: none;
   &:hover { text-decoration: underline; }
+}
+
+.youtube-thumbnail {
+  position: relative;
+  cursor: pointer;
+}
+
+.youtube-thumbnail img {
+  display: block;
+  max-width: 480px;
+  border-radius: 8px;
+}
+
+.youtube-logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  opacity: 0.75;
+  transition: opacity 0.2s;
+}
+
+.youtube-thumbnail:hover .youtube-logo {
+  opacity: 1;
 }

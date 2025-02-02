@@ -67,9 +67,15 @@ The most obvious feature of recusive descent is the fact that the code actually 
 
 Recursive descent/top-down parsing is awesome, but there are other ways of parsing as well. Bottom-up parsing is another approach that's extremely common. Especially with parser generators like [yacc](https://en.wikipedia.org/wiki/Yacc). As the name implies, in bottom-up parsing, we go from ground up. What this means is that we try to construct the parts of the parse tree that we know, and slowly grow the parse tree. For the example above, this could mean that we can construct a _string_ first, and based on those, we can recognize that we have a _member_, and then create _members_ and _object_ and finally end up with the root _json_. 
 
-You can also check out Professor Brailsford's video on Computerphile on this subject as he explains stuff way better than I can.
+You can also check out Professor Brailsford's video on Computerphile on this subject as he explains stuff way better than I can:
 
-<iframe width="100%" height="315" src="https://www.youtube.com/embed/tH5AOX9929g?si=PRfAEyXSmLUT-37m" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<a href="https://www.youtube.com/watch?v=tH5AOX9929g" target="_blank" class="youtube-thumbnail">
+  <img src="https://img.youtube.com/vi/tH5AOX9929g/hqdefault.jpg" alt="A Youtube video called 'Parsing Bottom Up' by Computerphile" loading="lazy">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/YouTube_full-color_icon_%282024%29.svg" 
+       alt="YouTube Logo" class="youtube-logo">
+</a>
+
+<youtube v="tH5AOX9929g" alt="A Youtube video called 'Parsing Bottom Up' by Computerphile"/>
 
 In this tutorial, we will use a bottom-up approach, namely shift-reduce, to parse JSON. We will use Golang, but the concepts can be coded in any language.
 

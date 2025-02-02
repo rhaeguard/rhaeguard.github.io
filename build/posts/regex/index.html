@@ -38,7 +38,7 @@
 <li><a href="#building-the-state-machine">Building the state machine</a></li>
 <li><a href="#matching">Matching</a></li>
 </ul>
-<h2>Parsing</h2>
+<h2 id="parsing">Parsing</h2>
 <p>On its own, a regex string is just that --- a string. We need to transform it into something that has a structure. Such as the following:</p>
 <div class="highlight"><pre><xc1>// original regex string</xc1><xw>
 </xw><xs>&quot;[a-zA-Z0–9_]+@[a-zA-Z0–9]+.[a-zA-Z]{2,}&quot;</xs><xw>
@@ -360,12 +360,12 @@ Before getting into the parsing algorithm, let's define some types and constants
 <li>Now that we have the boundaries, we take  the last parsed token, wrap it in a <code>repeat</code> token and appropriate boundaries, and save it back to the same position in the tokens list. </li>
 </ol>
 <p>With this, we conclude the steps required for parsing a regex string. Next, we'll examine how we can build a state machine out of those tokens we've parsed.</p>
-<h2>Building the state machine</h2>
+<h2 id="building-the-state-machine">Building the state machine</h2>
 <p>In this section, we'll learn how to build a state machine from the tokens we parsed, but first, let's discuss what a state machine is.</p>
-<h3>What's an finite state machine?</h3>
+<h3 id="whats-an-finite-state-machine">What's an finite state machine?</h3>
 <p>A finite state machine (FSM) or a finite automata (FA) is an abstract machine that consists of a finite set of states, an initial state, terminal states and transitions between those states. FA has 2 types: <em>deterministic finite automata</em> (DFA) and <em>non-deterministic finite automata</em> (NFA). </p>
 <p>While automatas are used in many things, what's relevant to our context is the way they are used for checking if a certain text is accepted. Below is an example to a <em>deterministic</em> finite automata. It will only accept the words <em>"abd"</em> and <em>"ace"</em>.</p>
-<p><img alt="DFA example" src="/dfa_example.png" /></p>
+<p><img alt="DFA example" src="/dfa_example.jpeg" /></p>
 <p>The way this acceptance check is performed is as follows:
 1. We're at the start state, <em>always</em>.
 2. We take the first character of the input string and see if there's a corresponding transition for that.
@@ -375,10 +375,10 @@ Before getting into the parsing algorithm, let's define some types and constants
 4. Being on the terminal state means that the string is accepted
 5. For the DFA above, <em>"abd"</em> will always end on the terminal state, while <em>"abc"</em> will get stuck before reaching the end state.</p>
 <p>In DFAs, given a state, with the same input you will always transition to the same target state. It's deterministic. </p>
-<p><img alt="eNFA example" src="/nfa_example.png" /></p>
+<p><img alt="eNFA example" src="/nfa_example.jpeg" /></p>
 <p>In NFAs, given a state, with the same input you can go to different states, thus this makes it non-deterministic. <code>epsilon</code> represents an empty input. The NFA example above also only accepts the strings: <em>"abd"</em> and <em>"ace"</em>. But notice how with the epsilon value you can transition into multiple states.</p>
 <p>In the next sections, we will take our list of parsed tokens and create an epsilon-NFA out of them. Once we have the NFA, all we will need to do would be to go through each state and try to consume one character from the input string at a time and see if we end up in the end state.</p>
-<h3>Regular expression to epsilon-NFA</h3>
+<h3 id="regular-expression-to-epsilon-nfa">Regular expression to epsilon-NFA</h3>
 <p>The previous step provides us with a list of tokens. We now need to convert these to an epsilon-NFA. To achieve this, we will use an algorithm called Thompson's construction. It's an algorithm to construct and combine multiple NFAs into one NFA.</p>
 <p>To represent an NFA state, we'll use this simple structure:</p>
 <div class="highlight"><pre><xkd>type</xkd>&nbsp;<xnx>state</xnx>&nbsp;<xkd>struct</xkd>&nbsp;<xp>{</xp><xw>
@@ -393,12 +393,12 @@ Before getting into the parsing algorithm, let's define some types and constants
 <li><code>transitions</code> is a map where a character maps to a list of different states.</li>
 </ol>
 <p>This is the high-level visualization of the NFA construction algorithm:</p>
-<p><img alt="Creating an NFA from regular expression, high level view" src="/toNFA_explained.png" /></p>
+<p><img alt="Creating an NFA from regular expression, high level view" src="/toNFA_explained.jpeg" /></p>
 <ul>
 <li>We will have a start (pink) and terminal (blue) states.</li>
 <li>For each token, we'll create a separate NFA, and these NFAs will be concatenated with epsilon transitions. Last state of the previous NFA, will be connected to the first state of the next NFA, like this:</li>
 </ul>
-<p><img alt="Concatenation process" src="/toNFA_concat.png" /></p>
+<p><img alt="Concatenation process" src="/toNFA_concat.jpeg" /></p>
 <ul>
 <li>There will be an epsilon transition from the start state to the first state (s1) of the concatenated NFAs.</li>
 <li>There will be an epsilon transition from the last state of the concatenated NFAs to the terminal state.</li>
@@ -476,9 +476,9 @@ Before getting into the parsing algorithm, let's define some types and constants
 <li>Overall, we create empty <code>start</code> and <code>end</code> states, perform some logic within switch statement, and return those variables.</li>
 </ul>
 <p>In the next couple of sections, we'll go over each token type, visualize the steps and finally show the code.</p>
-<h4>Literals</h4>
+<h4 id="literals">Literals</h4>
 <p>Let's start with the literals as they are the simplest to explain.</p>
-<p><img alt="literal to nfa" src="/tokenToNfa_literal.png" /></p>
+<p><img alt="literal to nfa" src="/tokenToNfa_literal.jpeg" /></p>
 <ul>
 <li>In order to go from <code>start</code> to <code>end</code>, we need the transition <code>ch</code>. <code>ch</code> represents a single character.</li>
 </ul>
@@ -489,8 +489,8 @@ Before getting into the parsing algorithm, let's define some types and constants
 <ul>
 <li>We can see the exact same thing in the code as well. <code>t.value</code> is referring to the value we saved in the <code>token</code> struct back when we were parsing the tokens.</li>
 </ul>
-<h4>or/alternative</h4>
-<p><img alt="or to nfa" src="/tokenToNfa_or.png" /></p>
+<h4 id="oralternative">or/alternative</h4>
+<p><img alt="or to nfa" src="/tokenToNfa_or.jpeg" /></p>
 <ul>
 <li>Or means a choice between two different paths. Recall that in the parsing phase, the value for the or token had <em>left</em> and <em>right</em> sides (shown in the diagram as well). Each of these tokens represents different NFAs. </li>
 <li>To create the Or NFA, we need to have:<ul>
@@ -516,8 +516,8 @@ Before getting into the parsing algorithm, let's define some types and constants
 <li>Connecting the start state with the starts of both NFAs with an epsilon transition</li>
 <li>Connecting the end states of each NFA with the end state of the Or NFA.</li>
 </ol>
-<h4>Bracket expression</h4>
-<p><img alt="bracket to nfa" src="/tokenToNfa_bracket.png" /></p>
+<h4 id="bracket-expression">Bracket expression</h4>
+<p><img alt="bracket to nfa" src="/tokenToNfa_bracket.jpeg" /></p>
 <ul>
 <li>We can think of bracket expressions as a big Or expressions. For example, <code>[a-c0-2x]</code> means <code>a|b|c|0|1|2|x</code>. So it makes sense for it to visually resemble the Or expression. One minor difference is that in bracket expressions we work with literals and not arbitrary NFAs, so we can simply create a transition for each literal from the start state to the end state. </li>
 <li>The image is the visualization of the expression: <code>[a-c]</code></li>
@@ -534,13 +534,13 @@ Before getting into the parsing algorithm, let's define some types and constants
 <li>We add a transition from the <code>start</code> state to the <code>end</code> state.</li>
 </ol>
 <p>Although in our regex engine, we will not implement a negated bracket expression (<em>where the characher should be none of the specified chars</em>), this is how the Thompson construction would look like: </p>
-<p><img alt="bracket negation to nfa" src="/tokenToNfa_bracket_not.png" /></p>
+<p><img alt="bracket negation to nfa" src="/tokenToNfa_bracket_not.jpeg" /></p>
 <ul>
 <li><code>*</code> represents any character</li>
 <li>This really depends on the way the engine is implemented, but one simple way could be to look for exact matches, if there's none, we could use the any character transition.</li>
 <li>By matching the exact characters first, we could simply send the text containing those characters into a dead end, resulting in a non-match.</li>
 </ul>
-<h4>Groups</h4>
+<h4 id="groups">Groups</h4>
 <p>To convert a group expression into an NFA, we need to concatenate all the individual NFAs created from the tokens inside the group. We've already seen how this is done when we covered <code>toNFA</code> function. The code is exactly the same, with different variable names: </p>
 <div class="highlight"><pre><xc1>// there is no difference between </xc1><xw>
 </xw><xc1>// group, groupUncaptured types in our engine</xc1><xw>
@@ -556,11 +556,11 @@ Before getting into the parsing algorithm, let's define some types and constants
 </xw><xw>        </xw><xnx>end</xnx>&nbsp;<xp>=</xp>&nbsp;<xnx>te</xnx><xw>
 </xw><xw>    </xw><xp>}</xp><xw>
 </xw></pre></div>
-<h4>Repetition</h4>
+<h4 id="repetition">Repetition</h4>
 <p>Out of all the examples we've covered, understanding repetition might be the trickiest, thus we'll take it step by step and try to figure out a generalized solution that covers all repetition cases.</p>
 <p>In all the examples, we're about to go through, <code>A</code> will represent any NFA.</p>
 <p>Let's start with asterisk (Kleene's star), plus and question mark (optional). In each of the three examples below, we've also specified the corresponding minimum and maximum occurrence requirements.</p>
-<p><img alt="repeat 1 to nfa" src="/tokenToNfa_repeat_1.png" /></p>
+<p><img alt="repeat 1 to nfa" src="/tokenToNfa_repeat_1.jpeg" /></p>
 <ul>
 <li>Each example has an epsilon transition from start state to the start of <code>A</code>, and from the end of <code>A</code> to the end state. This indicates repeating the NFA <code>A</code> exactly once.</li>
 <li><code>*</code>, means that <code>A</code> can be skipped or repeated any number of times:<ul>
@@ -583,18 +583,18 @@ Before getting into the parsing algorithm, let's define some types and constants
 </li>
 </ul>
 <p>Next, let's take a look at the case where exact number of repetitions are specified.</p>
-<p><img alt="repeat 2 to nfa" src="/tokenToNfa_repeat_2.png" /></p>
+<p><img alt="repeat 2 to nfa" src="/tokenToNfa_repeat_2.jpeg" /></p>
 <ul>
 <li>We simply concatenate the same NFA <code>A</code> <em>m</em> times.</li>
 </ul>
 <p>What if the minimum is specified, but the upper bound is the infinity?</p>
-<p><img alt="repeat 3 to nfa" src="/tokenToNfa_repeat_3.png" /></p>
+<p><img alt="repeat 3 to nfa" src="/tokenToNfa_repeat_3.jpeg" /></p>
 <ul>
 <li>We still concatenate the same NFA <code>A</code> <em>m</em> times because that's the minimum amount of times it needs to repeat. </li>
 <li>But we also add an epsilon transition from the end state to the start of the final instance of <code>A</code> (<em>remember the second note from above</em>)</li>
 </ul>
 <p>Now, onto the final case. Both minimum and maximum number of occurrences are specified, and maximum is not infinity.</p>
-<p><img alt="repeat 4 to nfa" src="/tokenToNfa_repeat_4.png" /></p>
+<p><img alt="repeat 4 to nfa" src="/tokenToNfa_repeat_4.jpeg" /></p>
 <ul>
 <li>We know that <code>A</code> needs to repeat <em>m</em> times. This means that we have to concatenate <code>A</code> <em>m</em> times. </li>
 <li>The remaining <em>(n-m)</em> repetitions are completely optional. So at any point, after matching the minimum number of repetitions, we should be able to go to the end state.</li>
@@ -681,13 +681,13 @@ Before getting into the parsing algorithm, let's define some types and constants
 <li>Connect the end of the last NFA, to the end state.</li>
 <li>If the upper bound is infinity, add an epsilon transition from the end state to the start of the last NFA.</li>
 </ol>
-<h4>Example</h4>
+<h4 id="example">Example</h4>
 <p>Considering all the techniques we discussed above, this is what we would generate for this regex: <code>19[5-9][0-9]</code>:</p>
-<p><img alt="complete example" src="/example_nfa_complete.png" /></p>
-<h2>Matching</h2>
+<p><img alt="complete example" src="/example_nfa_complete.jpeg" /></p>
+<h2 id="matching">Matching</h2>
 <p>Final piece of our regex engine is the matching logic. The basic idea is that we'll feed each character of the test string, in order, to our current NFA state until we reach to the end of the string. If we finish the entire string and we're at the terminal state, it means the string matches with the regex.</p>
 <p>While going through the string, we'll use a cursor/pointer to a certain position in the string. The image below visualizes this. Keep in mind that, in addition to each index in the string, our pointer can also reference to the beginning of the string (prior to matching) and the end of the string (once we exhaust all the characters).</p>
-<p><img alt="cursur positions" src="/string_with_positions.png" /></p>
+<p><img alt="cursur positions" src="/string_with_positions.jpeg" /></p>
 <p>In code, we'll have these helper constants and method.</p>
 <div class="highlight"><pre><xkd>const</xkd>&nbsp;<xp>(</xp><xw>
 </xw><xw>    </xw><xnx>startOfText</xnx>&nbsp;<xkt>uint8</xkt>&nbsp;<xp>=</xp>&nbsp;<xmi>1</xmi><xw>
@@ -748,7 +748,7 @@ Before getting into the parsing algorithm, let's define some types and constants
 <li>There's a chance that we get stuck at the start of the text and never actually progress. This condition is to prevent such conditions.</li>
 <li>If nothing matches, it's a failure, and we return false. </li>
 </ol>
-<h3>Testing</h3>
+<h3 id="testing">Testing</h3>
 <p>Finally, let's test our code against some input. Please keep in mind that, some of those <em>invalid</em> emails are actually valid in real world, but since our regex is a simplified version, it does not accept those ones.</p>
 <div class="highlight"><pre><xkd>func</xkd>&nbsp;<xnx>TestNfa</xnx><xp>(</xp><xnx>t</xnx>&nbsp;<xo>*</xo><xnx>testing</xnx><xp>.</xp><xnx>T</xnx><xp>)</xp>&nbsp;<xp>{</xp><xw>
 </xw><xw>
@@ -822,7 +822,7 @@ Before getting into the parsing algorithm, let's define some types and constants
 <p>All the tests pass. We're done.</p>
 <p>Of course, there's a lot to improve in the code. You can check out the Github repository for this project. While the code will not be the exact same, the ideas are the same.</p>
 <p>Cheers!</p>
-<h2>References</h2>
+<h2 id="references">References</h2>
 <ul>
 <li>https://en.wikipedia.org/wiki/Thompson%27s_construction</li>
 <li>https://en.wikipedia.org/wiki/Regular_expression</li>

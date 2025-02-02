@@ -35,7 +35,7 @@ class NewEngineFormatter(HtmlFormatter):
             outfile.write(line)
         outfile.write('</pre></div>')
 
-MARKDOWN = markdown.Markdown(extensions=["fenced_code", "sane_lists"])
+MARKDOWN = markdown.Markdown(extensions=["fenced_code", "sane_lists", "toc"])
 PYGMENTS_HTML_FORMATTER = HtmlFormatter(style="monokai")
 CODE_EXTRACTION_REGEX = (
     r"<pre><code class=\"language-([a-z]+)\">((.|\n)+?)<\/code><\/pre>"
@@ -150,10 +150,14 @@ for markdown_file in glob.glob("./content/posts/*.md"):
 # move the static assets
 for file in glob.glob("./static/*"):
     filename = pathlib.Path(file).name
-    if filename.endswith(".png"):
+    if filename == "favicon.png":
         img = Image.open(file)
-        img.save(f"./build/{filename}", optimize=True)
-    # shutil.copy2(file, f"./build/{filename}")
+        img.save(f"./build/favicon.ico", format='ICO', optimize=True)
+    elif filename.endswith(".png"):
+        img = Image.open(file)
+        img = img.convert("RGB")
+        new_filename = filename.replace(".png", ".jpeg")
+        img.save(f"./build/{new_filename}", optimize=True)
 
 
 def build_posts(all_posts: list):
