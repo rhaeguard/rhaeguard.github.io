@@ -1,16 +1,18 @@
-import markdown
-import pathlib
 import os
 import glob
-from datetime import datetime
-import sass
+import pathlib
 import re
+from datetime import datetime
+import shutil
+import json
+# external dependencies
+import markdown
+import sass
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import HtmlFormatter
 from pygments.token import STANDARD_TYPES
 from PIL import Image
-import shutil
 
 class NewEngineFormatter(HtmlFormatter):
     name = 'NEF'
@@ -37,12 +39,12 @@ class NewEngineFormatter(HtmlFormatter):
         outfile.write('</pre></div>')
 
 MARKDOWN = markdown.Markdown(extensions=["fenced_code", "sane_lists", "toc"])
-PYGMENTS_HTML_FORMATTER = HtmlFormatter(style="monokai")
+PYGMENTS_HTML_FORMATTER = NewEngineFormatter(style="monokai")
 CODE_EXTRACTION_REGEX = (
     r"<pre><code class=\"language-([a-z]+)\">((.|\n)+?)<\/code><\/pre>"
 )
 
-build_path = pathlib.Path("./build")
+BUILD_DIR_PATH = pathlib.Path("./build")
 
 conditional_variables = []
 
@@ -59,8 +61,8 @@ for page in [HTML_TEMPLATE, SINGLE_POST_TEMPLATE, INDEX_PAGE_TEMPLATE]:
     for match in re.findall(r"{{exists:([a-zA-Z0-9_]+)}}", page, re.MULTILINE):
         conditional_variables.append(match)
 
-if not build_path.exists():
-    os.makedirs(build_path, exist_ok=True)
+if not BUILD_DIR_PATH.exists():
+    os.makedirs(BUILD_DIR_PATH, exist_ok=True)
 
 posts_metadata = []
 
@@ -74,10 +76,9 @@ def hilite_code(match):
     code = code.replace("&quot;", '"')
 
     lexer = get_lexer_by_name(lang, stripall=True)
-    return highlight(code, lexer, NewEngineFormatter(style="monokai"))
+    return highlight(code, lexer, PYGMENTS_HTML_FORMATTER)
 
-
-with open("./main.scss") as scss_file, open("./build/main.css", "w+") as main_css:
+with open("./css/main.scss") as scss_file, open(BUILD_DIR_PATH.joinpath("main.css"), "w+") as main_css:
     raw_scss = scss_file.read().strip()
 
     syntax_highligher_styling: str = PYGMENTS_HTML_FORMATTER.get_style_defs()
@@ -108,11 +109,11 @@ def conditional_render(variable_exists):
     return replace
 
 # build the files
-for markdown_file in glob.glob("./content/posts/*.md"):
+for markdown_file in glob.glob("./posts/*.md"):
     filename = pathlib.Path(markdown_file).name[:-3]
-    os.makedirs(f"./build/posts/{filename}", exist_ok=True)
+    os.makedirs(BUILD_DIR_PATH.joinpath("posts", filename), exist_ok=True)
     with open(markdown_file, encoding="utf-8") as f, open(
-        f"./build/posts/{filename}/index.html", "w+", encoding="utf-8"
+        BUILD_DIR_PATH.joinpath("posts", filename, "index.html"), "w+", encoding="utf-8"
     ) as o:
         out_html = MARKDOWN.convert(f.read())
 
@@ -149,19 +150,19 @@ for markdown_file in glob.glob("./content/posts/*.md"):
         o.flush()
 
 # move the static assets
-for file in glob.glob("./static/*"):
+for file in glob.glob("./assets/*"):
     filename = pathlib.Path(file).name
     if filename == "favicon.png":
         img = Image.open(file)
-        img.save(f"./build/favicon.ico", format='ICO', optimize=True)
+        img.save(BUILD_DIR_PATH.joinpath("favicon.ico"), format='ICO', optimize=True)
     elif filename.endswith(".png"):
         img = Image.open(file)
         img = img.convert("RGB")
         new_filename = filename.replace(".png", ".jpeg")
-        img.save(f"./build/{new_filename}", optimize=True)
+        img.save(BUILD_DIR_PATH.joinpath(new_filename), optimize=True)
     else:
         # copy everything else as-is
-        shutil.copy2(file, f"./build/{filename}")
+        shutil.copy2(file, BUILD_DIR_PATH.joinpath(filename))
 
 
 def build_posts(all_posts: list):
@@ -190,44 +191,20 @@ def build_projects(projects):
 
     return output
 
-
-ALL_PROJECTS = [
-    {
-        "title": "visualizations with canvas api",
-        "url": "https://rhaeguard.github.io/visualizations/",
-    },
-    {
-        "title": "phont - rendering ttf fonts from scratch",
-        "url": "https://github.com/rhaeguard/phont",
-    },
-    {
-        "title": "rgx - a tiny regex engine",
-        "url": "https://github.com/rhaeguard/rgx",
-    },
-    {
-        "title": "shum - a concatenative language for jvm",
-        "url": "https://github.com/rhaeguard/shum",
-    },
-    {
-        "title": "snake - a snake game with procedurally-generated maps",
-        "url": "https://github.com/rhaeguard/snake",
-    },
-    {
-        "title": "cells - a spreadsheet with lisp-like formulas",
-        "url": "https://github.com/rhaeguard/cells",
-    },
-]
-
 # construct index.html
-with open("./build/index.html", "w+", encoding="utf-8") as o:
+with open(BUILD_DIR_PATH.joinpath("index.html"), "w+", encoding="utf-8") as o:
     print("generation started...")
+
+    with open("data.json", encoding="utf-8") as df:
+        config_data = json.load(df)
+
     posts = build_posts(posts_metadata)
-    projects = build_projects(ALL_PROJECTS)
+    projects = build_projects(config_data["all_projects"])
     index_html = INDEX_PAGE_TEMPLATE.replace("{{POSTS}}", posts).replace(
         "{{PROJECTS}}", projects
     )
     out_html = HTML_TEMPLATE.replace("{{CONTENT}}", index_html).replace(
-        "{{title}}", "rhaeguard's blog"
+        "{{title}}", config_data["blog_title"]
     )
     o.write(out_html)
     o.flush()
