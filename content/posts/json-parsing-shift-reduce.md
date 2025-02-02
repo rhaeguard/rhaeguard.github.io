@@ -75,8 +75,6 @@ You can also check out Professor Brailsford's video on Computerphile on this sub
        alt="YouTube Logo" class="youtube-logo">
 </a>
 
-<youtube v="tH5AOX9929g" alt="A Youtube video called 'Parsing Bottom Up' by Computerphile"/>
-
 In this tutorial, we will use a bottom-up approach, namely shift-reduce, to parse JSON. We will use Golang, but the concepts can be coded in any language.
 
 # Shift-Reduce Parsing
