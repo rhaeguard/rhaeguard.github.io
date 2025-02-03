@@ -50,7 +50,7 @@ BUILD_DIR_PATH = pathlib.Path("./build")
 
 conditional_variables = []
 
-with open("./templates/html_template.html") as html_file:
+with open("./templates_all/html_template.html") as html_file:
     HTML_TEMPLATE = html_file.read().strip()
 
 with open("./templates/single_post.html") as html_file:
@@ -180,7 +180,10 @@ def handle_posts():
 
                 out_html = out_html[metadata_end_ix + 3 :]
             out_html = SINGLE_POST_TEMPLATE.replace("{{CONTENT}}", out_html)
-            out_html = HTML_TEMPLATE.replace("{{CONTENT}}", out_html)
+            out_html = render_template(HTML_TEMPLATE, {
+                "content": out_html,
+                "title": post_metadata["title"]
+            })
 
             for key, value in post_metadata.items():
                 if key == "date":
@@ -211,9 +214,11 @@ def construct_index_html(posts_metadata):
             "posts": posts_metadata,
         })
 
-        out_html = HTML_TEMPLATE.replace("{{CONTENT}}", index_html).replace(
-            "{{title}}", config_data["blog_title"]
-        )
+        out_html = render_template(HTML_TEMPLATE, {
+            "content": index_html,
+            "title": config_data["blog_title"]
+        })
+
         o.write(out_html)
         o.flush()
         print("generation done")
