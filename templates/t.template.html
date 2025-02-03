@@ -1,0 +1,49 @@
+<main class="page-content">
+    <div class="wain">
+        <a href="/">home</a>
+        <button class="theme-switch">dark</button>
+        <article>
+            <p class="post-meta">
+                <time datetime="{{date}}">
+                    {{date}}
+                </time>
+            </p>
+
+            <h1>{{title}}</h1>
+
+            {{for(counter, counts)
+                {{when(counter % 2 == 0)
+                    <h1>Hello {{counter}}</h1>
+                }}
+            }}
+
+            {{when(github)
+            <div class="link-preview">
+                <div class="header">Github Repository</div>
+                <div class="body">
+                    <a href="https://github.com/{{github}}" target="_blank">{{github}}</a>
+                </div>
+            </div>
+            }}
+
+            {{switch()
+                {{when(age > 10)
+                    {{for(count, counts)
+                        <h1>I am old enough, cause I'm {{age + count}} years old</h1>
+                    }}
+                }}
+
+                {{when(age < 4)
+                    <h1>I am not old enough, cause I'm {{age}} years old</h1>
+                }}
+
+                {{default()
+                    <h1>I don't know what I am, man</h1>
+                }}
+            }}
+
+
+            {{content["hallo"]["hi"]}}
+        </article>
+    </div>
+</main>

@@ -1,0 +1,26 @@
+<main class="page-content">
+    <div class="wain">
+        <header>
+            <h1 title="rhaeguard's stuff"><a href="https://github.com/rhaeguard">rhaeguard</a>'s stuff.</h1>
+            <button class="theme-switch">dark</button>
+        </header>
+        
+        <ul>
+            <li>some cool side projects</li>
+
+            <ul>
+                {{for(project, projects)
+                    <li><a href="{{project['url']}}">{{project['title']}}</a></li>
+                }}
+            </ul>
+
+            <li>all posts</li>
+            <ul>
+                {{for(post, posts)
+                    <li><span>{{format_date(post['date'], "%Y-%m-%dT%H:%M:%S%z")}}</span>&nbsp;<a href="/post/{{post['filename']}}">{{post['title']}}</a></li>
+                }}
+            </ul>
+        </ul>
+
+    </div>
+</main>

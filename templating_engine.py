@@ -99,11 +99,23 @@ def func_default(context: dict, params: list[str], body: list['Block']):
     for b in body:
         b.render(context)
 
+def func_format_date(context: dict, params: list[str], body: list['Block']):
+    assert len(params) == 2, "format_date function accepts 2 param: [date_str, date_format]"
+
+    from datetime import datetime
+
+    date_str, date_format = params
+    date_str, date_format = eval(date_str, context), eval(date_format, context)
+    date = datetime.strptime(date_str, date_format).date()
+
+    context["__out__"] += str(date)
+
 FUNCTION_MAP = {
     "for": func_for,
     "when": func_if,
     "switch": func_switch,
     "default": func_default,
+    "format_date": func_format_date,
 }
 
 def invoke(fb: 'FunctionCallBlock', context: dict):

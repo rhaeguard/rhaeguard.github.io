@@ -5,6 +5,8 @@ import re
 from datetime import datetime
 import shutil
 import json
+# local code
+from templating_engine import render_template
 # external dependencies
 import markdown
 import sass
@@ -54,7 +56,7 @@ with open("./templates/html_template.html") as html_file:
 with open("./templates/single_post.html") as html_file:
     SINGLE_POST_TEMPLATE = html_file.read().strip()
 
-with open("./templates/index.html") as html_file:
+with open("./templates_all/index.html") as html_file:
     INDEX_PAGE_TEMPLATE = html_file.read().strip()
 
 for page in [HTML_TEMPLATE, SINGLE_POST_TEMPLATE, INDEX_PAGE_TEMPLATE]:
@@ -204,9 +206,12 @@ def construct_index_html(posts_metadata):
 
         posts = build_posts(posts_metadata)
         projects = build_projects(config_data["all_projects"])
-        index_html = INDEX_PAGE_TEMPLATE.replace("{{POSTS}}", posts).replace(
-            "{{PROJECTS}}", projects
-        )
+
+        index_html = render_template(INDEX_PAGE_TEMPLATE, {
+            "projects": config_data["all_projects"],
+            "posts": posts_metadata,
+        })
+
         out_html = HTML_TEMPLATE.replace("{{CONTENT}}", index_html).replace(
             "{{title}}", config_data["blog_title"]
         )

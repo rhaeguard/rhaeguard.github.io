@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta property="og:image" content="https://rhaeguard.github.io/og-image-banff.jpg" />
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="/main.css">
+</head>
+<body>
+
+{{CONTENT}}
+
+<script>
+    const themeVal = (localStorage.getItem("isDark") || document.getElementsByTagName("body")[0].getAttribute("a")) ?? "light"
+    document.getElementsByTagName("body")[0].setAttribute("a", themeVal)
+    const btns = document.getElementsByClassName('theme-switch')
+    for (let btn of btns) {
+        btn.innerHTML = themeVal === "dark" ? "light" : "dark"
+        btn.addEventListener('click', (event) => {
+            const theme = localStorage.getItem("isDark") || document.getElementsByTagName("body")[0].getAttribute("a")
+            const isDark = theme === "dark"
+            document.getElementsByTagName("body")[0].setAttribute("a", isDark ? "light" : "dark")
+            localStorage.setItem("isDark", isDark ? "light" : "dark")
+            btn.innerHTML = isDark ? "dark" : "light"
+        })
+    }
+</script>
+
+</body>
+</html>
