@@ -17,7 +17,9 @@
             <li>all posts</li>
             <ul>
                 {{for(post, posts)
-                    <li><span>{{format_date(post['date'], "%Y-%m-%dT%H:%M:%S%z")}}</span>&nbsp;<a href="/post/{{post['filename']}}">{{post['title']}}</a></li>
+                    {{when(post['draft'] == 'false')
+                        <li><span>{{format_date(post['date'])}}</span>&nbsp;<a href="/post/{{post['filename']}}">{{post['title']}}</a></li>
+                    }}
                 }}
             </ul>
         </ul>

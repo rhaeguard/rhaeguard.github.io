@@ -100,13 +100,14 @@ def func_default(context: dict, params: list[str], body: list['Block']):
         b.render(context)
 
 def func_format_date(context: dict, params: list[str], body: list['Block']):
-    assert len(params) == 2, "format_date function accepts 2 param: [date_str, date_format]"
+    MARKDOWN_ARTICLE_DATE_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
+    assert len(params) == 1, "format_date function accepts 1 param: [date_str]"
 
     from datetime import datetime
 
-    date_str, date_format = params
-    date_str, date_format = eval(date_str, context), eval(date_format, context)
-    date = datetime.strptime(date_str, date_format).date()
+    date_str = params[0]
+    date_str = eval(date_str, context) 
+    date = datetime.strptime(date_str, MARKDOWN_ARTICLE_DATE_FORMAT).date()
 
     context["__out__"] += str(date)
 

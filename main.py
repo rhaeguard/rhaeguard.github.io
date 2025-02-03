@@ -204,8 +204,7 @@ def construct_index_html(posts_metadata):
         with open("data.json", encoding="utf-8") as df:
             config_data = json.load(df)
 
-        posts = build_posts(posts_metadata)
-        projects = build_projects(config_data["all_projects"])
+        posts_metadata.sort(key=lambda p: datetime.strptime(p["date"], "%Y-%m-%dT%H:%M:%S%z"), reverse=True)
 
         index_html = render_template(INDEX_PAGE_TEMPLATE, {
             "projects": config_data["all_projects"],
