@@ -5,22 +5,22 @@
         <article>
             <p class="post-meta">
                 <time datetime="{{date}}">
-                    {{date}}
+                    {{format_date(date)}}
                 </time>
             </p>
 
             <h1>{{title}}</h1>
             
-            {{exists:github}}
+            {{when(github)
             <div class="link-preview">
                 <div class="header">Github Repository</div>
                 <div class="body">
                     <a href="https://github.com/{{github}}" target="_blank">{{github}}</a>
                 </div>
             </div>
-            {{exists:github:end}}
+            }}
 
-            {{CONTENT}}
+            {{content}}
         </article>
     </div>
 </main>

@@ -48,20 +48,14 @@ CODE_EXTRACTION_REGEX = (
 
 BUILD_DIR_PATH = pathlib.Path("./build")
 
-conditional_variables = []
-
-with open("./templates_all/html_template.html") as html_file:
+with open("./templates/html_template.html") as html_file:
     HTML_TEMPLATE = html_file.read().strip()
 
 with open("./templates/single_post.html") as html_file:
     SINGLE_POST_TEMPLATE = html_file.read().strip()
 
-with open("./templates_all/index.html") as html_file:
+with open("./templates/index.html") as html_file:
     INDEX_PAGE_TEMPLATE = html_file.read().strip()
-
-for page in [HTML_TEMPLATE, SINGLE_POST_TEMPLATE, INDEX_PAGE_TEMPLATE]:
-    for match in re.findall(r"{{exists:([a-zA-Z0-9_]+)}}", page, re.MULTILINE):
-        conditional_variables.append(match)
 
 if not BUILD_DIR_PATH.exists():
     os.makedirs(BUILD_DIR_PATH, exist_ok=True)
@@ -77,38 +71,6 @@ def hilite_code(match):
 
     lexer = get_lexer_by_name(lang, stripall=True)
     return highlight(code, lexer, PYGMENTS_HTML_FORMATTER)
-
-def conditional_render(variable_exists):
-    def replace(match):
-        if variable_exists:
-            return match.group(1)
-        return ""
-    return replace
-
-def build_posts(all_posts: list):
-    all_posts.sort(key=lambda p: datetime.strptime(p["date"], "%Y-%m-%dT%H:%M:%S%z"), reverse=True)
-
-    output = "<ul>"
-    for post in all_posts:
-        filename = f'/posts/{post["filename"]}'
-        title = post["title"]
-        date = post["date"]
-        date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S%z").date()
-        is_draft = post["draft"]
-        if is_draft == 'false':
-            output += f'<li><span>{date}</span>&nbsp;<a href="{filename}">{title}</a></li>'
-    output += "</ul>"
-    return output
-
-def build_projects(projects):
-    output = "<ul>"
-    for project in projects:
-        t = project["title"]
-        u = project["url"]
-        output += f'<li><a href="{u}">{t}</a></li>'
-    output += "</ul>"
-
-    return output
 
 def handle_css():
     # handle CSS
@@ -157,9 +119,10 @@ def handle_posts():
     for markdown_file in glob.glob("./posts/*.md"):
         filename = pathlib.Path(markdown_file).name[:-3]
         os.makedirs(BUILD_DIR_PATH.joinpath("posts", filename), exist_ok=True)
-        with open(markdown_file, encoding="utf-8") as f, open(
-            BUILD_DIR_PATH.joinpath("posts", filename, "index.html"), "w+", encoding="utf-8"
-        ) as o:
+        with \
+            open(markdown_file, encoding="utf-8") as f, \
+            open(BUILD_DIR_PATH.joinpath("posts", filename, "index.html"), "w+", encoding="utf-8") as o:
+            
             out_html = MARKDOWN.convert(f.read())
 
             out_html = re.sub(CODE_EXTRACTION_REGEX, hilite_code, out_html, 0, re.MULTILINE)
@@ -179,20 +142,16 @@ def handle_posts():
                 posts_metadata.append(post_metadata)
 
                 out_html = out_html[metadata_end_ix + 3 :]
-            out_html = SINGLE_POST_TEMPLATE.replace("{{CONTENT}}", out_html)
+            
+            out_html = render_template(SINGLE_POST_TEMPLATE, {
+                "content": out_html,
+                **post_metadata,
+            })
+
             out_html = render_template(HTML_TEMPLATE, {
                 "content": out_html,
                 "title": post_metadata["title"]
             })
-
-            for key, value in post_metadata.items():
-                if key == "date":
-                    value = value[:value.find("T")]
-                out_html = out_html.replace(f"{{{{{key}}}}}", value)
-
-            for cvar in conditional_variables:
-                regex = f"{{{{exists:{cvar}}}}}((.|\\n)+?){{{{exists:{cvar}:end}}}}"
-                out_html = re.sub(regex, conditional_render(cvar in post_metadata), out_html, 0, re.MULTILINE)
 
             o.write(out_html)
             o.flush()
@@ -200,7 +159,6 @@ def handle_posts():
     return posts_metadata
 
 def construct_index_html(posts_metadata):
-    # construct index.html
     with open(BUILD_DIR_PATH.joinpath("index.html"), "w+", encoding="utf-8") as o:
         print("generation started...")
 

@@ -7,10 +7,21 @@
         
         <ul>
             <li>some cool side projects</li>
-            {{PROJECTS}}
+
+            <ul>
+                {{for(project, projects)
+                    <li><a href="{{project['url']}}">{{project['title']}}</a></li>
+                }}
+            </ul>
 
             <li>all posts</li>
-            {{POSTS}}
+            <ul>
+                {{for(post, posts)
+                    {{when(post['draft'] == 'false')
+                        <li><span>{{format_date(post['date'])}}</span>&nbsp;<a href="/posts/{{post['filename']}}">{{post['title']}}</a></li>
+                    }}
+                }}
+            </ul>
         </ul>
 
     </div>
