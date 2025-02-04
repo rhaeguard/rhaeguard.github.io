@@ -60,7 +60,7 @@ with open("./templates/index.html") as html_file:
 if not BUILD_DIR_PATH.exists():
     os.makedirs(BUILD_DIR_PATH, exist_ok=True)
 
-def hilite_code(match):
+def syntax_highlight_code(match):
     lang = match.group(1)
     code = match.group(2)
 
@@ -125,7 +125,7 @@ def handle_posts():
             
             out_html = MARKDOWN.convert(f.read())
 
-            out_html = re.sub(CODE_EXTRACTION_REGEX, hilite_code, out_html, 0, re.MULTILINE)
+            out_html = re.sub(CODE_EXTRACTION_REGEX, syntax_highlight_code, out_html, 0, re.MULTILINE)
 
             metadata_end_ix = out_html.find("-->")
             post_metadata = {"filename": f"{filename}"}
