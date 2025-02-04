@@ -57,6 +57,9 @@ with open("./templates/single_post.html") as html_file:
 with open("./templates/index.html") as html_file:
     INDEX_PAGE_TEMPLATE = html_file.read().strip()
 
+with open("data.json", encoding="utf-8") as df:
+    CONFIG_DATA = json.load(df)
+
 if not BUILD_DIR_PATH.exists():
     os.makedirs(BUILD_DIR_PATH, exist_ok=True)
 
@@ -113,6 +116,25 @@ def handle_static_assets():
             # copy everything else as-is
             shutil.copy2(file, BUILD_DIR_PATH.joinpath(filename))
 
+def prepare_metadata(post_metadata = None):
+    meta = {}
+    for category, keys in CONFIG_DATA["global_metadata"].items():
+        for key, value in keys.items():
+            property = f"{category}:{key}"
+            content = value
+            meta[property] = content
+
+    if post_metadata:
+        post_url = f"{CONFIG_DATA['base_url']}/posts/{post_metadata['filename']}/"
+        meta["og:type"] = "article"
+        meta["og:url"] = post_url
+        meta["og:title"] = post_metadata["title"]
+
+        meta["twitter:url"] = post_url
+        meta["twitter:title"] = post_metadata["title"]
+
+    return meta
+
 def handle_posts():
     posts_metadata = []
     # build the files
@@ -150,7 +172,8 @@ def handle_posts():
 
             out_html = render_template(HTML_TEMPLATE, {
                 "content": out_html,
-                "title": post_metadata["title"]
+                "title": post_metadata["title"],
+                "meta_data": prepare_metadata(post_metadata)
             })
 
             o.write(out_html)
@@ -162,19 +185,17 @@ def construct_index_html(posts_metadata):
     with open(BUILD_DIR_PATH.joinpath("index.html"), "w+", encoding="utf-8") as o:
         print("generation started...")
 
-        with open("data.json", encoding="utf-8") as df:
-            config_data = json.load(df)
-
         posts_metadata.sort(key=lambda p: datetime.strptime(p["date"], "%Y-%m-%dT%H:%M:%S%z"), reverse=True)
 
         index_html = render_template(INDEX_PAGE_TEMPLATE, {
-            "projects": config_data["all_projects"],
+            "projects": CONFIG_DATA["all_projects"],
             "posts": posts_metadata,
         })
 
         out_html = render_template(HTML_TEMPLATE, {
             "content": index_html,
-            "title": config_data["blog_title"]
+            "title": CONFIG_DATA["blog_title"],
+            "meta_data": prepare_metadata()
         })
 
         o.write(out_html)

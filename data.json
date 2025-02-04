@@ -1,5 +1,6 @@
 {
     "blog_title": "rhaeguard's blog",
+    "base_url": "https://rhaeguard.github.io",
     "all_projects": [
         {
             "title": "visualizations with canvas api",
@@ -25,5 +26,15 @@
             "title": "cells - a spreadsheet with lisp-like formulas",
             "url": "https://github.com/rhaeguard/cells"
         }
-    ]
+    ],
+    "global_metadata": {
+        "og": {
+            "image": "https://rhaeguard.github.io/og-image-banff.jpg",
+            "site_name": "rhaeguard's blog",
+            "type": "website"
+        },
+        "twitter": {
+            "card": "summary_large_image"
+        }
+    }
 }

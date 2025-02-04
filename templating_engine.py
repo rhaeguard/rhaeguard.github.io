@@ -38,17 +38,33 @@ class Block:
             raise Exception(f"unsupported type: {str(self.type)}")
 
 def func_for(context: dict, params: list[str], body: list['Block']):
-    assert len(params) == 2, "for function accepts 2 params: [varname, iterable]"
-    varname, itername = params
-    iterable = context[itername]
+    if len(params) == 3:
+        keyname, valuename, dictname = params
+        iterable = context[dictname]
 
-    for value in iterable:
-        context[varname] = value
-        
-        for block in body:
-            block.render(context)
+        for k, v in iterable.items():
+            context[keyname] = k
+            context[valuename] = v
+            
+            for block in body:
+                block.render(context)
 
-        del context[varname]
+            del context[keyname]
+            del context[valuename]
+
+    elif len(params) == 2:
+        varname, itername = params
+        iterable = context[itername]
+
+        for value in iterable:
+            context[varname] = value
+            
+            for block in body:
+                block.render(context)
+
+            del context[varname]
+    else:
+        assert len(params) == 2, "for function accepts 2 or 3 params: [varname, iterable] or [keyname, valuename, dict]"
 
 def func_if(context: dict, params: list[str], body: list['Block']):
     assert len(params) == 1, "if function accepts 1 param: [condition]"
