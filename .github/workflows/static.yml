@@ -2,7 +2,7 @@ name: Build the blog and deploy it to Github Pages
 
 on:
   push:
-    branches: ["new-engine"]
+    branches: ["main"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
