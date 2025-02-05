@@ -70,7 +70,7 @@ Recursive descent/top-down parsing is awesome, but there are other ways of parsi
 You can also check out Professor Brailsford's video on Computerphile on this subject as he explains stuff way better than I can:
 
 <a href="https://www.youtube.com/watch?v=tH5AOX9929g" target="_blank" class="youtube-thumbnail">
-  <img src="https://img.youtube.com/vi/tH5AOX9929g/hqdefault.jpg" alt="A Youtube video called 'Parsing Bottom Up' by Computerphile" loading="lazy">
+  <img src="https://img.youtube.com/vi/tH5AOX9929g/hqdefault.jpg" alt="A Youtube video called 'Parsing Bottom Up' by Computerphile">
   <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/YouTube_full-color_icon_%282024%29.svg" 
        alt="YouTube Logo" class="youtube-logo">
 </a>
