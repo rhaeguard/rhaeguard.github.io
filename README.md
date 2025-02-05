@@ -2,7 +2,7 @@
 
 [![Build the blog and deploy it to Github Pages](https://github.com/rhaeguard/rhaeguard.github.io/actions/workflows/static.yml/badge.svg?branch=main)](https://github.com/rhaeguard/rhaeguard.github.io/actions/workflows/static.yml)
 
-Almost a completely custom blog engine, made for my use case, which is neither unique nor particularly challenging. It's just more fun to make my own blog engine.
+A custom blog engine, made for my use case, which is neither unique nor particularly challenging. It's just more fun to make my own blog engine.
 
 This repo consists of these sections:
 
