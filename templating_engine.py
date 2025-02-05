@@ -196,27 +196,6 @@ def parse(tokens: list[str], i = 0):
         i += 1
     return blocks
 
-def do_render_template(text: str, context) -> str:
-    pieces = re.split(r'({{|}})', text)
-    result = parse(pieces)
-    context = {
-        "__out__": "",
-        "date": "2028-10-10",
-        "title": "my title yay!",
-        "counts": list(range(15)),
-        "content": {
-            "hallo": {
-                "hi": "this will be epic"
-            }
-        },
-        "github": "rhaeguard/rgx",
-        "age": 30
-    }
-    for p in result:
-        p.render(context)
-
-    return context["__out__"]
-
 def render_template(text: str, context: dict) -> str:
     pieces = re.split(r'({{|}})', text)
     result = parse(pieces)
@@ -227,10 +206,3 @@ def render_template(text: str, context: dict) -> str:
         p.render(context)
 
     return context["__out__"]
-
-
-if __name__ == "__main__":
-    with open ("./templates/t.template.html", encoding="utf-8") as tf:
-        contents = tf.read()
-       
-    print(do_render_template(contents))
