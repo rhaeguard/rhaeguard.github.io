@@ -3,6 +3,10 @@
     "base_url": "https://rhaeguard.github.io",
     "all_projects": [
         {
+            "title": "me on itch.io!",
+            "url": "https://rhaeguard.itch.io"
+        },
+        {
             "title": "visualizations with canvas api",
             "url": "https://rhaeguard.github.io/visualizations/"
         },
@@ -17,14 +21,6 @@
         {
             "title": "shum - a concatenative language for jvm",
             "url": "https://github.com/rhaeguard/shum"
-        },
-        {
-            "title": "snake - a snake game with procedurally-generated maps",
-            "url": "https://github.com/rhaeguard/snake"
-        },
-        {
-            "title": "cells - a spreadsheet with lisp-like formulas",
-            "url": "https://github.com/rhaeguard/cells"
         }
     ],
     "global_metadata": {
