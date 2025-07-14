@@ -31,7 +31,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # this ensures that the whole repo is pulled, allowing us to grab the last modified date for each article
 
       - name: Python Env Setup
         uses: actions/setup-python@v5
@@ -43,9 +43,6 @@ jobs:
 
       - name: Build
         run: python main.py
-
-      - name: Sanity check
-        run: git log -1 --format=%cd --date=iso-strict -- ./posts/json-parsing-shift-reduce.md
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

@@ -1,9 +1,9 @@
 import os
+import subprocess
 import glob
 import pathlib
 import re
-from datetime import datetime, timezone, timedelta
-from zoneinfo import ZoneInfo
+from datetime import datetime
 import shutil
 import json
 # local code
@@ -159,6 +159,21 @@ def prepare_metadata(post_metadata = None):
 
     return meta
 
+
+def get_git_last_modified_date(file_path):
+    try:
+        result = subprocess.run(
+            ['git', 'log', '-1', '--format=%cd', '--date=iso-strict', '--', file_path],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=True
+        )
+        return result.stdout.strip()
+    except subprocess.CalledProcessError as e:
+        print(f"Git error: {e.stderr}")
+        return None
+
 def handle_posts():
     posts_metadata = []
     # build the files
@@ -174,9 +189,7 @@ def handle_posts():
             out_html = re.sub(CODE_EXTRACTION_REGEX, syntax_highlight_code, out_html, 0, re.MULTILINE)
 
             metadata_end_ix = out_html.find("-->")
-            last_modified_date = datetime.fromtimestamp(os.path.getmtime(markdown_file)) \
-                .replace(tzinfo=timezone(timedelta(hours=-6))) \
-                .strftime("%Y-%m-%dT%H:%M:%S%z")
+            last_modified_date = get_git_last_modified_date(markdown_file)
             post_metadata = {
                 "filename": f"{filename}", 
                 "last_modified_date": last_modified_date
@@ -191,6 +204,8 @@ def handle_posts():
                     key, value = meta.strip().split("=", maxsplit=1)
                     key, value = key.strip(), value.strip()
                     post_metadata[key] = value
+                    if key == "date" and last_modified_date is None:
+                        post_metadata["last_modified_date"] = value
 
                 posts_metadata.append(post_metadata)
 
