@@ -43,7 +43,7 @@ jobs:
         run: python main.py
 
       - name: Sanity check
-        run: git branch && which git
+        run: git log -1 --format=%cd --date=iso-strict -- ./posts/json-parsing-shift-reduce.md
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
