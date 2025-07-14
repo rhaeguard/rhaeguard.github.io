@@ -1,0 +1,217 @@
+:root {
+    --bg-color: #ffffff;
+    --primary-text-color: #212121;
+    --secondary-text-color: #666666;
+    --link-color: #1e70bf;
+    --visited-link-color: #921292;
+    --gh-tool-header-color: grey;
+    --gh-tool-body-color: lightgrey;
+    --gh-tool-text-color: white;
+    --gh-tool-link-color: #1e70bf;
+    --inline-code-bg-color: #e4e6e9;
+    --inline-code-text-color: rgb(58, 58, 58);
+    --block-code-bg-color: black;
+    --target-highlighted-color: black;
+}
+
+.dark {
+    --bg-color: #212121;
+    --primary-text-color: #fafafad6;
+    --secondary-text-color: #eeeeee;
+    --link-color: #0071bc;
+    --visited-link-color: #a359e9;
+    --gh-tool-header-color: #545d68;
+    --gh-tool-body-color: #3c434d;
+    --gh-tool-text-color: white;
+    --gh-tool-link-color: white;
+    --inline-code-bg-color: #3c434d;
+    --inline-code-text-color: white;
+    --block-code-bg-color: black;
+    --target-highlighted-color: black;
+}
+
+body {
+    background-color: var(--bg-color);
+
+    color: var(--primary-text-color);
+
+    a {
+        color: var(--link-color);
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    code:not(pre > code) {
+        background-color: var(--inline-code-bg-color);
+        color: var(--inline-code-text-color);
+    }
+
+    .highlight {
+        pre {
+            background-color: var(--block-code-bg-color);
+            color: white;
+        }
+    }
+
+    figcaption {
+        color: var(--secondary-text-color);
+    }
+
+    button.theme-switch {
+        color: var(--link-color);
+        text-decoration: none;
+        font-size: 16px;
+        border: none;
+        outline: none;
+        background: none;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .link-preview {
+        .header {
+            background-color: var(--gh-tool-header-color);
+            padding: 1%;
+            color: var(--gh-tool-text-color);
+            font-weight: bold;
+        }
+
+        .body {
+            background-color: var(--gh-tool-body-color);
+            padding: 1%;
+
+            a {
+                color: var(--gh-tool-link-color);
+                text-decoration: none;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+
+    table {
+
+        thead,
+        th {
+            background-color: var(--gh-tool-header-color);
+            color: var(--gh-tool-text-color);
+        }
+
+        tbody {
+            background-color: var(--gh-tool-body-color);
+        }
+    }
+
+    *:target {
+        background: yellow;
+        color: var(--target-highlighted-color);
+    }
+}
+
+html { height: 100%; }
+
+body {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  margin: 0;
+  min-height: 100%;
+  overflow-wrap: break-word;
+}
+
+.post-meta { text-align: right; }
+
+h2, h3, h4, h5, h6 { margin-top: 3rem; }
+
+hr { margin: 2rem 0; }
+
+p { margin: 1rem 0; }
+
+li { margin: 0.4rem 0; }
+
+.wain {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+
+.toc {
+  border: thin solid black;
+  padding: 1rem;
+}
+
+hr {
+  text-align: center;
+  border: 0;
+
+  &:before { content: '/////' }
+  &:after { content: attr(data-content) '/////' }
+}
+
+pre {
+  padding: 1em;
+  overflow-x: auto; /* Fix pre content overflowing parent without scroll bar */
+}
+
+table { width: 100%; }
+
+table, th, td {
+  border: thin solid black;
+  border-collapse: collapse;
+  padding: 0.4rem;
+}
+
+code:not(pre > code) {
+  padding: 0.1em 0.2em;
+  font-size: 90%;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
+}
+
+figcaption {
+  text-align: center;
+  opacity: 0.5;
+}
+
+button {
+  text-decoration: none;
+  &:hover { text-decoration: underline; }
+}
+
+.youtube-thumbnail {
+  position: relative;
+  cursor: pointer;
+}
+
+.youtube-thumbnail img {
+  display: block;
+  max-width: 480px;
+  border-radius: 8px;
+}
+
+.youtube-logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  opacity: 0.75;
+  transition: opacity 0.2s;
+}
+
+.youtube-thumbnail:hover .youtube-logo {
+  opacity: 1;
+}

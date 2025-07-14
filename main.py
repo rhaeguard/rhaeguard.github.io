@@ -2,14 +2,14 @@ import os
 import glob
 import pathlib
 import re
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
+from zoneinfo import ZoneInfo
 import shutil
 import json
 # local code
 from templating_engine import render_template
 # external dependencies
 import markdown
-import sass
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import HtmlFormatter
@@ -23,6 +23,9 @@ class NewEngineFormatter(HtmlFormatter):
         HtmlFormatter.__init__(self, **options)
 
     def format(self, tokensource, outfile):
+        """
+        overriding the same function from the parent class 
+        """
         outfile.write('<div class="highlight"><pre>')
         for token_type, value in tokensource:
             tag_name = STANDARD_TYPES[token_type]
@@ -39,6 +42,26 @@ class NewEngineFormatter(HtmlFormatter):
             line = f"<{tag_name}>{value}</{tag_name}>"
             outfile.write(line)
         outfile.write('</pre></div>')
+
+    def get_token_style_defs(self, arg=None):
+        """
+        overriding the same function from the parent class
+        """
+        prefix = self.get_css_prefix(arg)
+
+        styles = [
+            (level, ttype, cls, style)
+            for cls, (style, ttype, level) in self.class2style.items()
+            if cls and style
+        ]
+        styles.sort()
+
+        lines = [
+            f'{prefix(cls)} {{ {style} }}'
+            for (level, ttype, cls, style) in styles
+        ]
+
+        return lines
 
 MARKDOWN = markdown.Markdown(extensions=["fenced_code", "sane_lists", "toc"])
 PYGMENTS_HTML_FORMATTER = NewEngineFormatter(style="monokai")
@@ -77,8 +100,8 @@ def syntax_highlight_code(match):
 
 def handle_css():
     # handle CSS
-    with open("./css/main.scss") as scss_file, open(BUILD_DIR_PATH.joinpath("main.css"), "w+") as main_css:
-        raw_scss = scss_file.read().strip()
+    with open("./css/main.css") as scss_file, open(BUILD_DIR_PATH.joinpath("main.css"), "w+") as main_css:
+        raw_css = scss_file.read().strip()
 
         syntax_highligher_styling: str = PYGMENTS_HTML_FORMATTER.get_style_defs()
 
@@ -93,12 +116,13 @@ def handle_css():
         }}
         """
 
-        raw_scss += syntax_highligher_styling
+        raw_css += syntax_highligher_styling
 
-        compiled_css = sass.compile(string=raw_scss, output_style="compressed")
+        compiled_css = raw_css.replace("\n", "")
 
         main_css.write(compiled_css)
         main_css.flush()
+
 
 def handle_static_assets():
     # move the static assets
@@ -150,7 +174,14 @@ def handle_posts():
             out_html = re.sub(CODE_EXTRACTION_REGEX, syntax_highlight_code, out_html, 0, re.MULTILINE)
 
             metadata_end_ix = out_html.find("-->")
-            post_metadata = {"filename": f"{filename}"}
+            last_modified_date = datetime.fromtimestamp(os.path.getmtime(markdown_file)) \
+                .replace(tzinfo=timezone(timedelta(hours=-6))) \
+                .strftime("%Y-%m-%dT%H:%M:%S%z")
+            post_metadata = {
+                "filename": f"{filename}", 
+                "last_modified_date": last_modified_date
+            }
+
             if metadata_end_ix != -1:
                 metadata = out_html[4:metadata_end_ix]
                 for meta in metadata.splitlines():

@@ -19,17 +19,31 @@
 {{content}}
 
 <script>
-    const themeVal = (localStorage.getItem("isDark") || document.getElementsByTagName("body")[0].getAttribute("a")) ?? "light"
-    document.getElementsByTagName("body")[0].setAttribute("a", themeVal)
+    const html = document.documentElement
+    const LS_KEY = "isDark"
+    const isUserPreferenceDark = () => {
+        if (localStorage.getItem(LS_KEY)) {return localStorage.getItem(LS_KEY) === "true"}
+        return window.matchMedia('(prefers-color-scheme: dark)').matches
+    }
+    const isDark = isUserPreferenceDark()
+    if (isDark) {
+        html.classList.add("dark")
+    } else {
+        html.classList.remove("dark")
+    }
+    localStorage.setItem(LS_KEY, isDark)
     const btns = document.getElementsByClassName('theme-switch')
     for (let btn of btns) {
-        btn.innerHTML = themeVal === "dark" ? "light" : "dark"
+        btn.innerHTML = isDark ? "light" : "dark"
         btn.addEventListener('click', (event) => {
-            const theme = localStorage.getItem("isDark") || document.getElementsByTagName("body")[0].getAttribute("a")
-            const isDark = theme === "dark"
-            document.getElementsByTagName("body")[0].setAttribute("a", isDark ? "light" : "dark")
-            localStorage.setItem("isDark", isDark ? "light" : "dark")
-            btn.innerHTML = isDark ? "dark" : "light"
+            const isThemeDark = isUserPreferenceDark()
+            if (isThemeDark) {
+                html.classList.remove("dark")
+            } else {
+                html.classList.add("dark")
+            }
+            localStorage.setItem(LS_KEY, !isThemeDark)
+            btn.innerHTML = isThemeDark ? "dark" : "light"
         })
     }
 </script>
