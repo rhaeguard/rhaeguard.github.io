@@ -10,7 +10,7 @@ These are some of my random thoughts on software development pratices. These are
  - Performance matters. As developers, it is professional to deliver a product that is performant. That is what we're being paid to do.
  - Measure the performance. Data-driven decisions should be preferred over intuition whenever possible.
  - Give visual feedback on any action the user performs in the UI. If the payment was successful, show the user that it was successful.
- - Do not generalize off of a single use case. You can literally fit an infinite number of lines through a single point.
+ - Do not generalize off of a single use case. You can literally fit an infinite number of lines through a single point (see: [Semantic Compression by Casey Muratori](https://caseymuratori.com/blog_0015)).
  - Do not overengineer. If a `boolean` flag works fine in the current use case, use that. "Futureproofing" is a good concept but it often fails to deliver what it promises. Do not try to solve a problem that does not exist. Solve for your current problem.
  - Keep things simple. Simple does not mean trivial. It means doing only what you need to do. Casey Muratori has [an excellent lecture](https://youtu.be/Ge3aKEmZcqY) on this.
  - Code duplication is okay.
